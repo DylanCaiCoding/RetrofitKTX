@@ -1,8 +1,7 @@
 package com.dylanc.retrofit.helper.sample;
 
 import io.reactivex.Observable;
-import retrofit2.http.GET;
-import retrofit2.http.Headers;
+import retrofit2.http.*;
 
 /**
  * @author Dylan Cai
@@ -17,4 +16,7 @@ public interface TestService {
   @GET("/api/today")
   Observable<String> getGankData();
 
+//  @FormUrlEncoded
+  @POST("/user/login")
+  Observable<String> login();
 }
