@@ -25,7 +25,7 @@ public class App extends Application {
           }
         })
         .addDebugInterceptor(this, "login", R.raw.user)
-        .setCookieJar(new PersistentCookie(this))
+        .cookieJar(new PersistentCookie(this))
         .init();
   }
 }

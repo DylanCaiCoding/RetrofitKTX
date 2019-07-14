@@ -6,6 +6,10 @@ group='com.github.DylanCaiCoding'
 android {
     compileSdkVersion 28
 
+    compileOptions {
+        kotlinOptions.freeCompilerArgs += ['-module-name', "retrofit_helper"]
+    }
+
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 28
@@ -27,9 +31,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     implementation 'me.jessyan:retrofit-url-manager:1.4.0'
     api 'me.jessyan:progressmanager:1.5.0'

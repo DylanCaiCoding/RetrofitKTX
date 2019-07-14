@@ -42,7 +42,7 @@ object RetrofitHelper {
   private val retrofit: Retrofit
     get() = RetrofitHolder.instance.retrofit
 
-  private class RetrofitHolder private constructor(){
+  private class RetrofitHolder private constructor() {
     var retrofit: Retrofit
       private set
 
@@ -63,7 +63,7 @@ object RetrofitHelper {
     }
   }
 
-  private class OkHttpHolder private constructor(){
+  private class OkHttpHolder private constructor() {
     private val timeOut = 60
     var okHttpClient: OkHttpClient
       private set
@@ -102,7 +102,6 @@ object RetrofitHelper {
   class Default private constructor() {
 
     var baseUrl: String? = null
-      private set
     var downloadRefreshTime: Int = -1
       private set
     var cookieJar: CookieJar? = null
@@ -150,6 +149,11 @@ object RetrofitHelper {
       return this
     }
 
+    fun cookieJar(cookieJar: CookieJar): Default {
+      this.cookieJar = cookieJar
+      return this
+    }
+
     fun addDebugInterceptor(context: Context, debugUrl: String, debugRawId: Int): Default {
       return addInterceptor(DebugInterceptor(context, debugUrl, debugRawId))
     }
@@ -178,11 +182,6 @@ object RetrofitHelper {
       for (interceptor in interceptors) {
         addInterceptor(interceptor)
       }
-      return this
-    }
-
-    fun setCookieJar(cookieJar: CookieJar): Default {
-      this.cookieJar = cookieJar
       return this
     }
 
