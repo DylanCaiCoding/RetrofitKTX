@@ -11,8 +11,6 @@ import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersisto
  * @author Dylan Cai
  * @since 2019/7/13
  */
-class PersistentCookie : PersistentCookieJar {
-  constructor(context: Context) : super(SetCookieCache(), SharedPrefsCookiePersistor(context))
-
-  constructor(cache: CookieCache, persistor: CookiePersistor) : super(cache, persistor)
+class PersistentCookie(cache: CookieCache, persistor: CookiePersistor) : PersistentCookieJar(cache, persistor) {
+  constructor(context: Context) : this(SetCookieCache(), SharedPrefsCookiePersistor(context))
 }

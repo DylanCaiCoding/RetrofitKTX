@@ -31,6 +31,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     debugImplementation project(':library')
-    releaseImplementation 'com.github.DylanCaiCoding:RetrofitHelper:1.0.0-alpha3'
-    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
+    releaseImplementation 'com.github.DylanCaiCoding:RetrofitHelper:1.0.0-alpha4'
 }
