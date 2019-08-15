@@ -4,13 +4,11 @@ import android.content.Context
 import android.text.TextUtils
 import com.dylanc.retrofit.helper.interceptor.DebugInterceptor
 import com.dylanc.retrofit.helper.interceptor.HeaderInterceptor
-import io.reactivex.Observable
 import me.jessyan.progressmanager.ProgressManager
 import me.jessyan.retrofiturlmanager.RetrofitUrlManager
 import okhttp3.CookieJar
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -106,6 +104,8 @@ object RetrofitHelper {
       private set
     var cookieJar: CookieJar? = null
       private set
+    var loadingDialog: ILoadingDialog? = null
+      private set
     internal val headers = HashMap<String, String>()
     internal val interceptors = ArrayList<Interceptor>()
     internal val domains = HashMap<String, String>()
@@ -182,6 +182,11 @@ object RetrofitHelper {
       for (interceptor in interceptors) {
         addInterceptor(interceptor)
       }
+      return this
+    }
+
+    fun loadingDialog(loadingDialog: ILoadingDialog): Default{
+      this.loadingDialog = loadingDialog
       return this
     }
 

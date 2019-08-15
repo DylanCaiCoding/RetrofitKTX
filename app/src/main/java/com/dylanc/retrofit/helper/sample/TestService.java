@@ -16,7 +16,6 @@ public interface TestService {
   @GET("/api/today")
   Observable<String> getGankData();
 
-  @FormUrlEncoded
-  @POST("/user/login")
+  @GET("/user/login")
   Observable<String> login();
 }

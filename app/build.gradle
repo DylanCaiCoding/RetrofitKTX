@@ -20,6 +20,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
 }
 
 dependencies {
@@ -32,4 +36,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     debugImplementation project(':library')
     releaseImplementation 'com.github.DylanCaiCoding:RetrofitHelper:1.0.0-alpha4'
+    implementation 'top.zibin:Luban:1.1.8'
 }
