@@ -1,6 +1,5 @@
 package com.dylanc.retrofit.helper
 
-import android.app.Dialog
 import android.content.Context
 
 /**
@@ -8,5 +7,7 @@ import android.content.Context
  * @since 2019/8/15
  */
 interface ILoadingDialog {
-  fun onCreate(context: Context): Dialog
+  fun show(context: Context)
+
+  fun dismiss()
 }

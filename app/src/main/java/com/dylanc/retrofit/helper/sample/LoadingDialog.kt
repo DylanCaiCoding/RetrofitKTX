@@ -10,8 +10,15 @@ import com.dylanc.retrofit.helper.ILoadingDialog
  * @since 2019/8/15
  */
 class LoadingDialog : ILoadingDialog {
-  override fun onCreate(context: Context): Dialog = AlertDialog.Builder(context)
-    .setTitle("loading")
-    .setMessage("wait for a minute...")
-    .show()
+  private lateinit var dialog: Dialog
+  override fun show(context: Context) {
+    dialog = AlertDialog.Builder(context)
+      .setTitle("loading")
+      .setMessage("wait for a minute...")
+      .show()
+  }
+
+  override fun dismiss() {
+    dialog.dismiss()
+  }
 }
