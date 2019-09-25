@@ -29,7 +29,7 @@ const val DOWNLOAD_URL =
 
 @Suppress("UNUSED_PARAMETER")
 @SuppressLint("CheckResult")
-class KotlinActivity : AppCompatActivity(), ProgressListener {
+class KotlinActivity : AppCompatActivity(){
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -56,15 +56,16 @@ class KotlinActivity : AppCompatActivity(), ProgressListener {
     RetrofitHelper.create(TestService::class)
       .login()
       .compose(ThreadTransformer.main())
+      .compose(LoadingTransformer.apply(this))
       .subscribe(this::onNext, this::onError)
   }
 
   private fun onNext(json: String) {
-    Toast.makeText(this, json, Toast.LENGTH_SHORT).show()
+    showToast(json)
   }
 
   private fun onError(e: Throwable) {
-    Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+    showToast(e.message)
   }
 
   @SuppressLint("CheckResult")
@@ -80,22 +81,28 @@ class KotlinActivity : AppCompatActivity(), ProgressListener {
       .flatMap {
         RetrofitHelper.create(DownloadService::class)
           .download(DOWNLOAD_URL)
-          .compose(DownloadTransformer.addDownListener(DOWNLOAD_URL, this@KotlinActivity))
+          .compose(DownloadTransformer.addDownListener(DOWNLOAD_URL, downloadListener))
           .compose(DownloadTransformer.downloadTo(pathname))
       }
       .subscribe(
         {
-          Toast.makeText(this@KotlinActivity, "下载成功", Toast.LENGTH_SHORT).show()
+          showToast("下载成功")
         },
         this::onError
       )
   }
 
-  override fun onProgress(progressInfo: ProgressInfo?) {
-    Log.d("download", progressInfo?.percent.toString())
+  private val downloadListener = object :ProgressListener{
+    override fun onProgress(progressInfo: ProgressInfo?) {
+      Log.d("download", progressInfo?.percent.toString())
+    }
+
+    override fun onError(id: Long, e: java.lang.Exception?) {
+      showToast("下载失败")
+    }
   }
 
-  override fun onError(id: Long, e: java.lang.Exception?) {
-//    UploadUtils.createPart()
+  private fun showToast(msg: String?) {
+    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
   }
 }

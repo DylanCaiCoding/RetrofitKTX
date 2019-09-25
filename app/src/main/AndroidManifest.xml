@@ -13,7 +13,6 @@
     android:supportsRtl="true"
     android:theme="@style/AppTheme">
     <activity android:name=".JavaActivity">
-
     </activity>
     <activity android:name=".KotlinActivity">
       <intent-filter>

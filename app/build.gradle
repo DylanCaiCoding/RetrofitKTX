@@ -37,4 +37,6 @@ dependencies {
     debugImplementation project(':library')
     releaseImplementation 'com.github.DylanCaiCoding:RetrofitHelper:1.0.0-alpha4'
     implementation 'top.zibin:Luban:1.1.8'
+    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
+    implementation 'com.github.zhihu.rxlifecycle:rxlifecycle:2.0'
 }

@@ -4,6 +4,9 @@ import android.content.Context
 import android.text.TextUtils
 import com.dylanc.retrofit.helper.interceptor.DebugInterceptor
 import com.dylanc.retrofit.helper.interceptor.HeaderInterceptor
+import com.franmontiel.persistentcookiejar.PersistentCookieJar
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor
 import me.jessyan.progressmanager.ProgressManager
 import me.jessyan.retrofiturlmanager.RetrofitUrlManager
 import okhttp3.CookieJar
@@ -52,7 +55,7 @@ object RetrofitHelper {
 
     init {
       retrofit = Retrofit.Builder()
-        .baseUrl(RetrofitHelper.default.baseUrl!!)
+        .baseUrl(default.baseUrl!!)
         .addConverterFactory(ScalarsConverterFactory.create())
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .addConverterFactory(GsonConverterFactory.create())
@@ -104,7 +107,7 @@ object RetrofitHelper {
       private set
     var cookieJar: CookieJar? = null
       private set
-    var loadingDialog: ILoadingDialog? = null
+    var requestLoading: IRequestLoading? = null
       private set
     internal val headers = HashMap<String, String>()
     internal val interceptors = ArrayList<Interceptor>()
@@ -154,6 +157,11 @@ object RetrofitHelper {
       return this
     }
 
+    fun setPersistentCookieJar(context: Context): Default {
+      this.cookieJar = PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(context))
+      return this
+    }
+
     fun addDebugInterceptor(context: Context, debugUrl: String, debugRawId: Int): Default {
       return addInterceptor(DebugInterceptor(context, debugUrl, debugRawId))
     }
@@ -162,7 +170,10 @@ object RetrofitHelper {
       return addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY, logger)
     }
 
-    fun addLoggingInterceptor(level: HttpLoggingInterceptor.Level, logger: HttpLoggingInterceptor.Logger): Default {
+    fun addLoggingInterceptor(
+      level: HttpLoggingInterceptor.Level,
+      logger: HttpLoggingInterceptor.Logger
+    ): Default {
       val loggingInterceptor = HttpLoggingInterceptor(logger)
       loggingInterceptor.level = level
       debugInterceptors.add(loggingInterceptor)
@@ -185,8 +196,8 @@ object RetrofitHelper {
       return this
     }
 
-    fun loadingDialog(loadingDialog: ILoadingDialog): Default{
-      this.loadingDialog = loadingDialog
+    fun defaultRequestLoading(requestLoading: IRequestLoading): Default {
+      this.requestLoading = requestLoading
       return this
     }
 
