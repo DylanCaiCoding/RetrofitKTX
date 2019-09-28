@@ -10,13 +10,11 @@ import android.view.View
 import android.widget.Toast
 import com.dylanc.retrofit.helper.DownloadService
 import com.dylanc.retrofit.helper.RetrofitHelper
-import com.dylanc.retrofit.helper.UploadUtils
+import com.dylanc.retrofit.helper.sample.api.TestService
 import com.dylanc.retrofit.helper.transformer.DownloadTransformer
 import com.dylanc.retrofit.helper.transformer.LoadingTransformer
 import com.dylanc.retrofit.helper.transformer.ThreadTransformer
 import com.tbruyelle.rxpermissions2.RxPermissions
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
 import me.jessyan.progressmanager.ProgressListener
 import me.jessyan.progressmanager.body.ProgressInfo
 
@@ -29,48 +27,53 @@ const val DOWNLOAD_URL =
 
 @Suppress("UNUSED_PARAMETER")
 @SuppressLint("CheckResult")
-class KotlinActivity : AppCompatActivity(){
+class KotlinActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
   }
 
+  /**
+   * 测试普通请求
+   */
   fun requestBaiduNews(view: View) {
     RetrofitHelper.create(TestService::class)
-      .baiduNews
-      .compose(ThreadTransformer.main())
+      .getBaiduNews()
+      .compose(ThreadTransformer.io2main())
       .compose(LoadingTransformer.apply(this))
       .subscribe(this::onNext, this::onError)
   }
 
+  /**
+   * 测试不同 base url 的请求
+   */
   fun requestGankData(view: View) {
     RetrofitHelper.create(TestService::class)
-      .gankData
-      .compose(ThreadTransformer.main())
+      .getGankData()
+      .compose(ThreadTransformer.io2main())
       .compose(LoadingTransformer.apply(this))
       .subscribe(this::onNext, this::onError)
   }
 
+  /**
+   * 测试返回本地 json 的模拟请求
+   */
   fun requestLogin(view: View) {
     RetrofitHelper.create(TestService::class)
       .login()
-      .compose(ThreadTransformer.main())
+      .compose(ThreadTransformer.io2main())
       .compose(LoadingTransformer.apply(this))
-      .subscribe(this::onNext, this::onError)
+      .subscribe({ result ->
+        showToast("登录${result.data.userName}成功")
+      }, this::onError)
   }
 
-  private fun onNext(json: String) {
-    showToast(json)
-  }
-
-  private fun onError(e: Throwable) {
-    showToast(e.message)
-  }
-
-  @SuppressLint("CheckResult")
+  /**
+   * 测试下载文件
+   */
   fun download(view: View) {
-    val pathname = Environment.getExternalStorageDirectory().path.toString() + "/test.png"
+    val pathname = externalCacheDir.path + "/test.png"
     RxPermissions(this)
       .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
       .doOnNext { granted ->
@@ -82,7 +85,7 @@ class KotlinActivity : AppCompatActivity(){
         RetrofitHelper.create(DownloadService::class)
           .download(DOWNLOAD_URL)
           .compose(DownloadTransformer.addDownListener(DOWNLOAD_URL, downloadListener))
-          .compose(DownloadTransformer.downloadTo(pathname))
+          .compose(DownloadTransformer.toFile(pathname))
       }
       .subscribe(
         {
@@ -92,7 +95,7 @@ class KotlinActivity : AppCompatActivity(){
       )
   }
 
-  private val downloadListener = object :ProgressListener{
+  private val downloadListener = object : ProgressListener {
     override fun onProgress(progressInfo: ProgressInfo?) {
       Log.d("download", progressInfo?.percent.toString())
     }
@@ -100,6 +103,14 @@ class KotlinActivity : AppCompatActivity(){
     override fun onError(id: Long, e: java.lang.Exception?) {
       showToast("下载失败")
     }
+  }
+
+  private fun onNext(json: String) {
+    showToast(json)
+  }
+
+  private fun onError(e: Throwable) {
+    showToast(e.message)
   }
 
   private fun showToast(msg: String?) {

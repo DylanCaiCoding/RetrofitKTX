@@ -1,5 +1,6 @@
 package com.dylanc.retrofit.helper
 
+import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import me.jessyan.progressmanager.ProgressListener
 import me.jessyan.progressmanager.ProgressManager
 import me.jessyan.retrofiturlmanager.RetrofitUrlManager
@@ -21,7 +22,7 @@ object RetrofitManager {
   }
 
   @JvmStatic
-  fun setDownloadRefreshTime(refreshTime: Int) {
+  fun setProgressRefreshTime(refreshTime: Int) {
     ProgressManager.getInstance().setRefreshTime(refreshTime)
   }
 
@@ -48,5 +49,13 @@ object RetrofitManager {
   @JvmStatic
   fun addDiffUploadListenerOnSameUrl(url: String, listener: ProgressListener) {
     ProgressManager.getInstance().addDiffRequestListenerOnSameUrl(url, listener)
+  }
+
+  @JvmStatic
+  fun clearCookieJar(){
+    val cookieJar = RetrofitHelper.default.cookieJar
+    if (cookieJar is PersistentCookieJar) {
+      cookieJar.clear()
+    }
   }
 }

@@ -6,7 +6,9 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
+
 import com.dylanc.retrofit.helper.RetrofitHelper;
+import com.dylanc.retrofit.helper.sample.api.TestService;
 import com.dylanc.retrofit.helper.transformer.ThreadTransformer;
 
 @SuppressLint("CheckResult")
@@ -21,22 +23,22 @@ public class JavaActivity extends AppCompatActivity {
   public void requestBaiduNews(View view) {
     RetrofitHelper.create(TestService.class)
         .getBaiduNews()
-        .compose(ThreadTransformer.main())
+        .compose(ThreadTransformer.io2main())
         .subscribe(this::onNext, this::onError);
   }
 
   public void requestGankData(View view) {
     RetrofitHelper.create(TestService.class)
         .getGankData()
-        .compose(ThreadTransformer.main())
+        .compose(ThreadTransformer.io2main())
         .subscribe(this::onNext, this::onError);
   }
 
   public void requestLogin(View view) {
     RetrofitHelper.create(TestService.class)
         .login()
-        .compose(ThreadTransformer.<String>main())
-        .subscribe(this::onNext,this::onError);
+        .compose(ThreadTransformer.io2main())
+        .subscribe(result-> Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show(), this::onError);
   }
 
   public void onNext(String json) {
@@ -52,7 +54,7 @@ public class JavaActivity extends AppCompatActivity {
 //    new RxPermissions(this).request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 //        .flatMap((Function<Boolean, ObservableSource<File>>) granted -> {
 //          if (granted) {
-//              return DownloadTask.with(DOWNLOAD_URL).downloadTo(pathname);
+//              return DownloadTask.with(DOWNLOAD_URL).toFile(pathname);
 //          }
 //          throw new NullPointerException("");
 //        })

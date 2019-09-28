@@ -26,7 +26,7 @@ object DownloadTransformer {
   }
 
   @JvmStatic
-  fun downloadTo(pathname: String): ObservableTransformer<ResponseBody, File> {
+  fun toFile(pathname: String): ObservableTransformer<ResponseBody, File> {
     return ObservableTransformer { upstream ->
       upstream.subscribeOn(Schedulers.io())
         .unsubscribeOn(Schedulers.io())

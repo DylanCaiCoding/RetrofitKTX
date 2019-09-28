@@ -2,6 +2,7 @@ package com.dylanc.retrofit.helper
 
 import android.content.Context
 import android.text.TextUtils
+import com.dylanc.retrofit.helper.converter.GsonConverterFactory
 import com.dylanc.retrofit.helper.interceptor.DebugInterceptor
 import com.dylanc.retrofit.helper.interceptor.HeaderInterceptor
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
@@ -15,7 +16,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -93,9 +93,6 @@ object RetrofitHelper {
           RetrofitManager.putDomain(key, value)
         }
       }
-      if (default.downloadRefreshTime >= 0) {
-        RetrofitManager.setDownloadRefreshTime(default.downloadRefreshTime)
-      }
       okHttpClient = builder.build()
     }
   }
@@ -103,11 +100,11 @@ object RetrofitHelper {
   class Default private constructor() {
 
     var baseUrl: String? = null
-    var downloadRefreshTime: Int = -1
-      private set
     var cookieJar: CookieJar? = null
       private set
     var requestLoading: IRequestLoading? = null
+      private set
+    var responseBodyConverter: IResponseBodyConverter? = null
       private set
     internal val headers = HashMap<String, String>()
     internal val interceptors = ArrayList<Interceptor>()
@@ -137,8 +134,8 @@ object RetrofitHelper {
       return this
     }
 
-    fun downloadRefreshTime(refreshTime: Int): Default {
-      downloadRefreshTime = refreshTime
+    fun progressRefreshTime(refreshTime: Int): Default {
+      RetrofitManager.setProgressRefreshTime(refreshTime)
       return this
     }
 
@@ -180,6 +177,11 @@ object RetrofitHelper {
       return this
     }
 
+    fun addResponseBodyConverter(responseBodyConverter: IResponseBodyConverter): Default {
+      this.responseBodyConverter = responseBodyConverter
+      return this
+    }
+
     fun addInterceptor(interceptor: Interceptor): Default {
       if (interceptor is DebugInterceptor) {
         debugInterceptors.add(interceptor)
@@ -196,7 +198,7 @@ object RetrofitHelper {
       return this
     }
 
-    fun defaultRequestLoading(requestLoading: IRequestLoading): Default {
+    fun requestLoading(requestLoading: IRequestLoading): Default {
       this.requestLoading = requestLoading
       return this
     }

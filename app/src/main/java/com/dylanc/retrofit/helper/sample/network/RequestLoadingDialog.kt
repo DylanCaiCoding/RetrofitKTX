@@ -1,4 +1,4 @@
-package com.dylanc.retrofit.helper.sample
+package com.dylanc.retrofit.helper.sample.network
 
 import android.app.Dialog
 import android.content.Context

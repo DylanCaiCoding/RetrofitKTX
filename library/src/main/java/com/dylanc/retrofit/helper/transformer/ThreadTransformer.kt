@@ -10,7 +10,7 @@ import io.reactivex.schedulers.Schedulers
  */
 object ThreadTransformer {
   @JvmStatic
-  fun <T> main(): ObservableTransformer<T, T> {
+  fun <T> io2main(): ObservableTransformer<T, T> {
     return ObservableTransformer { upstream ->
       upstream.subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
