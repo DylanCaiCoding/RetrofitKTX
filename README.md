@@ -15,6 +15,6 @@ allprojects {
 
 ```
 dependencies {
-  implementation 'com.github.DylanCaiCoding:RetrofitHelper:1.0.0-alpha'
+  implementation 'com.github.DylanCaiCoding:RetrofitHelper:1.0.0-alpha8'
 }
 ```
