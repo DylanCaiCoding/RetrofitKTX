@@ -1,4 +1,4 @@
-package com.dylanc.retrofit.helper.converter
+package com.dylanc.retrofit.helper.sample.converter
 
 import com.google.gson.Gson
 import com.google.gson.TypeAdapter

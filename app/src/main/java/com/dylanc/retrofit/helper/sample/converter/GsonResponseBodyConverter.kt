@@ -1,6 +1,5 @@
-package com.dylanc.retrofit.helper.converter
+package com.dylanc.retrofit.helper.sample.converter
 
-import com.dylanc.retrofit.helper.RetrofitHelper
 import com.google.gson.Gson
 import com.google.gson.JsonIOException
 import com.google.gson.TypeAdapter
@@ -20,10 +19,6 @@ class GsonResponseBodyConverter<T>(
 
   @Throws(IOException::class)
   override fun convert(value: ResponseBody): T {
-    val responseBodyConverter = RetrofitHelper.default.responseBodyConverter
-    if (responseBodyConverter != null) {
-      return responseBodyConverter.convert(value, gson, adapter)
-    }
     val jsonReader = gson.newJsonReader(value.charStream())
     value.use {
       val result = adapter.read(jsonReader)

@@ -39,4 +39,6 @@ dependencies {
     implementation 'top.zibin:Luban:1.1.8'
     implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
     implementation 'com.github.zhihu.rxlifecycle:rxlifecycle:2.0'
+    implementation "com.github.VictorAlbertos.RxCache:runtime:1.8.3-2.x"
+    implementation 'com.github.VictorAlbertos.Jolyglot:gson:0.0.4'
 }

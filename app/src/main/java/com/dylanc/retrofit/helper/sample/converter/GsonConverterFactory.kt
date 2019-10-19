@@ -1,4 +1,4 @@
-package com.dylanc.retrofit.helper.converter
+package com.dylanc.retrofit.helper.sample.converter
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -34,7 +34,7 @@ class GsonConverterFactory private constructor(private val gson: Gson) : Convert
 
   companion object {
     /**
-     * Create an instance using a default [Gson] instance for conversion. Encoding to JSON and
+     * Create an INSTANCE using a default [Gson] INSTANCE for conversion. Encoding to JSON and
      * decoding from JSON (when no charset is specified by a header) will use UTF-8.
      */
     @JvmStatic
@@ -43,10 +43,9 @@ class GsonConverterFactory private constructor(private val gson: Gson) : Convert
     }
 
     /**
-     * Create an instance using `gson` for conversion. Encoding to JSON and
+     * Create an INSTANCE using `gson` for conversion. Encoding to JSON and
      * decoding from JSON (when no charset is specified by a header) will use UTF-8.
      */
-    // Guarding public API nullability.
     @JvmStatic
     fun create(gson: Gson?): GsonConverterFactory {
       if (gson == null) throw NullPointerException("gson == null")

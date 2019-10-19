@@ -1,40 +1,40 @@
+@file:Suppress("unused")
+
 package com.dylanc.retrofit.helper
 
 import okhttp3.MultipartBody
 import java.io.File
-import java.util.ArrayList
+import java.util.*
 
 /**
  * @author Dylan Cai
  * @since 2019/7/14
  */
+fun String.toPart(name: String, contentType: String = ContentType.MULTIPART) =
+  PartFactory.create(name, this, contentType)
+
+fun List<String>.toPartList(name: String, contentType: String = ContentType.MULTIPART) =
+  PartFactory.createList(name, this, contentType)
+
 object PartFactory {
-
-  private const val CONTENT_TYPE_DEFAULT = "multipart/form-data"
-
+  @JvmOverloads
   @JvmStatic
-  fun create(name: String, pathname: String): MultipartBody.Part {
-    return create(name, pathname, CONTENT_TYPE_DEFAULT)
-  }
-
-  @JvmStatic
-  fun create(name: String, pathname: String, contentType: String): MultipartBody.Part {
+  fun create(
+    name: String,
+    pathname: String,
+    contentType: String = ContentType.MULTIPART
+  ): MultipartBody.Part {
     val file = File(pathname)
-    val requestBody = RequestBodyFactory.create(file, contentType)
+    val requestBody =  file.asRequestBody(contentType)
     return MultipartBody.Part.createFormData(name, file.name, requestBody)
   }
 
-  @JvmStatic
-  fun createList(
-    name: String,
-    pathnameList: List<String>
-  ) = createList(name, pathnameList, CONTENT_TYPE_DEFAULT)
-
+  @JvmOverloads
   @JvmStatic
   fun createList(
     name: String,
     pathnameList: List<String>,
-    contentType: String
+    contentType: String = ContentType.MULTIPART
   ): List<MultipartBody.Part> {
     val list = ArrayList<MultipartBody.Part>()
     for (pathname in pathnameList) {

@@ -30,10 +30,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
-    implementation 'me.jessyan:retrofit-url-manager:1.4.0'
+    api 'me.jessyan:retrofit-url-manager:1.4.0'
     api 'me.jessyan:progressmanager:1.5.0'
     //noinspection GradleDependency
     api 'com.squareup.okhttp3:okhttp:3.12.3'

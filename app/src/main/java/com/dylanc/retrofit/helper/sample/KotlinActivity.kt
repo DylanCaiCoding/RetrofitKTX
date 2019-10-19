@@ -3,20 +3,20 @@ package com.dylanc.retrofit.helper.sample
 import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Environment
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.dylanc.retrofit.helper.DownloadService
 import com.dylanc.retrofit.helper.RetrofitHelper
+import com.dylanc.retrofit.helper.create
 import com.dylanc.retrofit.helper.sample.api.TestService
-import com.dylanc.retrofit.helper.transformer.DownloadTransformer
-import com.dylanc.retrofit.helper.transformer.LoadingTransformer
-import com.dylanc.retrofit.helper.transformer.ThreadTransformer
+import com.dylanc.retrofit.helper.transformer.*
 import com.tbruyelle.rxpermissions2.RxPermissions
+import io.reactivex.Observable
 import me.jessyan.progressmanager.ProgressListener
 import me.jessyan.progressmanager.body.ProgressInfo
+import java.io.File
 
 /**
  * @author Dylan Cai
@@ -38,10 +38,10 @@ class KotlinActivity : AppCompatActivity() {
    * 测试普通请求
    */
   fun requestBaiduNews(view: View) {
-    RetrofitHelper.create(TestService::class)
+    RetrofitHelper.create<TestService>()
       .getBaiduNews()
-      .compose(ThreadTransformer.io2main())
-      .compose(LoadingTransformer.apply(this))
+      .io2mainThread()
+      .showLoading(this)
       .subscribe(this::onNext, this::onError)
   }
 
@@ -49,10 +49,10 @@ class KotlinActivity : AppCompatActivity() {
    * 测试不同 base url 的请求
    */
   fun requestGankData(view: View) {
-    RetrofitHelper.create(TestService::class)
+    RetrofitHelper.create<TestService>()
       .getGankData()
-      .compose(ThreadTransformer.io2main())
-      .compose(LoadingTransformer.apply(this))
+      .io2mainThread()
+      .showLoading(this)
       .subscribe(this::onNext, this::onError)
   }
 
@@ -60,10 +60,10 @@ class KotlinActivity : AppCompatActivity() {
    * 测试返回本地 json 的模拟请求
    */
   fun requestLogin(view: View) {
-    RetrofitHelper.create(TestService::class)
+    RetrofitHelper.create<TestService>()
       .login()
-      .compose(ThreadTransformer.io2main())
-      .compose(LoadingTransformer.apply(this))
+      .io2mainThread()
+      .showLoading(this)
       .subscribe({ result ->
         showToast("登录${result.data.userName}成功")
       }, this::onError)
@@ -82,10 +82,11 @@ class KotlinActivity : AppCompatActivity() {
         }
       }
       .flatMap {
-        RetrofitHelper.create(DownloadService::class)
+        RetrofitHelper.create<DownloadService>()
           .download(DOWNLOAD_URL)
-          .compose(DownloadTransformer.addDownListener(DOWNLOAD_URL, downloadListener))
-          .compose(DownloadTransformer.toFile(pathname))
+          .addDownloadListener(DOWNLOAD_URL, downloadListener)
+          .toFile(pathname)
+          .showLoading(this)
       }
       .subscribe(
         {

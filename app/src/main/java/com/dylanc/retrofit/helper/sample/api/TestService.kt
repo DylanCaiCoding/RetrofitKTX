@@ -1,10 +1,11 @@
 package com.dylanc.retrofit.helper.sample.api
 
+import com.dylanc.retrofit.helper.RetrofitHelper.DOMAIN_HEADER
 import com.dylanc.retrofit.helper.sample.bean.ResultBean
 import com.dylanc.retrofit.helper.sample.bean.UserBean
-
 import io.reactivex.Observable
-import retrofit2.http.*
+import retrofit2.http.GET
+import retrofit2.http.Headers
 
 /**
  * @author Dylan Cai
@@ -12,10 +13,10 @@ import retrofit2.http.*
  */
 interface TestService {
 
-  @GET("guonei")
+  @GET("/guonei")
   fun getBaiduNews(): Observable<String>
 
-  @Headers("Domain-Name: gank")
+  @Headers(DOMAIN_HEADER + "gank")
   @GET("/api/today")
   fun getGankData(): Observable<String>
 

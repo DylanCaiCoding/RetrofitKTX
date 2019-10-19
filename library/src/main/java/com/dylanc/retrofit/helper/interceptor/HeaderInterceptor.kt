@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.dylanc.retrofit.helper.interceptor
 
 import okhttp3.Interceptor
@@ -9,7 +11,6 @@ import java.util.HashMap
  * @author Dylan Cai
  * @since 2019/7/13
  */
-@Suppress("unused")
 class HeaderInterceptor : Interceptor {
   private var headers = HashMap<String, String>()
 
@@ -28,9 +29,11 @@ class HeaderInterceptor : Interceptor {
     val request = chain.request()
     val builder = request.newBuilder()
       .method(request.method, request.body)
-    for ((key, value) in headers) {
-      builder.header(key, value)
-    }
+      .apply {
+        for ((key, value) in headers) {
+          header(key, value)
+        }
+      }
     return chain.proceed(builder.build())
   }
 }
