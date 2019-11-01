@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.dylanc.retrofit.helper.RetrofitHelper;
 import com.dylanc.retrofit.helper.sample.network.HandleErrorInterceptor;
+import com.dylanc.retrofit.helper.sample.network.HandleLoginInterceptor;
 import com.dylanc.retrofit.helper.sample.network.RequestLoadingDialog;
 
 public class App extends Application {
@@ -28,7 +29,8 @@ public class App extends Application {
           Log.d("http",  message);
         })
         .addInterceptor(new HandleErrorInterceptor())
-        .addDebugInterceptor(this, "user/login", R.raw.login_failure) // 拦截请求返回本地的 json 文件内容
+        .addInterceptor(new HandleLoginInterceptor())
+        .addDebugInterceptor(this, "user/login", R.raw.login_success) // 拦截请求返回本地的 json 文件内容
         .init();
   }
 }

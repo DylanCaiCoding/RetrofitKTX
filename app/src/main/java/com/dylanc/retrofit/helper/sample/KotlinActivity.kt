@@ -3,6 +3,7 @@ package com.dylanc.retrofit.helper.sample
 import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.support.constraint.Placeholder
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
@@ -11,12 +12,13 @@ import com.dylanc.retrofit.helper.DownloadService
 import com.dylanc.retrofit.helper.RetrofitHelper
 import com.dylanc.retrofit.helper.create
 import com.dylanc.retrofit.helper.sample.api.TestService
-import com.dylanc.retrofit.helper.transformer.*
+import com.dylanc.retrofit.helper.transformer.addDownloadListener
+import com.dylanc.retrofit.helper.transformer.io2mainThread
+import com.dylanc.retrofit.helper.transformer.showLoading
+import com.dylanc.retrofit.helper.transformer.toFile
 import com.tbruyelle.rxpermissions2.RxPermissions
-import io.reactivex.Observable
 import me.jessyan.progressmanager.ProgressListener
 import me.jessyan.progressmanager.body.ProgressInfo
-import java.io.File
 
 /**
  * @author Dylan Cai
@@ -32,6 +34,7 @@ class KotlinActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
+    val p = Placeholder(this)
   }
 
   /**

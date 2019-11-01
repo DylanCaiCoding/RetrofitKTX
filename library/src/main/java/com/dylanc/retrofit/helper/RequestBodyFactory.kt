@@ -9,8 +9,8 @@ import java.io.File
 
 /**
  * @author Dylan Cai
- * @since 2019/9/28
- */
+* @since 2019/9/28
+*/
 fun String.toRequestBody(contentType: String = ContentType.JSON) =
   RequestBodyFactory.create(this,contentType)
 
