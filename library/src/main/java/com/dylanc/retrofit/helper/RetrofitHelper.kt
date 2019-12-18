@@ -32,60 +32,51 @@ import kotlin.reflect.KClass
  * @author Dylan Cai
  * @since 2019/7/13
  */
-inline fun <reified T> RetrofitHelper.create(): T = create(T::class.java)
+inline fun <reified T> apiServiceOf(): T = RetrofitHelper.create(T::class.java)
 
 object RetrofitHelper {
 
   const val DOMAIN_HEADER = RetrofitUrlManager.DOMAIN_NAME_HEADER
 
   @JvmStatic
-  val default: Default
-    get() = Default.INSTANCE
+  fun getDefault() = Default.INSTANCE
 
   @JvmStatic
-  fun <T> create(service: Class<T>): T {
-    return retrofit.create(service)
-  }
+  fun <T> create(service: Class<T>): T = getDefault().retrofit.create(service)
 
-  fun <T : Any> create(service: KClass<T>): T {
-    return retrofit.create(service.java)
-  }
+  @JvmStatic
+  fun setBaseUrl(baseUrl: String) = RetrofitUrlManager.getInstance().setGlobalDomain(baseUrl)
 
-  private val retrofit: Retrofit
-    get() = default.retrofit
+  @JvmStatic
+  fun clearPersistentCookieJar() {
+    val cookieJar = getDefault().cookieJar
+    if (cookieJar is PersistentCookieJar) {
+      cookieJar.clear()
+    }
+  }
 
   class Default private constructor() {
+
+    companion object {
+      internal val INSTANCE: Default by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { Default() }
+    }
 
     private var baseUrl: String? = null
     private var debugUrl: String? = null
     private var debug: Boolean = false
-    private var connectTimeout: Long = 10
-    private var retryOnConnectionFailure = false
-    private var readTimeout: Long = 10
-    private var writeTimeout: Long = 10
     private var progressRefreshTime = 150
     private val headers = HashMap<String, String>()
     private val interceptors = ArrayList<Interceptor>()
     private val domains = HashMap<String, String>()
     private val debugInterceptors = ArrayList<Interceptor>()
-    private var sslSocketFactory: SSLSocketFactory? = null
-    private var trustManager: X509TrustManager? = null
-    private var callAdapterFactories = ArrayList<CallAdapter.Factory>()
-    private var converterFactories = ArrayList<Converter.Factory>()
-    private var okHttpClientBuilder: OkHttpClient.Builder? = null
-    private var retrofitBuilder: Retrofit.Builder? = null
+    private val okHttpClientBuilder: OkHttpClient.Builder by lazy { OkHttpClient.Builder() }
+    private val retrofitBuilder: Retrofit.Builder by lazy { Retrofit.Builder() }
     internal var cookieJar: CookieJar? = null
       private set
     internal var requestLoading: RequestLoading? = null
       private set
     internal lateinit var retrofit: Retrofit
       private set
-
-    companion object {
-      val INSTANCE: Default by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
-        Default()
-      }
-    }
 
     fun baseUrl(baseUrl: String) = apply {
       this.baseUrl = baseUrl
@@ -100,23 +91,26 @@ object RetrofitHelper {
     }
 
     fun retryOnConnectionFailure(retryOnConnectionFailure: Boolean) = apply {
-      this.retryOnConnectionFailure = retryOnConnectionFailure
+      okHttpClientBuilder.retryOnConnectionFailure(retryOnConnectionFailure)
+    }
+
+    @JvmOverloads
+    fun connectTimeout(connectTimeout: Long, unit: TimeUnit = TimeUnit.SECONDS) = apply {
+      okHttpClientBuilder.connectTimeout(connectTimeout, unit)
+    }
+
+    @JvmOverloads
+    fun writeTimeout(writeTimeout: Long, unit: TimeUnit = TimeUnit.SECONDS) = apply {
+      okHttpClientBuilder.connectTimeout(writeTimeout, unit)
+    }
+
+    @JvmOverloads
+    fun readTimeout(readTimeout: Long, unit: TimeUnit = TimeUnit.SECONDS) = apply {
+      okHttpClientBuilder.connectTimeout(readTimeout, unit)
     }
 
     fun progressRefreshTime(progressRefreshTime: Int) = apply {
       this.progressRefreshTime = progressRefreshTime
-    }
-
-    fun connectTimeout(connectTimeout: Long) = apply {
-      this.connectTimeout = connectTimeout
-    }
-
-    fun writeTimeout(writeTimeout: Long) = apply {
-      this.writeTimeout = writeTimeout
-    }
-
-    fun readTimeout(readTimeout: Long) = apply {
-      this.readTimeout = readTimeout
     }
 
     fun putDomain(domainName: String, domainUrl: String) = apply {
@@ -135,16 +129,16 @@ object RetrofitHelper {
       this.requestLoading = requestLoading
     }
 
-    fun okHttpClientBuilder(okHttpClientBuilder: OkHttpClient.Builder) = apply {
-      this.okHttpClientBuilder = okHttpClientBuilder
+    fun okHttpClientBuilder(block: OkHttpClient.Builder.() -> Unit) = apply {
+      okHttpClientBuilder.apply(block)
     }
 
-    fun retrofitBuilder(retrofitBuilder: Retrofit.Builder) = apply {
-      this.retrofitBuilder = retrofitBuilder
+    fun retrofitBuilder(block: Retrofit.Builder.() -> Unit) = apply {
+      retrofitBuilder.apply(block)
     }
 
     fun setPersistentCookieJar(context: Context) = apply {
-      this.cookieJar = PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(context))
+      cookieJar = PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(context))
     }
 
     fun addDebugInterceptor(context: Context, debugUrl: String, debugRawId: Int) = apply {
@@ -152,11 +146,11 @@ object RetrofitHelper {
     }
 
     fun addConverterFactory(factory: Converter.Factory) = apply {
-      converterFactories.add(factory)
+      retrofitBuilder.addConverterFactory(factory)
     }
 
     fun addCallAdapterFactory(factory: CallAdapter.Factory) = apply {
-      callAdapterFactories.add(factory)
+      retrofitBuilder.addCallAdapterFactory(factory)
     }
 
     @JvmOverloads
@@ -182,8 +176,7 @@ object RetrofitHelper {
       sslSocketFactory: SSLSocketFactory,
       trustManager: X509TrustManager
     ) = apply {
-      this.sslSocketFactory = sslSocketFactory
-      this.trustManager = trustManager
+      okHttpClientBuilder.sslSocketFactory(sslSocketFactory, trustManager)
     }
 
     fun addInterceptor(interceptor: Interceptor) = apply {
@@ -207,46 +200,29 @@ object RetrofitHelper {
         }
         interceptors.addAll(debugInterceptors)
       }
-      val okHttpClientBuilder = this.okHttpClientBuilder ?: OkHttpClient.Builder()
       val okHttpClient = okHttpClientBuilder
-        .retryOnConnectionFailure(retryOnConnectionFailure)
-        .connectTimeout(connectTimeout, TimeUnit.SECONDS)
-        .readTimeout(readTimeout, TimeUnit.SECONDS)
-        .writeTimeout(writeTimeout, TimeUnit.SECONDS)
         .apply {
           RetrofitUrlManager.getInstance().with(this)
           ProgressManager.getInstance().with(this)
           ProgressManager.getInstance().setRefreshTime(progressRefreshTime)
+          for ((key, value) in domains) {
+            RetrofitUrlManager.getInstance().putDomain(key, value)
+          }
           if (headers.isNotEmpty()) {
             addInterceptor(HeaderInterceptor(headers))
           }
           for (interceptor in interceptors) {
             addInterceptor(interceptor)
           }
-          for ((key, value) in domains) {
-            RetrofitUrlManager.getInstance().putDomain(key, value)
-          }
           cookieJar?.let { cookieJar(it) }
-          sslSocketFactory?.let { sslSocketFactory ->
-            trustManager?.let { sslSocketFactory(sslSocketFactory, it) }
-          }
         }
         .build()
-      val retrofitBuilder = this.retrofitBuilder ?: Retrofit.Builder()
       retrofit = retrofitBuilder
         .baseUrl(checkNotNull(baseUrl))
         .client(okHttpClient)
         .addConverterFactory(ScalarsConverterFactory.create())
         .addConverterFactory(GsonConverterFactory.create())
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-        .apply {
-          for (converterFactory in converterFactories) {
-            addConverterFactory(converterFactory)
-          }
-          for (callAdapterFactory in callAdapterFactories) {
-            addCallAdapterFactory(callAdapterFactory)
-          }
-        }
         .build()
     }
   }

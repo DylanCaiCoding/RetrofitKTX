@@ -11,14 +11,9 @@ import java.util.HashMap
  * @author Dylan Cai
  * @since 2019/7/13
  */
-class HeaderInterceptor : Interceptor {
-  private var headers = HashMap<String, String>()
-
-  constructor()
-
-  constructor(headers: HashMap<String, String>) {
-    this.headers = headers
-  }
+class HeaderInterceptor @JvmOverloads constructor(
+  private val headers: HashMap<String, String> = HashMap()
+) : Interceptor {
 
   fun addHeader(name: String, value: String) {
     headers[name] = value
