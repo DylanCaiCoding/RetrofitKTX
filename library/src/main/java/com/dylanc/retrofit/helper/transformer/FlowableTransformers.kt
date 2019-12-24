@@ -16,13 +16,12 @@ import java.io.File
  * @author Dylan Cai
  * @since 2019/11/12
  */
-
 fun <T> Flowable<T>.io2mainThread(): Flowable<T> =
   compose(FlowableTransformers.io2mainThread())
 
 fun <T> Flowable<T>.showLoading(
   context: Context,
-  requestLoading: RequestLoading = RetrofitHelper.default.requestLoading!!
+  requestLoading: RequestLoading = RetrofitHelper.getDefault().requestLoading!!
 ): Flowable<T> = compose(FlowableTransformers.showLoading(context, requestLoading))
 
 fun Flowable<ResponseBody>.toFile(pathname: String): Flowable<File> =
@@ -67,7 +66,7 @@ object FlowableTransformers {
   @JvmStatic
   fun <T> showLoading(
     context: Context,
-    requestLoading: RequestLoading = RetrofitHelper.default.requestLoading!!
+    requestLoading: RequestLoading = RetrofitHelper.getDefault().requestLoading!!
   ): FlowableTransformer<T, T> = FlowableTransformer { upstream ->
     upstream.doOnSubscribe {
       requestLoading.show(context)

@@ -55,5 +55,5 @@ public abstract class ResponseBodyInterceptor implements Interceptor {
     return response;
   }
 
-  abstract Response intercept(@NotNull Response response,String url, String body);
+  abstract Response intercept(@NotNull Response response,String url, String body) throws IOException;
 }

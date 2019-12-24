@@ -21,7 +21,7 @@ fun <T> Observable<T>.io2mainThread(): Observable<T> =
 
 fun <T> Observable<T>.showLoading(
   context: Context,
-  requestLoading: RequestLoading = RetrofitHelper.default.requestLoading!!
+  requestLoading: RequestLoading = RetrofitHelper.getDefault().requestLoading!!
 ): Observable<T> = compose(ObservableTransformers.showLoading(context, requestLoading))
 
 fun Observable<ResponseBody>.toFile(pathname: String): Observable<File> =
@@ -65,7 +65,7 @@ object ObservableTransformers {
   @JvmStatic
   fun <T> showLoading(
     context: Context,
-    requestLoading: RequestLoading = RetrofitHelper.default.requestLoading!!
+    requestLoading: RequestLoading = RetrofitHelper.getDefault().requestLoading!!
   ): ObservableTransformer<T, T> = ObservableTransformer { upstream ->
     upstream.doOnSubscribe {
       requestLoading.show(context)

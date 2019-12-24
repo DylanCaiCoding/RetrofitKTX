@@ -8,8 +8,14 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.dylanc.retrofit.helper.RetrofitHelper;
+import com.dylanc.retrofit.helper.RetrofitHelperKt;
 import com.dylanc.retrofit.helper.sample.api.TestService;
 import com.dylanc.retrofit.helper.transformer.ObservableTransformers;
+import com.dylanc.retrofit.helper.transformer.Transformers;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+import okhttp3.OkHttpClient;
 
 @SuppressLint("CheckResult")
 public class JavaActivity extends AppCompatActivity {
@@ -23,21 +29,21 @@ public class JavaActivity extends AppCompatActivity {
   public void requestBaiduNews(View view) {
     RetrofitHelper.create(TestService.class)
         .getBaiduNews()
-        .compose(ObservableTransformers.io2mainThread())
+        .compose(Transformers.io2mainThread())
         .subscribe(this::onNext, this::onError);
   }
 
   public void requestGankData(View view) {
     RetrofitHelper.create(TestService.class)
         .getGankData()
-        .compose(ObservableTransformers.io2mainThread())
+        .compose(Transformers.io2mainThread())
         .subscribe(this::onNext, this::onError);
   }
 
   public void requestLogin(View view) {
     RetrofitHelper.create(TestService.class)
         .login()
-        .compose(ObservableTransformers.io2mainThread())
+        .compose(Transformers.io2mainThread())
         .subscribe(result-> Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show(), this::onError);
   }
 

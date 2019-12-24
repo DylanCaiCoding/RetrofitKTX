@@ -19,8 +19,12 @@ fun String.toRequestBody(contentType: String = ContentType.JSON) =
 fun File.asRequestBody(contentType: String = ContentType.JSON) =
   RequestBodyFactory.create(this, contentType)
 
-fun jsonBodyOf(params: HashMap<String, Any>.() -> Unit) =
-  RequestBodyFactory.create(hashMapOf<String, Any>().apply(params))
+fun jsonBodyOf(vararg params: Pair<String, Any>) =
+  RequestBodyFactory.create(hashMapOf<String, Any>().apply {
+    for (pair in params) {
+      put(pair.first, pair.second)
+    }
+  })
 
 object RequestBodyFactory {
 

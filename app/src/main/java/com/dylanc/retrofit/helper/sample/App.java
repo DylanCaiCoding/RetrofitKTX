@@ -3,10 +3,17 @@ package com.dylanc.retrofit.helper.sample;
 import android.app.Application;
 import android.util.Log;
 
+import com.dylanc.retrofit.helper.RequestBodyFactory;
 import com.dylanc.retrofit.helper.RetrofitHelper;
 import com.dylanc.retrofit.helper.sample.network.HandleErrorInterceptor;
 import com.dylanc.retrofit.helper.sample.network.HandleLoginInterceptor;
 import com.dylanc.retrofit.helper.sample.network.RequestLoadingDialog;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 public class App extends Application {
 

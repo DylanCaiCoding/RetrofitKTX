@@ -34,8 +34,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    debugImplementation project(':library')
-    releaseImplementation 'com.github.DylanCaiCoding:RetrofitHelper:1.0.0-alpha4'
+    implementation project(':library')
+//    debugImplementation project(':library')
+//    releaseImplementation 'com.github.DylanCaiCoding:RetrofitHelper:1.0.0-alpha4'
     implementation 'top.zibin:Luban:1.1.8'
     implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
     implementation 'com.github.zhihu.rxlifecycle:rxlifecycle:2.0'

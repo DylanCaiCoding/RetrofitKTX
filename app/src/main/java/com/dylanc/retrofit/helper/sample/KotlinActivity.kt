@@ -3,14 +3,13 @@ package com.dylanc.retrofit.helper.sample
 import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.support.constraint.Placeholder
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.dylanc.retrofit.helper.DownloadService
-import com.dylanc.retrofit.helper.RetrofitHelper
-import com.dylanc.retrofit.helper.create
+import com.dylanc.retrofit.helper.apiServiceOf
+import com.dylanc.retrofit.helper.jsonBodyOf
 import com.dylanc.retrofit.helper.sample.api.TestService
 import com.dylanc.retrofit.helper.transformer.addDownloadListener
 import com.dylanc.retrofit.helper.transformer.io2mainThread
@@ -34,14 +33,13 @@ class KotlinActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-    val p = Placeholder(this)
   }
 
   /**
    * 测试普通请求
    */
   fun requestBaiduNews(view: View) {
-    RetrofitHelper.create<TestService>()
+    apiServiceOf<TestService>()
       .getBaiduNews()
       .io2mainThread()
       .showLoading(this)
@@ -52,7 +50,7 @@ class KotlinActivity : AppCompatActivity() {
    * 测试不同 base url 的请求
    */
   fun requestGankData(view: View) {
-    RetrofitHelper.create<TestService>()
+    apiServiceOf<TestService>()
       .getGankData()
       .io2mainThread()
       .showLoading(this)
@@ -63,7 +61,7 @@ class KotlinActivity : AppCompatActivity() {
    * 测试返回本地 json 的模拟请求
    */
   fun requestLogin(view: View) {
-    RetrofitHelper.create<TestService>()
+    apiServiceOf<TestService>()
       .login()
       .io2mainThread()
       .showLoading(this)
@@ -76,7 +74,7 @@ class KotlinActivity : AppCompatActivity() {
    * 测试下载文件
    */
   fun download(view: View) {
-    val pathname = externalCacheDir.path + "/test.png"
+    val pathname = externalCacheDir!!.path + "/test.png"
     RxPermissions(this)
       .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
       .doOnNext { granted ->
@@ -85,7 +83,7 @@ class KotlinActivity : AppCompatActivity() {
         }
       }
       .flatMap {
-        RetrofitHelper.create<DownloadService>()
+        apiServiceOf<DownloadService>()
           .download(DOWNLOAD_URL)
           .addDownloadListener(DOWNLOAD_URL, downloadListener)
           .toFile(pathname)
