@@ -7,26 +7,29 @@ import org.reactivestreams.Publisher
  * @author Dylan Cai
  * @since 2019/12/17
  */
-class ThreadTransformer<T>(private val subscribeOn: Scheduler, private val observeOn: Scheduler) :
-  ObservableTransformer<T, T>, FlowableTransformer<T, T>,
+class ThreadTransformer<T>(
+  private val subscribeScheduler: Scheduler,
+  private val observeScheduler: Scheduler
+) : ObservableTransformer<T, T>, FlowableTransformer<T, T>,
   SingleTransformer<T, T>, MaybeTransformer<T, T>, CompletableTransformer {
+
   override fun apply(upstream: Observable<T>): ObservableSource<T> = upstream
-    .subscribeOn(subscribeOn)
-    .observeOn(observeOn)
+    .subscribeOn(subscribeScheduler)
+    .observeOn(observeScheduler)
 
   override fun apply(upstream: Flowable<T>): Publisher<T> = upstream
-    .subscribeOn(subscribeOn)
-    .observeOn(observeOn)
+    .subscribeOn(subscribeScheduler)
+    .observeOn(observeScheduler)
 
   override fun apply(upstream: Single<T>): SingleSource<T> = upstream
-    .subscribeOn(subscribeOn)
-    .observeOn(observeOn)
+    .subscribeOn(subscribeScheduler)
+    .observeOn(observeScheduler)
 
   override fun apply(upstream: Maybe<T>): MaybeSource<T> = upstream
-    .subscribeOn(subscribeOn)
-    .observeOn(observeOn)
+    .subscribeOn(subscribeScheduler)
+    .observeOn(observeScheduler)
 
   override fun apply(upstream: Completable): CompletableSource = upstream
-    .subscribeOn(subscribeOn)
-    .observeOn(observeOn)
+    .subscribeOn(subscribeScheduler)
+    .observeOn(observeScheduler)
 }

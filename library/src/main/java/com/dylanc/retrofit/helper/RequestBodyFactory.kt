@@ -20,11 +20,7 @@ fun File.asRequestBody(contentType: String = ContentType.JSON) =
   RequestBodyFactory.create(this, contentType)
 
 fun jsonBodyOf(vararg params: Pair<String, Any>) =
-  RequestBodyFactory.create(hashMapOf<String, Any>().apply {
-    for (pair in params) {
-      put(pair.first, pair.second)
-    }
-  })
+  RequestBodyFactory.create(hashMapOf<String, Any>().apply { putAll(params) })
 
 object RequestBodyFactory {
 
@@ -39,5 +35,5 @@ object RequestBodyFactory {
     file.asRequestBody(contentType.toMediaTypeOrNull())
 
   @JvmStatic
-  fun create(params: Map<String, Any>) = Gson().toJson(params).toRequestBody()
+  fun create(params: Any) = Gson().toJson(params).toRequestBody()
 }

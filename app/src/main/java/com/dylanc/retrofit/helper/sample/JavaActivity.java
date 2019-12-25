@@ -8,14 +8,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.dylanc.retrofit.helper.RetrofitHelper;
-import com.dylanc.retrofit.helper.RetrofitHelperKt;
 import com.dylanc.retrofit.helper.sample.api.TestService;
-import com.dylanc.retrofit.helper.transformer.ObservableTransformers;
 import com.dylanc.retrofit.helper.transformer.Transformers;
-
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
-import okhttp3.OkHttpClient;
 
 @SuppressLint("CheckResult")
 public class JavaActivity extends AppCompatActivity {

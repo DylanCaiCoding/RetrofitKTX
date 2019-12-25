@@ -14,5 +14,5 @@ interface DownloadService {
 
   @Streaming
   @GET
-  fun download(@Url url: String):Observable<ResponseBody>
+  fun download(@Url url: String): Observable<ResponseBody>
 }

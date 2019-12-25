@@ -1,17 +1,141 @@
 package com.dylanc.retrofit.helper.transformer
 
-import android.content.Context
 import com.dylanc.retrofit.helper.RequestLoading
-import com.dylanc.retrofit.helper.RetrofitHelper
+import io.reactivex.Flowable
+import io.reactivex.Observable
+import io.reactivex.ObservableTransformer
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import me.jessyan.progressmanager.ProgressManager
 import me.jessyan.progressmanager.body.ProgressInfo
+import okhttp3.ResponseBody
+import java.io.File
 
 /**
  * @author Dylan Cai
  * @since 2019/12/17
  */
+fun <T> Observable<T>.io2mainThread(): Observable<T> =
+  compose(Transformers.io2mainThread())
+
+fun <T> Observable<T>.showLoading(
+  requestLoading: RequestLoading
+): Observable<T> = compose(Transformers.showLoading(requestLoading))
+
+fun Observable<ResponseBody>.toFile(pathname: String): Observable<File> =
+  compose(Transformers.toFile(pathname))
+
+fun <T> Observable<T>.observeDownload(
+  url: String,
+  onProgress: (progressInfo: ProgressInfo) -> Unit,
+  onError: (id: Long, e: Exception?) -> Unit
+): Observable<T> =
+  compose(Transformers.observeDownload(url, onProgress, onError))
+
+fun<T> Observable<T>.observeDiffDownloadOnSameUrl(
+  url: String,
+  key: String? = null,
+  onProgress: (progressInfo: ProgressInfo) -> Unit,
+  onError: (id: Long, e: Exception) -> Unit
+): Observable<T> =
+  compose(Transformers.observeDiffDownloadOnSameUrl(url, key, onProgress, onError))
+
+fun <T> Observable<T>.observeUpload(
+  url: String,
+  onProgress: (progressInfo: ProgressInfo) -> Unit,
+  onError: (id: Long, e: Exception) -> Unit
+): Observable<T> =
+  compose(Transformers.observeUpload(url, onProgress, onError))
+
+fun <T> Observable<T>.observeDiffUploadOnSameUrl(
+  url: String,
+  key: String? = null,
+  onProgress: (progressInfo: ProgressInfo) -> Unit,
+  onError: (id: Long, e: Exception) -> Unit
+): Observable<T> =
+  compose(Transformers.observeDiffUploadOnSameUrl(url, key, onProgress, onError))
+
+fun <T> Flowable<T>.io2mainThread(): Flowable<T> =
+  compose(Transformers.io2mainThread())
+
+fun <T> Flowable<T>.showLoading(
+  requestLoading: RequestLoading
+): Flowable<T> = compose(Transformers.showLoading(requestLoading))
+
+fun Flowable<ResponseBody>.toFile(pathname: String): Flowable<File> =
+  compose(Transformers.toFile(pathname))
+
+fun<T> Flowable<T>.observeDownload(
+  url: String,
+  onProgress: (progressInfo: ProgressInfo) -> Unit,
+  onError: (id: Long, e: Exception) -> Unit
+): Flowable<T> =
+  compose(Transformers.observeDownload(url, onProgress, onError))
+
+fun<T> Flowable<T>.observeDiffDownloadOnSameUrl(
+  url: String,
+  key: String? = null,
+  onProgress: (progressInfo: ProgressInfo) -> Unit,
+  onError: (id: Long, e: Exception) -> Unit
+): Flowable<T> =
+  compose(Transformers.observeDiffDownloadOnSameUrl(url, key, onProgress, onError))
+
+fun <T> Flowable<T>.observeUpload(
+  url: String,
+  onProgress: (progressInfo: ProgressInfo) -> Unit,
+  onError: (id: Long, e: Exception) -> Unit
+): Flowable<T> =
+  compose(Transformers.observeUpload(url, onProgress, onError))
+
+fun <T> Flowable<T>.observeDiffUploadOnSameUrl(
+  url: String,
+  key: String? = null,
+  onProgress: (progressInfo: ProgressInfo) -> Unit,
+  onError: (id: Long, e: Exception) -> Unit
+): Flowable<T> =
+  compose(Transformers.observeDiffUploadOnSameUrl(url, key, onProgress, onError))
+
+fun <T> Single<T>.io2mainThread(): Single<T> =
+  compose(Transformers.io2mainThread())
+
+fun <T> Single<T>.showLoading(
+  requestLoading: RequestLoading
+): Single<T> = compose(Transformers.showLoading(requestLoading))
+
+fun Single<ResponseBody>.toFile(pathname: String): Single<File> =
+  compose(Transformers.toFile(pathname))
+
+fun<T> Single<T>.observeDownload(
+  url: String,
+  onProgress: (progressInfo: ProgressInfo) -> Unit,
+  onError: (id: Long, e: Exception) -> Unit
+): Single<T> =
+  compose(Transformers.observeDownload(url, onProgress, onError))
+
+fun <T>Single<T>.observeDiffDownloadOnSameUrl(
+  url: String,
+  key: String? = null,
+  onProgress: (progressInfo: ProgressInfo) -> Unit,
+  onError: (id: Long, e: Exception) -> Unit
+): Single<T> =
+  compose(Transformers.observeDiffDownloadOnSameUrl(url, key, onProgress, onError))
+
+fun <T> Single<T>.observeUpload(
+  url: String,
+  onProgress: (progressInfo: ProgressInfo) -> Unit,
+  onError: (id: Long, e: Exception) -> Unit
+): Single<T> =
+  compose(Transformers.observeUpload(url, onProgress, onError))
+
+fun <T> Single<T>.observeDiffUploadOnSameUrl(
+  url: String,
+  key: String? = null,
+  onProgress: (progressInfo: ProgressInfo) -> Unit,
+  onError: (id: Long, e: Exception) -> Unit
+): Single<T> =
+  compose(Transformers.observeDiffUploadOnSameUrl(url, key, onProgress, onError))
+
 object Transformers {
 
   @JvmStatic
@@ -20,19 +144,18 @@ object Transformers {
 
   @JvmStatic
   fun <T> showLoading(
-    context: Context,
-    requestLoading: RequestLoading = RetrofitHelper.getDefault().requestLoading!!
-  ) = LoadingTransformer<T>(context, {
-    requestLoading.show(context)
-  }, {
-    requestLoading.dismiss()
-  })
+    requestLoading: RequestLoading
+  ) = LoadingTransformer<T>(requestLoading)
+
+  @JvmStatic
+  fun toFile(pathname: String): FileTransformer =
+    FileTransformer(pathname)
 
   @JvmStatic
   fun <T> observeDownload(
     url: String,
-    onProgress: (progressInfo: ProgressInfo?) -> Unit,
-    onError: (id: Long, e: Exception?) -> Unit
+    onProgress: (progressInfo: ProgressInfo) -> Unit,
+    onError: (id: Long, e: Exception) -> Unit
   ) = ProgressTransformer<T>(onProgress, onError) { listener ->
     ProgressManager.getInstance().addResponseListener(url, listener)
   }
@@ -41,8 +164,8 @@ object Transformers {
   fun <T> observeDiffDownloadOnSameUrl(
     url: String,
     key: String? = null,
-    onProgress: (progressInfo: ProgressInfo?) -> Unit,
-    onError: (id: Long, e: Exception?) -> Unit
+    onProgress: (progressInfo: ProgressInfo) -> Unit,
+    onError: (id: Long, e: Exception) -> Unit
   ) = ProgressTransformer<T>(onProgress, onError) { listener ->
     if (key == null) {
       ProgressManager.getInstance().addDiffResponseListenerOnSameUrl(url, listener)
@@ -54,8 +177,8 @@ object Transformers {
   @JvmStatic
   fun <T> observeUpload(
     url: String,
-    onProgress: (progressInfo: ProgressInfo?) -> Unit,
-    onError: (id: Long, e: Exception?) -> Unit
+    onProgress: (progressInfo: ProgressInfo) -> Unit,
+    onError: (id: Long, e: Exception) -> Unit
   ) = ProgressTransformer<T>(onProgress, onError) { listener ->
     ProgressManager.getInstance().addRequestListener(url, listener)
   }
@@ -64,8 +187,8 @@ object Transformers {
   fun <T> observeDiffUploadOnSameUrl(
     url: String,
     key: String? = null,
-    onProgress: (progressInfo: ProgressInfo?) -> Unit,
-    onError: (id: Long, e: Exception?) -> Unit
+    onProgress: (progressInfo: ProgressInfo) -> Unit,
+    onError: (id: Long, e: Exception) -> Unit
   ) = ProgressTransformer<T>(onProgress, onError) { listener ->
     if (key == null) {
       ProgressManager.getInstance().addDiffRequestListenerOnSameUrl(url, listener)

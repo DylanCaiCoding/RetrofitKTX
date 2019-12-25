@@ -9,15 +9,16 @@ import android.view.View
 import android.widget.Toast
 import com.dylanc.retrofit.helper.DownloadService
 import com.dylanc.retrofit.helper.apiServiceOf
-import com.dylanc.retrofit.helper.jsonBodyOf
+import com.dylanc.retrofit.helper.downloadServiceOf
 import com.dylanc.retrofit.helper.sample.api.TestService
-import com.dylanc.retrofit.helper.transformer.addDownloadListener
+import com.dylanc.retrofit.helper.sample.network.showLoading
 import com.dylanc.retrofit.helper.transformer.io2mainThread
-import com.dylanc.retrofit.helper.transformer.showLoading
+import com.dylanc.retrofit.helper.transformer.observeDownload
 import com.dylanc.retrofit.helper.transformer.toFile
+import com.rxjava.rxlife.life
 import com.tbruyelle.rxpermissions2.RxPermissions
-import me.jessyan.progressmanager.ProgressListener
-import me.jessyan.progressmanager.body.ProgressInfo
+import io.reactivex.Observable
+import java.io.File
 
 /**
  * @author Dylan Cai
@@ -43,6 +44,7 @@ class KotlinActivity : AppCompatActivity() {
       .getBaiduNews()
       .io2mainThread()
       .showLoading(this)
+      .life(this)
       .subscribe(this::onNext, this::onError)
   }
 
@@ -54,6 +56,7 @@ class KotlinActivity : AppCompatActivity() {
       .getGankData()
       .io2mainThread()
       .showLoading(this)
+      .life(this)
       .subscribe(this::onNext, this::onError)
   }
 
@@ -65,6 +68,7 @@ class KotlinActivity : AppCompatActivity() {
       .login()
       .io2mainThread()
       .showLoading(this)
+      .life(this)
       .subscribe({ result ->
         showToast("登录${result.data.userName}成功")
       }, this::onError)
@@ -75,20 +79,15 @@ class KotlinActivity : AppCompatActivity() {
    */
   fun download(view: View) {
     val pathname = externalCacheDir!!.path + "/test.png"
-    RxPermissions(this)
-      .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-      .doOnNext { granted ->
-        if (!granted) {
-          throw Exception("请授权访问文件权限")
-        }
-      }
-      .flatMap {
-        apiServiceOf<DownloadService>()
-          .download(DOWNLOAD_URL)
-          .addDownloadListener(DOWNLOAD_URL, downloadListener)
-          .toFile(pathname)
-          .showLoading(this)
-      }
+    requestWritePermission()
+      .flatMap { requestDownloadToFile(pathname) }
+      .showLoading(this)
+      .observeDownload(DOWNLOAD_URL, { progressInfo ->
+        Log.d("download", progressInfo.percent.toString())
+      }, { _, _ ->
+        showToast("下载失败")
+      })
+      .life(this)
       .subscribe(
         {
           showToast("下载成功")
@@ -97,14 +96,20 @@ class KotlinActivity : AppCompatActivity() {
       )
   }
 
-  private val downloadListener = object : ProgressListener {
-    override fun onProgress(progressInfo: ProgressInfo?) {
-      Log.d("download", progressInfo?.percent.toString())
-    }
+  private fun requestWritePermission(): Observable<Boolean> {
+    return RxPermissions(this)
+      .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+      .doOnNext { granted ->
+        if (!granted) {
+          throw Exception("请授权访问文件权限")
+        }
+      }
+  }
 
-    override fun onError(id: Long, e: java.lang.Exception?) {
-      showToast("下载失败")
-    }
+  private fun requestDownloadToFile(pathname: String): Observable<File> {
+    return downloadServiceOf()
+      .download(DOWNLOAD_URL)
+      .toFile(pathname)
   }
 
   private fun onNext(json: String) {

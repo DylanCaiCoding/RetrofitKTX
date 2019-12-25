@@ -34,6 +34,8 @@ import kotlin.reflect.KClass
  */
 inline fun <reified T> apiServiceOf(): T = RetrofitHelper.create(T::class.java)
 
+fun downloadServiceOf(): DownloadService = apiServiceOf()
+
 object RetrofitHelper {
 
   const val DOMAIN_HEADER = RetrofitUrlManager.DOMAIN_NAME_HEADER
@@ -42,7 +44,11 @@ object RetrofitHelper {
   fun getDefault() = Default.INSTANCE
 
   @JvmStatic
-  fun <T> create(service: Class<T>): T = getDefault().retrofit.create(service)
+  fun <T> create(service: Class<T>): T = if (getDefault().isInitialized) {
+    getDefault().retrofit.create(service)
+  } else {
+    throw NullPointerException("RetrofitHelper is not initialized!")
+  }
 
   @JvmStatic
   fun setBaseUrl(baseUrl: String) = RetrofitUrlManager.getInstance().setGlobalDomain(baseUrl)
@@ -73,10 +79,9 @@ object RetrofitHelper {
     private val retrofitBuilder: Retrofit.Builder by lazy { Retrofit.Builder() }
     internal var cookieJar: CookieJar? = null
       private set
-    internal var requestLoading: RequestLoading? = null
-      private set
     internal lateinit var retrofit: Retrofit
       private set
+    internal val isInitialized get() = ::retrofit.isInitialized
 
     fun baseUrl(baseUrl: String) = apply {
       this.baseUrl = baseUrl
@@ -123,10 +128,6 @@ object RetrofitHelper {
 
     fun cookieJar(cookieJar: CookieJar) = apply {
       this.cookieJar = cookieJar
-    }
-
-    fun requestLoading(requestLoading: RequestLoading) = apply {
-      this.requestLoading = requestLoading
     }
 
     fun okHttpClientBuilder(block: OkHttpClient.Builder.() -> Unit) = apply {

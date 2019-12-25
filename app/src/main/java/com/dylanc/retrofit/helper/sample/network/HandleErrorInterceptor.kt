@@ -26,31 +26,3 @@ class HandleErrorInterceptor : ResponseBodyInterceptor() {
     return response
   }
 }
-
-class HandleHttpCodeInterceptor : ResponseBodyInterceptor() {
-
-  override fun intercept(response: Response, url: String, body: String): Response {
-    when (response.code) {
-      600, 601, 602 -> {
-        throw RuntimeException("msg")
-      }
-      else -> {
-      }
-    }
-    return response
-  }
-}
-
-class ConvertDataInterceptor : ResponseBodyInterceptor() {
-
-  override fun intercept(response: Response, url: String, body: String): Response {
-    val json = "{\"code\": 200}"
-    val jsonObject = JSONObject(json)
-    val data = response.headers["Data"]
-    jsonObject.put("data", data)
-
-    val contentType = response.body?.contentType()
-    val responseBody = jsonObject.toString().toResponseBody(contentType)
-    return response.newBuilder().body(responseBody).build()
-  }
-}
