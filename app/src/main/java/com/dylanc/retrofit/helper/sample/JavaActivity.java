@@ -7,9 +7,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import com.dylanc.retrofit.helper.PartFactory;
+import com.dylanc.retrofit.helper.RequestBodyFactory;
 import com.dylanc.retrofit.helper.RetrofitHelper;
 import com.dylanc.retrofit.helper.sample.api.TestService;
 import com.dylanc.retrofit.helper.transformer.Transformers;
+
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.RequestBody;
 
 @SuppressLint("CheckResult")
 public class JavaActivity extends AppCompatActivity {
@@ -21,6 +35,58 @@ public class JavaActivity extends AppCompatActivity {
   }
 
   public void requestBaiduNews(View view) {
+    Single.just("1")
+        .delay(1,TimeUnit.SECONDS)
+        .map(s -> 0)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new SingleObserver<Object>() {
+          @Override
+          public void onSubscribe(Disposable d) {
+
+          }
+
+          @Override
+          public void onSuccess(Object o) {
+
+          }
+
+          @Override
+          public void onError(Throwable e) {
+
+          }
+        });
+    Schedulers.newThread();
+    Observable.interval(1, TimeUnit.SECONDS)
+//        .delay()
+        .map(new Function<Long, Long>() {
+          @Override
+          public Long apply(Long aLong) throws Exception {
+            return null;
+          }
+        })
+        .subscribe(new Observer<Long>() {
+          @Override
+          public void onSubscribe(Disposable d) {
+
+          }
+
+          @Override
+          public void onNext(Long aLong) {
+
+          }
+
+          @Override
+          public void onError(Throwable e) {
+
+          }
+
+          @Override
+          public void onComplete() {
+
+          }
+        });
+
     RetrofitHelper.create(TestService.class)
         .getBaiduNews()
         .compose(Transformers.io2mainThread())
@@ -38,7 +104,7 @@ public class JavaActivity extends AppCompatActivity {
     RetrofitHelper.create(TestService.class)
         .login()
         .compose(Transformers.io2mainThread())
-        .subscribe(result-> Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show(), this::onError);
+        .subscribe(result -> Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show(), this::onError);
   }
 
   public void onNext(String json) {

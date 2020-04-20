@@ -1,18 +1,14 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.github.dcendents.android-maven'
-group='com.github.DylanCaiCoding'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
 
-    compileOptions {
-        kotlinOptions.freeCompilerArgs += ['-module-name', "retrofit_helper"]
-    }
 
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
 
@@ -26,11 +22,13 @@ android {
         }
     }
 
+    compileOptions {
+        kotlinOptions.freeCompilerArgs += ['-module-name', "retrofit_helper"]
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
     api 'me.jessyan:retrofit-url-manager:1.4.0'
     api 'me.jessyan:progressmanager:1.5.0'
     //noinspection GradleDependency
@@ -41,4 +39,14 @@ dependencies {
     api 'com.squareup.retrofit2:converter-scalars:2.2.0'
     api 'com.squareup.retrofit2:adapter-rxjava2:2.6.0'
     api 'io.reactivex.rxjava2:rxandroid:2.1.1'
+}
+
+publish {
+    userOrg = 'dylancai'
+    repoName = 'maven'
+    groupId = 'com.dylanc'
+    artifactId = 'retrofit-helper'
+    publishVersion = '1.0.0'
+    desc = 'An easy-to-use tool for Retrofit'
+    website = 'https://github.com/DylanCaiCoding/RetrofitHelper'
 }

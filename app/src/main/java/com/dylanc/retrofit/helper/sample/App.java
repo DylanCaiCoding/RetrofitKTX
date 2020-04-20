@@ -7,6 +7,10 @@ import com.dylanc.retrofit.helper.RetrofitHelper;
 import com.dylanc.retrofit.helper.sample.network.HandleErrorInterceptor;
 import com.dylanc.retrofit.helper.sample.network.HandleLoginInterceptor;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+import okhttp3.OkHttpClient;
+
 public class App extends Application {
 
   @Override
@@ -14,15 +18,13 @@ public class App extends Application {
     super.onCreate();
     RetrofitHelper.getDefault()
         .setDebug(true)
-        .baseUrl("https://www.baidu.com/")
-        .debugUrl("https://news.baidu.com/")
+        .baseUrl("https://news.baidu.com/")
         .putDomain("gank", "http://gank.io/")
         .retryOnConnectionFailure(false) // 设置连接失败时重试
         .connectTimeout(15)
         .readTimeout(15)
         .writeTimeout(15)
         .progressRefreshTime(10) // 设置上传下载进度的刷新时间间隔
-        .setPersistentCookieJar(this) // 持久化保存 cookie
         .addHttpLoggingInterceptor( message -> { // 打印日志
           Log.d("http",  message);
         })

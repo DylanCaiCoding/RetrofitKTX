@@ -3,12 +3,8 @@
 package com.dylanc.retrofit.helper
 
 import android.content.Context
-import android.text.TextUtils
 import com.dylanc.retrofit.helper.interceptor.DebugInterceptor
 import com.dylanc.retrofit.helper.interceptor.HeaderInterceptor
-import com.franmontiel.persistentcookiejar.PersistentCookieJar
-import com.franmontiel.persistentcookiejar.cache.SetCookieCache
-import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor
 import me.jessyan.progressmanager.ProgressManager
 import me.jessyan.retrofiturlmanager.RetrofitUrlManager
 import okhttp3.CookieJar
@@ -26,7 +22,6 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.X509TrustManager
-import kotlin.reflect.KClass
 
 /**
  * @author Dylan Cai
@@ -34,31 +29,21 @@ import kotlin.reflect.KClass
  */
 inline fun <reified T> apiServiceOf(): T = RetrofitHelper.create(T::class.java)
 
-fun downloadServiceOf(): DownloadService = apiServiceOf()
+const val DOMAIN_HEADER = RetrofitUrlManager.DOMAIN_NAME_HEADER
 
 object RetrofitHelper {
 
-  const val DOMAIN_HEADER = RetrofitUrlManager.DOMAIN_NAME_HEADER
-
   @JvmStatic
   fun getDefault() = Default.INSTANCE
+
+  @JvmStatic
+  fun setGlobalBaseUrl(baseUrl: String) = RetrofitUrlManager.getInstance().setGlobalDomain(baseUrl)
 
   @JvmStatic
   fun <T> create(service: Class<T>): T = if (getDefault().isInitialized) {
     getDefault().retrofit.create(service)
   } else {
     throw NullPointerException("RetrofitHelper is not initialized!")
-  }
-
-  @JvmStatic
-  fun setBaseUrl(baseUrl: String) = RetrofitUrlManager.getInstance().setGlobalDomain(baseUrl)
-
-  @JvmStatic
-  fun clearPersistentCookieJar() {
-    val cookieJar = getDefault().cookieJar
-    if (cookieJar is PersistentCookieJar) {
-      cookieJar.clear()
-    }
   }
 
   class Default private constructor() {
@@ -68,7 +53,6 @@ object RetrofitHelper {
     }
 
     private var baseUrl: String? = null
-    private var debugUrl: String? = null
     private var debug: Boolean = false
     private var progressRefreshTime = 150
     private val headers = HashMap<String, String>()
@@ -85,10 +69,6 @@ object RetrofitHelper {
 
     fun baseUrl(baseUrl: String) = apply {
       this.baseUrl = baseUrl
-    }
-
-    fun debugUrl(debugUrl: String) = apply {
-      this.debugUrl = debugUrl
     }
 
     fun setDebug(debug: Boolean) = apply {
@@ -136,10 +116,6 @@ object RetrofitHelper {
 
     fun retrofitBuilder(block: Retrofit.Builder.() -> Unit) = apply {
       retrofitBuilder.apply(block)
-    }
-
-    fun setPersistentCookieJar(context: Context) = apply {
-      cookieJar = PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(context))
     }
 
     fun addDebugInterceptor(context: Context, debugUrl: String, debugRawId: Int) = apply {
@@ -196,9 +172,6 @@ object RetrofitHelper {
 
     fun init() {
       if (debug) {
-        if (!TextUtils.isEmpty(debugUrl)) {
-          baseUrl = debugUrl
-        }
         interceptors.addAll(debugInterceptors)
       }
       val okHttpClient = okHttpClientBuilder

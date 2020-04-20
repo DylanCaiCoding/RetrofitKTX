@@ -23,35 +23,36 @@ fun InputStream.toFile(pathname: String) = File(pathname).apply {
 class FileTransformer(private val pathname: String) : ObservableTransformer<ResponseBody, File>,
   FlowableTransformer<ResponseBody, File>, SingleTransformer<ResponseBody, File>,
   MaybeTransformer<ResponseBody, File> {
+  
   override fun apply(upstream: Observable<ResponseBody>): ObservableSource<File> =
     upstream.subscribeOn(Schedulers.io())
       .unsubscribeOn(Schedulers.io())
-      .map { responseBody -> responseBody.byteStream() }
+      .map { it.byteStream() }
       .observeOn(Schedulers.computation())
-      .map { inputStream -> inputStream.toFile(pathname) }
+      .map { it.toFile(pathname) }
       .observeOn(AndroidSchedulers.mainThread())
 
   override fun apply(upstream: Flowable<ResponseBody>): Publisher<File> =
     upstream.subscribeOn(Schedulers.io())
       .unsubscribeOn(Schedulers.io())
-      .map { responseBody -> responseBody.byteStream() }
+      .map { it.byteStream() }
       .observeOn(Schedulers.computation())
-      .map { inputStream -> inputStream.toFile(pathname) }
+      .map { it.toFile(pathname) }
       .observeOn(AndroidSchedulers.mainThread())
 
   override fun apply(upstream: Single<ResponseBody>): SingleSource<File> =
     upstream.subscribeOn(Schedulers.io())
       .unsubscribeOn(Schedulers.io())
-      .map { responseBody -> responseBody.byteStream() }
+      .map { it.byteStream() }
       .observeOn(Schedulers.computation())
-      .map { inputStream -> inputStream.toFile(pathname) }
+      .map { it.toFile(pathname) }
       .observeOn(AndroidSchedulers.mainThread())
 
   override fun apply(upstream: Maybe<ResponseBody>): MaybeSource<File> =
     upstream.subscribeOn(Schedulers.io())
       .unsubscribeOn(Schedulers.io())
-      .map { responseBody -> responseBody.byteStream() }
+      .map { it.byteStream() }
       .observeOn(Schedulers.computation())
-      .map { inputStream -> inputStream.toFile(pathname) }
+      .map { it.toFile(pathname) }
       .observeOn(AndroidSchedulers.mainThread())
 }

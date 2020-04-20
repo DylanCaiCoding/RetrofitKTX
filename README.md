@@ -1,20 +1,11 @@
 # RetrofitHelper
 
-[![](https://www.jitpack.io/v/DylanCaiCoding/RetrofitHelper.svg)](https://www.jitpack.io/#DylanCaiCoding/RetrofitHelper)
+[![Download](https://api.bintray.com/packages/dylancai/maven/retrofithelper/images/download.svg)](https://bintray.com/dylancai/maven/retrofithelper/_latestVersion)
 
 ## Usage
 
 ```
-allprojects {
-  repositories {
-    ...
-    maven { url 'https://www.jitpack.io' }
-  }
-}
-```
-
-```
 dependencies {
-  implementation 'com.github.DylanCaiCoding:RetrofitHelper:1.0.0-alpha8'
+  implementation 'com.dylanc:retrofit-helper:1.0.0'
 }
 ```

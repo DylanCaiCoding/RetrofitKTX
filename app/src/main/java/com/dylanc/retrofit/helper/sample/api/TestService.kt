@@ -1,6 +1,6 @@
 package com.dylanc.retrofit.helper.sample.api
 
-import com.dylanc.retrofit.helper.RetrofitHelper.DOMAIN_HEADER
+import com.dylanc.retrofit.helper.DOMAIN_HEADER
 import com.dylanc.retrofit.helper.sample.bean.ResultBean
 import com.dylanc.retrofit.helper.sample.bean.UserBean
 import io.reactivex.Observable

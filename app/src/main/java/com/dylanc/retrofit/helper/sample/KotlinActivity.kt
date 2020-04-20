@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import com.dylanc.retrofit.helper.DownloadService
 import com.dylanc.retrofit.helper.apiServiceOf
 import com.dylanc.retrofit.helper.downloadServiceOf
 import com.dylanc.retrofit.helper.sample.api.TestService
@@ -109,6 +108,7 @@ class KotlinActivity : AppCompatActivity() {
   private fun requestDownloadToFile(pathname: String): Observable<File> {
     return downloadServiceOf()
       .download(DOWNLOAD_URL)
+      .observeDownload(DOWNLOAD_URL,{},{id, e -> })
       .toFile(pathname)
   }
 

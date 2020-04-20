@@ -36,11 +36,12 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation project(':library')
 //    debugImplementation project(':library')
-//    releaseImplementation 'com.github.DylanCaiCoding:RetrofitHelper:1.0.0-alpha4'
+//    releaseImplementation 'com.dylanc:retrofithelper:1.0.1'
     implementation 'top.zibin:Luban:1.1.8'
     implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
     implementation 'com.github.zhihu.rxlifecycle:rxlifecycle:2.0'
     implementation "com.github.VictorAlbertos.RxCache:runtime:1.8.3-2.x"
     implementation 'com.github.VictorAlbertos.Jolyglot:gson:0.0.4'
     implementation 'com.rxjava.rxlife:rxlife:1.1.0'
+    implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
 }

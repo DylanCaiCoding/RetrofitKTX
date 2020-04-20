@@ -10,6 +10,9 @@ import retrofit2.http.Url
  * @author Dylan Cai
  * @since 2019/7/13
  */
+
+fun downloadServiceOf(): DownloadService = apiServiceOf()
+
 interface DownloadService {
 
   @Streaming
