@@ -5,6 +5,10 @@ import android.util.Log;
 
 import com.dylanc.retrofit.helper.RetrofitHelper;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+import me.jessyan.progressmanager.ProgressManager;
+import okhttp3.OkHttpClient;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 public class App extends Application {
@@ -15,7 +19,7 @@ public class App extends Application {
     RetrofitHelper.getDefault()
         .setDebug(true)
         .baseUrl("https://news.baidu.com/")
-        .domain("gank", "http://gank.io/")
+        .domainName("gank", "http://gank.io/")
         .retryOnConnectionFailure(false) // 设置连接失败时重试
         .connectTimeout(15)
         .readTimeout(15)
@@ -27,6 +31,11 @@ public class App extends Application {
 //        .addInterceptor(new HandleErrorInterceptor())
 //        .addInterceptor(new HandleLoginInterceptor())
         .addDebugInterceptor(this, "user/login", R.raw.login_success) // 拦截请求返回本地的 json 文件内容
+        .okHttpClientBuilder(builder -> {
+          ProgressManager.getInstance().with(builder);
+          ProgressManager.getInstance().setRefreshTime(10);
+          return Unit.INSTANCE;
+        })
         .init();
   }
 }

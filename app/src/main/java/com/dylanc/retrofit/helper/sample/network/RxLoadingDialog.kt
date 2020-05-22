@@ -1,34 +1,41 @@
 package com.dylanc.retrofit.helper.sample.network
 
 import android.app.Dialog
-import android.content.Context
+import android.os.Bundle
+import android.support.v4.app.DialogFragment
+import android.support.v4.app.FragmentActivity
+import android.support.v4.app.FragmentManager
 import android.support.v7.app.AlertDialog
 import com.dylanc.retrofit.helper.rxjava.RequestLoading
-import com.dylanc.retrofit.helper.rxjava.Transformers
-import com.dylanc.retrofit.helper.rxjava.Transformers.showLoading
+import com.dylanc.retrofit.helper.rxjava.showLoading
 import io.reactivex.Observable
 
-/**
- * @author Dylan Cai
- * @since 2019/8/15
- */
-//fun <T> Observable<T>.showLoading(context: Context): Observable<T> = showLoading<T>(RxLoadingDialog(context))
-//  showLoading(RxLoadingDialog(context))
+private const val TAG_LOADING = "loading"
 
-class RxLoadingDialog(private val context: Context) :
-  RequestLoading {
-  private val dialog: Dialog by lazy {
-    AlertDialog.Builder(context)
-      .setTitle("loading")
-      .setMessage("wait a minute...")
-      .create()
-  }
+fun <T> Observable<T>.showLoading(activity: FragmentActivity): Observable<T> =
+  showLoading(RxLoadingDialog(activity.supportFragmentManager))
+
+class RxLoadingDialog(private val manager: FragmentManager) : RequestLoading {
+
+  private val loadingDialog = LoadingDialog()
 
   override fun show() {
-    dialog.show()
+    loadingDialog.show(manager, TAG_LOADING)
   }
 
   override fun dismiss() {
-    dialog.dismiss()
+    loadingDialog.dismiss()
+  }
+}
+
+class LoadingDialog : DialogFragment() {
+  override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+    return activity?.let {
+      AlertDialog.Builder(it)
+        .setTitle("loading")
+        .setMessage("wait a minute...")
+        .setCancelable(false)
+        .create()
+    } ?: throw IllegalStateException("Activity cannot be null")
   }
 }
