@@ -1,4 +1,4 @@
-package com.dylanc.retrofit.helper
+package com.dylanc.retrofit.helper.rxjava
 
 /**
  * @author Dylan Cai

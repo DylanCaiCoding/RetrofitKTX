@@ -8,12 +8,8 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.dylanc.retrofit.helper.apiServiceOf
-import com.dylanc.retrofit.helper.downloadServiceOf
-import com.dylanc.retrofit.helper.sample.api.TestService
-import com.dylanc.retrofit.helper.sample.network.showLoading
-import com.dylanc.retrofit.helper.transformer.io2mainThread
-import com.dylanc.retrofit.helper.transformer.observeDownload
-import com.dylanc.retrofit.helper.transformer.toFile
+import com.dylanc.retrofit.helper.rxjava.*
+import com.dylanc.retrofit.helper.sample.api.TestApi
 import com.rxjava.rxlife.life
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Observable
@@ -39,10 +35,10 @@ class KotlinActivity : AppCompatActivity() {
    * 测试普通请求
    */
   fun requestBaiduNews(view: View) {
-    apiServiceOf<TestService>()
+    apiServiceOf<TestApi>()
       .getBaiduNews()
       .io2mainThread()
-      .showLoading(this)
+//      .showLoading(this)
       .life(this)
       .subscribe(this::onNext, this::onError)
   }
@@ -51,10 +47,10 @@ class KotlinActivity : AppCompatActivity() {
    * 测试不同 base url 的请求
    */
   fun requestGankData(view: View) {
-    apiServiceOf<TestService>()
+    apiServiceOf<TestApi>()
       .getGankData()
       .io2mainThread()
-      .showLoading(this)
+//      .showLoading(this)
       .life(this)
       .subscribe(this::onNext, this::onError)
   }
@@ -63,10 +59,10 @@ class KotlinActivity : AppCompatActivity() {
    * 测试返回本地 json 的模拟请求
    */
   fun requestLogin(view: View) {
-    apiServiceOf<TestService>()
+    apiServiceOf<TestApi>()
       .login()
       .io2mainThread()
-      .showLoading(this)
+//      .showLoading(this)
       .life(this)
       .subscribe({ result ->
         showToast("登录${result.data.userName}成功")
@@ -80,19 +76,19 @@ class KotlinActivity : AppCompatActivity() {
     val pathname = externalCacheDir!!.path + "/test.png"
     requestWritePermission()
       .flatMap { requestDownloadToFile(pathname) }
-      .showLoading(this)
-      .observeDownload(DOWNLOAD_URL, { progressInfo ->
-        Log.d("download", progressInfo.percent.toString())
-      }, { _, _ ->
-        showToast("下载失败")
-      })
-      .life(this)
-      .subscribe(
-        {
-          showToast("下载成功")
-        },
-        this::onError
-      )
+//      .showLoading(this)
+//      .observeDownload(DOWNLOAD_URL, { progressInfo ->
+//        Log.d("download", progressInfo.percent.toString())
+//      }, { _, _ ->
+//        showToast("下载失败")
+//      })
+//      .life(this)
+//      .subscribe(
+//        {
+//          showToast("下载成功")
+//        },
+//        this::onError
+//      )
   }
 
   private fun requestWritePermission(): Observable<Boolean> {
@@ -106,9 +102,9 @@ class KotlinActivity : AppCompatActivity() {
   }
 
   private fun requestDownloadToFile(pathname: String): Observable<File> {
-    return downloadServiceOf()
+    return apiServiceOf<DownloadApi>()
       .download(DOWNLOAD_URL)
-      .observeDownload(DOWNLOAD_URL,{},{id, e -> })
+//      .observeDownload(DOWNLOAD_URL,{},{id, e -> })
       .toFile(pathname)
   }
 

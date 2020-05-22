@@ -1,4 +1,4 @@
-package com.dylanc.retrofit.helper
+package com.dylanc.retrofit.helper.rxjava
 
 import io.reactivex.Observable
 import okhttp3.ResponseBody
@@ -11,9 +11,7 @@ import retrofit2.http.Url
  * @since 2019/7/13
  */
 
-fun downloadServiceOf(): DownloadService = apiServiceOf()
-
-interface DownloadService {
+interface DownloadApi {
 
   @Streaming
   @GET

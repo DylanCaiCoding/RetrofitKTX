@@ -5,7 +5,6 @@ package com.dylanc.retrofit.helper
 import android.content.Context
 import com.dylanc.retrofit.helper.interceptor.DebugInterceptor
 import com.dylanc.retrofit.helper.interceptor.HeaderInterceptor
-import me.jessyan.progressmanager.ProgressManager
 import me.jessyan.retrofiturlmanager.RetrofitUrlManager
 import okhttp3.CookieJar
 import okhttp3.Interceptor
@@ -15,7 +14,6 @@ import okio.JvmOverloads
 import retrofit2.CallAdapter
 import retrofit2.Converter
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.*
@@ -30,6 +28,9 @@ import javax.net.ssl.X509TrustManager
 inline fun <reified T> apiServiceOf(): T = RetrofitHelper.create(T::class.java)
 
 const val DOMAIN_HEADER = RetrofitUrlManager.DOMAIN_NAME_HEADER
+
+fun initRetrofit(init: RetrofitHelper.Default.() -> Unit) =
+  RetrofitHelper.getDefault().apply(init).init()
 
 object RetrofitHelper {
 
@@ -54,7 +55,6 @@ object RetrofitHelper {
 
     private var baseUrl: String? = null
     private var debug: Boolean = false
-    private var progressRefreshTime = 150
     private val headers = HashMap<String, String>()
     private val interceptors = ArrayList<Interceptor>()
     private val domains = HashMap<String, String>()
@@ -94,11 +94,7 @@ object RetrofitHelper {
       okHttpClientBuilder.connectTimeout(readTimeout, unit)
     }
 
-    fun progressRefreshTime(progressRefreshTime: Int) = apply {
-      this.progressRefreshTime = progressRefreshTime
-    }
-
-    fun putDomain(domainName: String, domainUrl: String) = apply {
+    fun domain(domainName: String, domainUrl: String) = apply {
       domains[domainName] = domainUrl
     }
 
@@ -177,8 +173,6 @@ object RetrofitHelper {
       val okHttpClient = okHttpClientBuilder
         .apply {
           RetrofitUrlManager.getInstance().with(this)
-          ProgressManager.getInstance().with(this)
-          ProgressManager.getInstance().setRefreshTime(progressRefreshTime)
           for ((key, value) in domains) {
             RetrofitUrlManager.getInstance().putDomain(key, value)
           }
@@ -196,7 +190,7 @@ object RetrofitHelper {
         .client(okHttpClient)
         .addConverterFactory(ScalarsConverterFactory.create())
         .addConverterFactory(GsonConverterFactory.create())
-        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+//        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .build()
     }
   }

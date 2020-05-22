@@ -5,11 +5,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.dylanc.retrofit.helper.sample"
         minSdkVersion 19
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -34,7 +34,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation project(':library')
+    implementation project(':retrofithelper')
+    implementation project(':retrofithelper-rxjava')
 //    debugImplementation project(':library')
 //    releaseImplementation 'com.dylanc:retrofithelper:1.0.1'
     implementation 'top.zibin:Luban:1.1.8'
@@ -44,4 +45,5 @@ dependencies {
     implementation 'com.github.VictorAlbertos.Jolyglot:gson:0.0.4'
     implementation 'com.rxjava.rxlife:rxlife:1.1.0'
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
+    implementation 'me.jessyan:progressmanager:1.5.0'
 }

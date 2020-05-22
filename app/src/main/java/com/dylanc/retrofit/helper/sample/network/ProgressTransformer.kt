@@ -1,4 +1,4 @@
-package com.dylanc.retrofit.helper.transformer
+package com.dylanc.retrofit.helper.sample.network
 
 import io.reactivex.*
 import me.jessyan.progressmanager.ProgressListener
@@ -10,6 +10,8 @@ import java.lang.Exception
  * @author Dylan Cai
  * @since 2019/12/17
  */
+
+
 class ProgressTransformer<T>(
   private val onProgress: (progressInfo: ProgressInfo) -> Unit,
   private val onError: (id: Long, e: Exception) -> Unit,

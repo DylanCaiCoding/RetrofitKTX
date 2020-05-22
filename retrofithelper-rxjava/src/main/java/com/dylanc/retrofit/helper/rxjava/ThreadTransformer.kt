@@ -1,4 +1,4 @@
-package com.dylanc.retrofit.helper.transformer
+package com.dylanc.retrofit.helper.rxjava
 
 import io.reactivex.*
 import org.reactivestreams.Publisher

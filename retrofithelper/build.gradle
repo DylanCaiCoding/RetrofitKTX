@@ -5,7 +5,6 @@ apply plugin: 'com.novoda.bintray-release'
 android {
     compileSdkVersion 29
 
-
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 29
@@ -30,15 +29,11 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api 'me.jessyan:retrofit-url-manager:1.4.0'
-    api 'me.jessyan:progressmanager:1.5.0'
-    //noinspection GradleDependency
-    api 'com.squareup.okhttp3:okhttp:3.12.3'
+    api 'com.squareup.okhttp3:okhttp:4.0.1'
     api 'com.squareup.okhttp3:logging-interceptor:4.0.1'
-    api 'com.squareup.retrofit2:retrofit:2.6.0'
-    api 'com.squareup.retrofit2:converter-gson:2.6.0'
+    api 'com.squareup.retrofit2:retrofit:2.8.1'
+    api 'com.squareup.retrofit2:converter-gson:2.8.1'
     api 'com.squareup.retrofit2:converter-scalars:2.2.0'
-    api 'com.squareup.retrofit2:adapter-rxjava2:2.6.0'
-    api 'io.reactivex.rxjava2:rxandroid:2.1.1'
 }
 
 publish {
@@ -46,7 +41,7 @@ publish {
     repoName = 'maven'
     groupId = 'com.dylanc'
     artifactId = 'retrofit-helper'
-    publishVersion = '1.0.0'
+    publishVersion = '1.0.1'
     desc = 'An easy-to-use tool for Retrofit'
     website = 'https://github.com/DylanCaiCoding/RetrofitHelper'
 }

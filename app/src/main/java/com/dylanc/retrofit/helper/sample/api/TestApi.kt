@@ -11,7 +11,7 @@ import retrofit2.http.Headers
  * @author Dylan Cai
  * @since 2019/4/17
  */
-interface TestService {
+interface TestApi {
 
   @GET("/guonei")
   fun getBaiduNews(): Observable<String>

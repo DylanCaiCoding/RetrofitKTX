@@ -1,6 +1,5 @@
-package com.dylanc.retrofit.helper.transformer
+package com.dylanc.retrofit.helper.rxjava
 
-import com.dylanc.retrofit.helper.RequestLoading
 import io.reactivex.*
 import org.reactivestreams.Publisher
 
@@ -14,17 +13,17 @@ class LoadingTransformer<T>(
   SingleTransformer<T, T>, MaybeTransformer<T, T>, CompletableTransformer {
 
   override fun apply(upstream: Observable<T>): Observable<T> =
-    upstream.doOnSubscribe { requestLoading.show() }.doOnTerminate { requestLoading.dismiss() }
+    upstream.doOnSubscribe { requestLoading.show() }.doFinally { requestLoading.dismiss() }
 
   override fun apply(upstream: Flowable<T>): Publisher<T> =
-    upstream.doOnSubscribe { requestLoading.show() }.doOnTerminate { requestLoading.dismiss() }
+    upstream.doOnSubscribe { requestLoading.show() }.doFinally { requestLoading.dismiss() }
 
   override fun apply(upstream: Single<T>): SingleSource<T> =
-    upstream.doOnSubscribe { requestLoading.show() }.doAfterTerminate { requestLoading.dismiss() }
+    upstream.doOnSubscribe { requestLoading.show() }.doFinally { requestLoading.dismiss() }
 
   override fun apply(upstream: Maybe<T>): MaybeSource<T> =
-    upstream.doOnSubscribe { requestLoading.show() }.doAfterTerminate { requestLoading.dismiss() }
+    upstream.doOnSubscribe { requestLoading.show() }.doFinally { requestLoading.dismiss() }
 
   override fun apply(upstream: Completable): CompletableSource =
-    upstream.doOnSubscribe { requestLoading.show() }.doOnTerminate { requestLoading.dismiss() }
+    upstream.doOnSubscribe { requestLoading.show() }.doFinally { requestLoading.dismiss() }
 }

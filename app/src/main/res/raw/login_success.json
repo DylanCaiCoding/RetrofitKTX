@@ -1,6 +1,6 @@
 {
   "code": 200,
-  "msg": {
+  "data": {
     "userId": 666,
     "userName": "admin"
   }

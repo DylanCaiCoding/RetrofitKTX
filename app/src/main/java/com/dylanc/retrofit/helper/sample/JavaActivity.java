@@ -7,11 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
-import com.dylanc.retrofit.helper.PartFactory;
-import com.dylanc.retrofit.helper.RequestBodyFactory;
 import com.dylanc.retrofit.helper.RetrofitHelper;
-import com.dylanc.retrofit.helper.sample.api.TestService;
-import com.dylanc.retrofit.helper.transformer.Transformers;
+import com.dylanc.retrofit.helper.rxjava.Transformers;
+import com.dylanc.retrofit.helper.sample.api.TestApi;
 
 import java.util.concurrent.TimeUnit;
 
@@ -23,7 +21,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.RequestBody;
 
 @SuppressLint("CheckResult")
 public class JavaActivity extends AppCompatActivity {
@@ -87,21 +84,21 @@ public class JavaActivity extends AppCompatActivity {
           }
         });
 
-    RetrofitHelper.create(TestService.class)
+    RetrofitHelper.create(TestApi.class)
         .getBaiduNews()
         .compose(Transformers.io2mainThread())
         .subscribe(this::onNext, this::onError);
   }
 
   public void requestGankData(View view) {
-    RetrofitHelper.create(TestService.class)
+    RetrofitHelper.create(TestApi.class)
         .getGankData()
         .compose(Transformers.io2mainThread())
         .subscribe(this::onNext, this::onError);
   }
 
   public void requestLogin(View view) {
-    RetrofitHelper.create(TestService.class)
+    RetrofitHelper.create(TestApi.class)
         .login()
         .compose(Transformers.io2mainThread())
         .subscribe(result -> Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show(), this::onError);
