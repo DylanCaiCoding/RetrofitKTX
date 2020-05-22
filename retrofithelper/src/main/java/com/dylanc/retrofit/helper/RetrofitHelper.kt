@@ -3,9 +3,10 @@
 package com.dylanc.retrofit.helper
 
 import android.content.Context
+import com.dylanc.retrofit.helper.interceptor.DOMAIN_NAME
 import com.dylanc.retrofit.helper.interceptor.DebugInterceptor
+import com.dylanc.retrofit.helper.interceptor.DomainsInterceptor
 import com.dylanc.retrofit.helper.interceptor.HeaderInterceptor
-import me.jessyan.retrofiturlmanager.RetrofitUrlManager
 import okhttp3.CookieJar
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -27,7 +28,7 @@ import javax.net.ssl.X509TrustManager
  */
 inline fun <reified T> apiServiceOf(): T = RetrofitHelper.create(T::class.java)
 
-const val DOMAIN_HEADER = RetrofitUrlManager.DOMAIN_NAME_HEADER
+const val DOMAIN_NAME_HEADER = "$DOMAIN_NAME:"
 
 fun initRetrofit(init: RetrofitHelper.Default.() -> Unit) =
   RetrofitHelper.getDefault().apply(init).init()
@@ -36,9 +37,6 @@ object RetrofitHelper {
 
   @JvmStatic
   fun getDefault() = Default.INSTANCE
-
-  @JvmStatic
-  fun setGlobalBaseUrl(baseUrl: String) = RetrofitUrlManager.getInstance().setGlobalDomain(baseUrl)
 
   @JvmStatic
   fun <T> create(service: Class<T>): T = if (getDefault().isInitialized) {
@@ -57,7 +55,7 @@ object RetrofitHelper {
     private var debug: Boolean = false
     private val headers = HashMap<String, String>()
     private val interceptors = ArrayList<Interceptor>()
-    private val domains = HashMap<String, String>()
+    internal val domains = HashMap<String, String>()
     private val debugInterceptors = ArrayList<Interceptor>()
     private val okHttpClientBuilder: OkHttpClient.Builder by lazy { OkHttpClient.Builder() }
     private val retrofitBuilder: Retrofit.Builder by lazy { Retrofit.Builder() }
@@ -94,7 +92,7 @@ object RetrofitHelper {
       okHttpClientBuilder.connectTimeout(readTimeout, unit)
     }
 
-    fun domain(domainName: String, domainUrl: String) = apply {
+    fun domainName(domainName: String, domainUrl: String) = apply {
       domains[domainName] = domainUrl
     }
 
@@ -172,9 +170,8 @@ object RetrofitHelper {
       }
       val okHttpClient = okHttpClientBuilder
         .apply {
-          RetrofitUrlManager.getInstance().with(this)
-          for ((key, value) in domains) {
-            RetrofitUrlManager.getInstance().putDomain(key, value)
+          if (domains.isNotEmpty()) {
+            addInterceptor(DomainsInterceptor())
           }
           if (headers.isNotEmpty()) {
             addInterceptor(HeaderInterceptor(headers))
@@ -190,7 +187,6 @@ object RetrofitHelper {
         .client(okHttpClient)
         .addConverterFactory(ScalarsConverterFactory.create())
         .addConverterFactory(GsonConverterFactory.create())
-//        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .build()
     }
   }

@@ -28,7 +28,6 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api 'me.jessyan:retrofit-url-manager:1.4.0'
     api 'com.squareup.okhttp3:okhttp:4.0.1'
     api 'com.squareup.okhttp3:logging-interceptor:4.0.1'
     api 'com.squareup.retrofit2:retrofit:2.8.1'
@@ -41,7 +40,7 @@ publish {
     repoName = 'maven'
     groupId = 'com.dylanc'
     artifactId = 'retrofit-helper'
-    publishVersion = '1.0.1'
+    publishVersion = '1.1.0-beta'
     desc = 'An easy-to-use tool for Retrofit'
     website = 'https://github.com/DylanCaiCoding/RetrofitHelper'
 }
