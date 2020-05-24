@@ -12,7 +12,6 @@ import java.io.File
 
 /**
  * @author Dylan Cai
- * @since 2019/12/17
  */
 fun <T> Observable<T>.io2mainThread(): Observable<T> =
   compose(Transformers.io2mainThread())

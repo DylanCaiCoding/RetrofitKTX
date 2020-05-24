@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets
 
 /**
  * @author Dylan Cai
- * @since 2019/10/11
  */
 abstract class ResponseBodyInterceptor : Interceptor {
 

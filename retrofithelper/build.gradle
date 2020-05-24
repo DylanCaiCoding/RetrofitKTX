@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.novoda.bintray-release'
+//apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 29
@@ -11,7 +11,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -32,15 +32,15 @@ dependencies {
     api 'com.squareup.okhttp3:logging-interceptor:4.0.1'
     api 'com.squareup.retrofit2:retrofit:2.8.1'
     api 'com.squareup.retrofit2:converter-gson:2.8.1'
-    api 'com.squareup.retrofit2:converter-scalars:2.2.0'
+    api 'com.squareup.retrofit2:converter-scalars:2.8.1'
 }
 
-publish {
-    userOrg = 'dylancai'
-    repoName = 'maven'
-    groupId = 'com.dylanc'
-    artifactId = 'retrofit-helper'
-    publishVersion = '1.1.0-beta'
-    desc = 'An easy-to-use tool for Retrofit'
-    website = 'https://github.com/DylanCaiCoding/RetrofitHelper'
-}
+//publish {
+//    userOrg = 'dylancai'
+//    repoName = 'maven'
+//    groupId = 'com.dylanc'
+//    artifactId = 'retrofit-helper'
+//    publishVersion = '1.1.0-beta'
+//    desc = 'An easy-to-use tool for Retrofit'
+//    website = 'https://github.com/DylanCaiCoding/RetrofitHelper'
+//}

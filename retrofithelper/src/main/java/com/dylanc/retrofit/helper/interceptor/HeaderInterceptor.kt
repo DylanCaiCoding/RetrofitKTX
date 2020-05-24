@@ -9,7 +9,6 @@ import java.util.HashMap
 
 /**
  * @author Dylan Cai
- * @since 2019/7/13
  */
 class HeaderInterceptor @JvmOverloads constructor(
   private val headers: HashMap<String, String> = HashMap()

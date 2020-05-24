@@ -10,7 +10,6 @@ import java.io.InputStream
 
 /**
  * @author Dylan Cai
- * @since 2019/12/17
  */
 fun InputStream.toFile(pathname: String) = File(pathname).apply {
   use { input ->

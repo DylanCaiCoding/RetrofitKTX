@@ -3,7 +3,7 @@ package com.dylanc.retrofit.helper.sample
 import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -34,7 +34,6 @@ class KotlinActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-    requestBaiduNews(btn_baidu_news)
   }
 
   /**

@@ -12,7 +12,6 @@ import java.io.File
 
 /**
  * @author Dylan Cai
- * @since 2019/9/28
  */
 @JvmName("create")
 fun String.toRequestBody(contentType: String = ContentType.JSON) =

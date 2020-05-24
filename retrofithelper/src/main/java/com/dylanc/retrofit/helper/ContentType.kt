@@ -4,7 +4,6 @@ package com.dylanc.retrofit.helper
 
 /**
  * @author Dylan Cai
- * @since 2019/10/10
  */
 object ContentType {
   const val JSON = "application/json"

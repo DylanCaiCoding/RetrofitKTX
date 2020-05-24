@@ -10,7 +10,6 @@ import java.io.IOException
 
 /**
  * @author Dylan Cai
- * @since 2019/7/13
  */
 class DebugInterceptor(
   private val context: Context,

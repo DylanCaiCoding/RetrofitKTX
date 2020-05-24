@@ -28,8 +28,6 @@ public class App extends Application {
           Log.d("http",  message);
         })
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-//        .addInterceptor(new HandleErrorInterceptor())
-//        .addInterceptor(new HandleLoginInterceptor())
         .addDebugInterceptor(this, "user/login", R.raw.login_success) // 拦截请求返回本地的 json 文件内容
         .okHttpClientBuilder(builder -> {
           ProgressManager.getInstance().with(builder);

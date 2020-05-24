@@ -5,7 +5,6 @@ import org.reactivestreams.Publisher
 
 /**
  * @author Dylan Cai
- * @since 2019/12/17
  */
 class LoadingTransformer<T>(
   private val requestLoading: RequestLoading

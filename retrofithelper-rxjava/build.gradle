@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 29
@@ -12,7 +13,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
     }
 
@@ -33,4 +34,14 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     api 'com.squareup.retrofit2:adapter-rxjava2:2.8.1'
     api 'io.reactivex.rxjava2:rxandroid:2.1.1'
+}
+
+publish {
+    userOrg = 'dylancai'
+    repoName = 'maven'
+    groupId = 'com.dylanc'
+    artifactId = 'retrofit-helper-rxjava'
+    publishVersion = '1.1.0-beta'
+    desc = 'An easy-to-use tool for Retrofit'
+    website = 'https://github.com/DylanCaiCoding/RetrofitHelper'
 }

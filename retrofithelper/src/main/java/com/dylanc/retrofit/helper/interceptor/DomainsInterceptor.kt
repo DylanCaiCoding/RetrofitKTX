@@ -1,14 +1,16 @@
 package com.dylanc.retrofit.helper.interceptor
 
-import com.dylanc.retrofit.helper.RetrofitHelper
+import com.dylanc.retrofit.helper.DOMAIN_NAME
+import com.dylanc.retrofit.helper.default
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Interceptor
 import okhttp3.Response
 
-internal const val DOMAIN_NAME = "Domain-Name"
-
+/**
+ * @author Dylan Cai
+ */
 class DomainsInterceptor(
-  private val domains: Map<String, String> = RetrofitHelper.getDefault().domains,
+  private val domains: Map<String, String> = default.domains,
   private val headerKey: String = DOMAIN_NAME
 ) : Interceptor {
 
