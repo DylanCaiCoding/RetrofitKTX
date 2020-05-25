@@ -1,7 +1,7 @@
 package com.dylanc.retrofit.helper.compiler
 
-import com.dylanc.retrofit.helper.annotation.DefaultDomain
-import com.dylanc.retrofit.helper.annotation.Domain
+import com.dylanc.retrofit.helper.annotations.DefaultDomain
+import com.dylanc.retrofit.helper.annotations.Domain
 import com.squareup.javapoet.*
 import java.io.IOException
 import java.util.*

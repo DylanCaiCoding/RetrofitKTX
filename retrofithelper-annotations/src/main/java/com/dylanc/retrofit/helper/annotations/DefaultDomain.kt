@@ -1,4 +1,4 @@
-package com.dylanc.retrofit.helper.annotation
+package com.dylanc.retrofit.helper.annotations
 
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.FIELD)
