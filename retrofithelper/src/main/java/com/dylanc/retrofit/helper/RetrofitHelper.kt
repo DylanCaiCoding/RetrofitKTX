@@ -11,7 +11,6 @@ import okhttp3.CookieJar
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import okio.JvmOverloads
 import retrofit2.CallAdapter
 import retrofit2.Converter
 import retrofit2.Retrofit
@@ -21,18 +20,19 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.X509TrustManager
+import kotlin.collections.HashMap
 
 /**
  * @author Dylan Cai
  */
-internal const val DOMAIN_NAME = "Domain-Name"
-const val DOMAIN_NAME_HEADER = "$DOMAIN_NAME:"
+internal const val DOMAIN = "Domain"
+const val DOMAIN_HEADER = "$DOMAIN:"
 
 val default: Default
   get() = Default.INSTANCE
 
 @JvmName("init")
-fun initRetrofit(init: Default.() -> Unit) =
+fun initRetrofit(init: Default.() -> Unit = {}) =
   default.apply(init).init()
 
 @JvmName("create")
@@ -50,24 +50,17 @@ class Default private constructor() {
     internal val INSTANCE: Default by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { Default() }
   }
 
-  private var baseUrl: String? = null
   private var debug: Boolean = false
   private val headers = HashMap<String, String>()
   private val interceptors = ArrayList<Interceptor>()
-  internal val domains = HashMap<String, String>()
   private val debugInterceptors = ArrayList<Interceptor>()
   private val okHttpClientBuilder: OkHttpClient.Builder by lazy { OkHttpClient.Builder() }
   private val retrofitBuilder: Retrofit.Builder by lazy { Retrofit.Builder() }
-  internal var cookieJar: CookieJar? = null
-    private set
+  private var cookieJar: CookieJar? = null
   internal lateinit var retrofit: Retrofit
     private set
   internal val isInitialized
     get() = ::retrofit.isInitialized
-
-  fun baseUrl(baseUrl: String) = apply {
-    this.baseUrl = baseUrl
-  }
 
   fun setDebug(debug: Boolean) = apply {
     this.debug = debug
@@ -90,10 +83,6 @@ class Default private constructor() {
   @JvmOverloads
   fun readTimeout(readTimeout: Long, unit: TimeUnit = TimeUnit.SECONDS) = apply {
     okHttpClientBuilder.connectTimeout(readTimeout, unit)
-  }
-
-  fun domainName(domainName: String, domainUrl: String) = apply {
-    domains[domainName] = domainUrl
   }
 
   fun addHeader(name: String, value: String) = apply {
@@ -171,7 +160,7 @@ class Default private constructor() {
     val okHttpClient = okHttpClientBuilder
       .apply {
         if (domains.isNotEmpty()) {
-          addInterceptor(DomainsInterceptor())
+          addInterceptor(DomainsInterceptor(DOMAIN, domains))
         }
         if (headers.isNotEmpty()) {
           addInterceptor(HeaderInterceptor(headers))
@@ -183,12 +172,34 @@ class Default private constructor() {
       }
       .build()
     retrofit = retrofitBuilder
-      .baseUrl(checkNotNull(baseUrl))
+      .baseUrl(baseUrl)
       .client(okHttpClient)
       .addConverterFactory(ScalarsConverterFactory.create())
       .addConverterFactory(GsonConverterFactory.create())
       .build()
   }
+
+  private val baseUrl: String
+    get() = domainConfigValueOf("baseUrl") as String
+
+  @Suppress("UNCHECKED_CAST")
+  private val domains: HashMap<String, String>
+    get() = domainConfigValueOf("domains") as HashMap<String, String>
+
+  fun domainConfigValueOf(fieldName: String): Any? {
+    try {
+      val clazz = Class.forName("com.dylanc.retrofit.helper.DomainConfig")
+      val domainConfig = clazz.newInstance()
+      return clazz.getField(fieldName)[domainConfig]
+    } catch (e: ClassNotFoundException) {
+      e.printStackTrace()
+    } catch (e: IllegalAccessException) {
+      e.printStackTrace()
+    } catch (e: InstantiationException) {
+      e.printStackTrace()
+    } catch (e: NoSuchFieldException) {
+      e.printStackTrace()
+    }
+    return null
+  }
 }
-
-

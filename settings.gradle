@@ -1,2 +1,4 @@
 include ':app', ':retrofithelper'
 include ':retrofithelper-rxjava'
+include ':retrofithelper-annotations'
+include ':retrofithelper-compiler'

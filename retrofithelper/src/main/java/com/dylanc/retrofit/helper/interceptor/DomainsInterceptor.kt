@@ -1,7 +1,5 @@
 package com.dylanc.retrofit.helper.interceptor
 
-import com.dylanc.retrofit.helper.DOMAIN_NAME
-import com.dylanc.retrofit.helper.default
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -10,8 +8,8 @@ import okhttp3.Response
  * @author Dylan Cai
  */
 class DomainsInterceptor(
-  private val domains: Map<String, String> = default.domains,
-  private val headerKey: String = DOMAIN_NAME
+  private val headerKey: String,
+  private val domains: Map<String, String>
 ) : Interceptor {
 
   override fun intercept(chain: Interceptor.Chain): Response {

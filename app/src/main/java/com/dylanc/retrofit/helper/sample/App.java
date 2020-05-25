@@ -18,8 +18,6 @@ public class App extends Application {
     super.onCreate();
     RetrofitHelper.getDefault()
         .setDebug(true)
-        .baseUrl("https://news.baidu.com/")
-        .domainName("gank", "http://gank.io/")
         .retryOnConnectionFailure(false) // 设置连接失败时重试
         .connectTimeout(15)
         .readTimeout(15)

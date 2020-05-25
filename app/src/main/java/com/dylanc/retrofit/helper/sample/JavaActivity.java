@@ -22,6 +22,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 @SuppressLint("CheckResult")
 public class JavaActivity extends AppCompatActivity {
 
@@ -32,58 +33,6 @@ public class JavaActivity extends AppCompatActivity {
   }
 
   public void requestBaiduNews(View view) {
-    Single.just("1")
-        .delay(1,TimeUnit.SECONDS)
-        .map(s -> 0)
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new SingleObserver<Object>() {
-          @Override
-          public void onSubscribe(Disposable d) {
-
-          }
-
-          @Override
-          public void onSuccess(Object o) {
-
-          }
-
-          @Override
-          public void onError(Throwable e) {
-
-          }
-        });
-    Schedulers.newThread();
-    Observable.interval(1, TimeUnit.SECONDS)
-//        .delay()
-        .map(new Function<Long, Long>() {
-          @Override
-          public Long apply(Long aLong) throws Exception {
-            return null;
-          }
-        })
-        .subscribe(new Observer<Long>() {
-          @Override
-          public void onSubscribe(Disposable d) {
-
-          }
-
-          @Override
-          public void onNext(Long aLong) {
-
-          }
-
-          @Override
-          public void onError(Throwable e) {
-
-          }
-
-          @Override
-          public void onComplete() {
-
-          }
-        });
-
     RetrofitHelper.create(TestApi.class)
         .getBaiduNews()
         .compose(Transformers.io2mainThread())
@@ -113,7 +62,7 @@ public class JavaActivity extends AppCompatActivity {
   }
 
   public void download(View view) {
-    final String pathname = Environment.getExternalStorageDirectory().getPath() + "/test.png";
+//    final String pathname = Environment.getExternalStorageDirectory().getPath() + "/test.png";
 //    new RxPermissions(this).request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 //        .flatMap((Function<Boolean, ObservableSource<File>>) granted -> {
 //          if (granted) {
@@ -122,6 +71,5 @@ public class JavaActivity extends AppCompatActivity {
 //          throw new NullPointerException("");
 //        })
 //        .subscribe(this::onNext);
-
   }
 }
