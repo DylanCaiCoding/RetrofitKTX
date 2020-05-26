@@ -1,11 +1,14 @@
 package com.dylanc.retrofit.helper.sample.constant
 
-import com.dylanc.retrofit.helper.annotations.DefaultDomain
+import com.dylanc.retrofit.helper.annotations.BaseUrl
+import com.dylanc.retrofit.helper.annotations.DebugUrl
 import com.dylanc.retrofit.helper.annotations.Domain
 
-@DefaultDomain
+@BaseUrl
 const val BASE_URL = "http://www.baidu.com"
-@Domain(DOMAIN_GANK)
-const val URL_GANK = "http://gank.io"
 
-const val DOMAIN_GANK = "gank"
+@DebugUrl
+const val DEBUG_URL = "http://news.baidu.com"
+
+@Domain("gank")
+const val URL_GANK = "http://gank.io"

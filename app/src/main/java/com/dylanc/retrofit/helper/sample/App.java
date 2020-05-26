@@ -6,9 +6,7 @@ import android.util.Log;
 import com.dylanc.retrofit.helper.RetrofitHelper;
 
 import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 import me.jessyan.progressmanager.ProgressManager;
-import okhttp3.OkHttpClient;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 public class App extends Application {
@@ -17,7 +15,7 @@ public class App extends Application {
   public void onCreate() {
     super.onCreate();
     RetrofitHelper.getDefault()
-        .setDebug(true)
+        .debug(BuildConfig.DEBUG)
         .retryOnConnectionFailure(false) // 设置连接失败时重试
         .connectTimeout(15)
         .readTimeout(15)

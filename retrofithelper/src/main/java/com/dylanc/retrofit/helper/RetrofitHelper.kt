@@ -62,7 +62,7 @@ class Default private constructor() {
   internal val isInitialized
     get() = ::retrofit.isInitialized
 
-  fun setDebug(debug: Boolean) = apply {
+  fun debug(debug: Boolean) = apply {
     this.debug = debug
   }
 
@@ -154,12 +154,14 @@ class Default private constructor() {
   }
 
   fun init() {
+    val baseUrl = baseUrl ?: throw NullPointerException("Please set the base url by @BaseUrl.")
     if (debug) {
       interceptors.addAll(debugInterceptors)
     }
     val okHttpClient = okHttpClientBuilder
       .apply {
-        if (domains.isNotEmpty()) {
+        val domains = domains
+        if (domains != null && domains.isNotEmpty()) {
           addInterceptor(DomainsInterceptor(DOMAIN, domains))
         }
         if (headers.isNotEmpty()) {
@@ -179,25 +181,22 @@ class Default private constructor() {
       .build()
   }
 
-  private val baseUrl: String
-    get() = domainConfigValueOf("baseUrl") as String
+  private val baseUrl: String?
+    get() {
+      val debugUrl = urlConfigOf("debugUrl") as String?
+      return debugUrl ?: urlConfigOf("baseUrl") as String?
+    }
 
   @Suppress("UNCHECKED_CAST")
-  private val domains: HashMap<String, String>
-    get() = domainConfigValueOf("domains") as HashMap<String, String>
+  private val domains: Map<String, String>?
+    get() = urlConfigOf("domains") as Map<String, String>?
 
-  fun domainConfigValueOf(fieldName: String): Any? {
+  fun urlConfigOf(fieldName: String): Any? {
     try {
-      val clazz = Class.forName("com.dylanc.retrofit.helper.DomainConfig")
+      val clazz = Class.forName("com.dylanc.retrofit.helper.UrlConfig")
       val domainConfig = clazz.newInstance()
       return clazz.getField(fieldName)[domainConfig]
-    } catch (e: ClassNotFoundException) {
-      e.printStackTrace()
-    } catch (e: IllegalAccessException) {
-      e.printStackTrace()
-    } catch (e: InstantiationException) {
-      e.printStackTrace()
-    } catch (e: NoSuchFieldException) {
+    } catch (e: Exception) {
       e.printStackTrace()
     }
     return null
