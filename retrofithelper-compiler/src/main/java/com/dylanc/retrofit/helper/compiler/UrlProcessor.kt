@@ -56,7 +56,7 @@ class UrlProcessor : AbstractProcessor() {
       val fieldName = variableElement.simpleName.toString()
       val domain = variableElement.getAnnotation(Domain::class.java)
       checkVariableValidClass(variableElement)
-      constructorBuilder.addStatement("domains.put(${domain.value}, $className.$fieldName)")
+      constructorBuilder.addStatement("domains.put(\"${domain.value}\", $className.$fieldName)")
     }
     val typeSpec =
       TypeSpec.classBuilder(ClassName.get("com.dylanc.retrofit.helper", "UrlConfig"))
