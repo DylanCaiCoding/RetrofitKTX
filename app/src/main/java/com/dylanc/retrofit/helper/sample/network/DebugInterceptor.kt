@@ -1,4 +1,4 @@
-package com.dylanc.retrofit.helper.interceptor
+package com.dylanc.retrofit.helper.sample.network
 
 import android.content.Context
 import okhttp3.Interceptor

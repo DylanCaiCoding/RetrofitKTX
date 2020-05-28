@@ -1,24 +1,22 @@
-package com.dylanc.retrofit.helper.sample
+package com.dylanc.retrofit.helper.sample.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.dylanc.retrofit.helper.apiServiceOf
 import com.dylanc.retrofit.helper.rxjava.DownloadApi
 import com.dylanc.retrofit.helper.rxjava.io2mainThread
 import com.dylanc.retrofit.helper.rxjava.toFile
+import com.dylanc.retrofit.helper.sample.R
 import com.dylanc.retrofit.helper.sample.api.TestApi
 import com.dylanc.retrofit.helper.sample.network.observeDownload
-import com.dylanc.retrofit.helper.sample.network.showLoading
+import com.dylanc.retrofit.helper.sample.network.showLoadingDialog
 import com.rxjava.rxlife.life
 import com.tbruyelle.rxpermissions2.RxPermissions
-import io.reactivex.Observable
-import kotlinx.android.synthetic.main.activity_main.*
-import java.io.File
 
 /**
  * @author Dylan Cai
@@ -43,9 +41,13 @@ class KotlinActivity : AppCompatActivity() {
     apiServiceOf<TestApi>()
       .getBaiduNews()
       .io2mainThread()
-      .showLoading(this)
+      .showLoadingDialog(this)
       .life(this)
-      .subscribe(this::onNext, this::onError)
+      .subscribe({
+        showToast(it)
+      }, {
+        showToast(it.message)
+      })
   }
 
   /**
@@ -55,9 +57,13 @@ class KotlinActivity : AppCompatActivity() {
     apiServiceOf<TestApi>()
       .getGankData()
       .io2mainThread()
-      .showLoading(this)
+      .showLoadingDialog(this)
       .life(this)
-      .subscribe(this::onNext, this::onError)
+      .subscribe({
+        showToast(it)
+      }, {
+        showToast(it.message)
+      })
   }
 
   /**
@@ -67,11 +73,13 @@ class KotlinActivity : AppCompatActivity() {
     apiServiceOf<TestApi>()
       .login()
       .io2mainThread()
-      .showLoading(this)
+      .showLoadingDialog(this)
       .life(this)
       .subscribe({ result ->
         showToast("登录${result.data.userName}成功")
-      }, this::onError)
+      }, {
+        showToast(it.message)
+      })
   }
 
   /**
@@ -79,45 +87,29 @@ class KotlinActivity : AppCompatActivity() {
    */
   fun download(view: View) {
     val pathname = externalCacheDir!!.path + "/test.png"
-    requestWritePermission()
-      .flatMap { requestDownloadToFile(pathname) }
-      .observeDownload(DOWNLOAD_URL, { progressInfo ->
-        Log.d("download", progressInfo.percent.toString())
-      }, { _, _ ->
-        showToast("下载失败")
-      })
-      .showLoading(this)
-      .life(this)
-      .subscribe(
-        {
-          showToast("下载成功")
-        },
-        this::onError
-      )
-  }
-
-  private fun requestWritePermission(): Observable<Boolean> {
-    return RxPermissions(this)
+    RxPermissions(this)
       .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-      .doOnNext { granted ->
+      .subscribe { granted ->
         if (!granted) {
-          throw Exception("请授权访问文件权限")
+          showToast("请授权访问文件权限")
+        } else {
+          apiServiceOf<DownloadApi>()
+            .download(DOWNLOAD_URL)
+            .toFile(pathname)
+            .observeDownload(DOWNLOAD_URL, { progressInfo ->
+              Log.d("download", progressInfo.percent.toString())
+            }, { _, _ ->
+              Log.e("download", "下载失败")
+            })
+            .showLoadingDialog(this)
+            .life(this)
+            .subscribe({
+              showToast("下载成功")
+            }, {
+              showToast(it.message)
+            })
         }
       }
-  }
-
-  private fun requestDownloadToFile(pathname: String): Observable<File> {
-    return apiServiceOf<DownloadApi>()
-      .download(DOWNLOAD_URL)
-      .toFile(pathname)
-  }
-
-  private fun onNext(json: String) {
-    showToast(json)
-  }
-
-  private fun onError(e: Throwable) {
-    showToast(e.message)
   }
 
   private fun showToast(msg: String?) {

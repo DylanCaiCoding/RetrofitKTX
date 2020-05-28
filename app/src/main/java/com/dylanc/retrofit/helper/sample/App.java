@@ -4,6 +4,8 @@ import android.app.Application;
 import android.util.Log;
 
 import com.dylanc.retrofit.helper.RetrofitHelper;
+import com.dylanc.retrofit.helper.sample.network.DebugInterceptor;
+import com.dylanc.retrofit.helper.sample.network.HandleErrorInterceptor;
 
 import kotlin.Unit;
 import me.jessyan.progressmanager.ProgressManager;
@@ -16,15 +18,16 @@ public class App extends Application {
     super.onCreate();
     RetrofitHelper.getDefault()
         .debug(BuildConfig.DEBUG)
-        .retryOnConnectionFailure(false) // 设置连接失败时重试
         .connectTimeout(15)
         .readTimeout(15)
         .writeTimeout(15)
-        .addHttpLoggingInterceptor( message -> { // 打印日志
-          Log.d("http",  message);
+        .retryOnConnectionFailure(false)
+        .addHttpLoggingInterceptor(message -> {
+          Log.i("http", message);
         })
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-        .addDebugInterceptor(this, "user/login", R.raw.login_success) // 拦截请求返回本地的 json 文件内容
+        .addInterceptor(new HandleErrorInterceptor())
+        .addInterceptor(new DebugInterceptor(this, "user/login", R.raw.login_success), true)
         .okHttpClientBuilder(builder -> {
           ProgressManager.getInstance().with(builder);
           ProgressManager.getInstance().setRefreshTime(10);

@@ -3,7 +3,7 @@ package com.dylanc.retrofit.helper.sample.api
 import com.dylanc.retrofit.helper.DOMAIN_HEADER
 import com.dylanc.retrofit.helper.sample.bean.ResultBean
 import com.dylanc.retrofit.helper.sample.bean.UserBean
-import io.reactivex.Observable
+import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Headers
 
@@ -14,12 +14,12 @@ import retrofit2.http.Headers
 interface TestApi {
 
   @GET("/guonei")
-  fun getBaiduNews(): Observable<String>
+  fun getBaiduNews(): Single<String>
 
   @Headers(DOMAIN_HEADER + "gank")
   @GET("/api/today")
-  fun getGankData(): Observable<String>
+  fun getGankData(): Single<String>
 
   @GET("/user/login")
-  fun login(): Observable<ResultBean<UserBean>>
+  fun login(): Single<ResultBean<UserBean>>
 }

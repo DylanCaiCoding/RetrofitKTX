@@ -1,4 +1,4 @@
-package com.dylanc.retrofit.helper.sample.converter
+package com.dylanc.retrofit.helper.sample.network.converter
 
 import com.google.gson.Gson
 import com.google.gson.JsonIOException

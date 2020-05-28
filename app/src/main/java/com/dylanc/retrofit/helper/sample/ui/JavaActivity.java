@@ -1,4 +1,4 @@
-package com.dylanc.retrofit.helper.sample;
+package com.dylanc.retrofit.helper.sample.ui;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.dylanc.retrofit.helper.RetrofitHelper;
 import com.dylanc.retrofit.helper.rxjava.Transformers;
+import com.dylanc.retrofit.helper.sample.R;
 import com.dylanc.retrofit.helper.sample.api.TestApi;
 
 import java.util.concurrent.TimeUnit;
