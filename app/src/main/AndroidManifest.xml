@@ -16,15 +16,15 @@
     android:theme="@style/AppTheme"
     tools:ignore="GoogleAppIndexingWarning"
     tools:targetApi="n">
-    <activity android:name=".ui.JavaActivity">
-    </activity>
-    <activity android:name=".ui.KotlinActivity">
+    <activity android:name=".ui.MainActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
 
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
+    <activity android:name=".ui.JavaActivity" />
+    <activity android:name=".ui.KotlinRxJavaActivity" />
   </application>
 
 </manifest>

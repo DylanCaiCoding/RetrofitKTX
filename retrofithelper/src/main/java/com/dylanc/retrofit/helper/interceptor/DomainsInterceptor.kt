@@ -9,7 +9,7 @@ import okhttp3.Response
  */
 class DomainsInterceptor(
   private val headerKey: String,
-  private val domains: Map<String, String>
+  val domains: MutableMap<String, String>
 ) : Interceptor {
 
   override fun intercept(chain: Interceptor.Chain): Response {

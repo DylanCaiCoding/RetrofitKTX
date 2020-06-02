@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.dylanc.retrofit.helper.apiServiceOf
+import com.dylanc.retrofit.helper.putDomain
 import com.dylanc.retrofit.helper.rxjava.*
 import com.dylanc.retrofit.helper.sample.R
 import com.dylanc.retrofit.helper.sample.api.TestApi
@@ -20,11 +22,11 @@ import com.tbruyelle.rxpermissions2.RxPermissions
  * @since 2019/7/13
  */
 @Suppress("UNUSED_PARAMETER")
-class KotlinActivity : AppCompatActivity() {
+class KotlinRxJavaActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
+    setContentView(R.layout.activity_common)
   }
 
   /**
@@ -37,7 +39,7 @@ class KotlinActivity : AppCompatActivity() {
       .showLoading(RxLoadingDialog(this))
       .autoDispose(this)
       .subscribe({
-        toast(it)
+        alert(it)
       }, { e ->
         toast(e.message)
       })
@@ -53,7 +55,7 @@ class KotlinActivity : AppCompatActivity() {
       .showLoading(RxLoadingDialog(this))
       .autoDispose(this)
       .subscribe({
-        toast(it)
+        alert(it)
       }, { e ->
         toast(e.message)
       })
@@ -104,6 +106,14 @@ class KotlinActivity : AppCompatActivity() {
             })
         }
       }
+  }
+
+  private fun alert(msg: String) {
+    AlertDialog.Builder(this)
+      .setTitle("Response data")
+      .setMessage(msg)
+      .create()
+      .show()
   }
 
   private fun toast(msg: String?) {

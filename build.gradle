@@ -5,7 +5,7 @@ buildscript {
         retrofit_version = '2.9.0'
         rxandroid_version = '2.1.1'
         autodispose_version = '1.4.0'
-        retrofit_helper_annotations_version = '1.1.0-rc'
+        retrofit_helper_annotations_version = '1.1.0'
     }
     repositories {
         google()

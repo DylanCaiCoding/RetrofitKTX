@@ -41,13 +41,19 @@ fun <T> apiServiceOf(service: Class<T>): T {
   return retrofitInitiator.retrofit.create(service)
 }
 
-inline fun <reified T> apiServiceOf(): T = apiServiceOf(T::class.java)
+inline fun <reified T> apiServiceOf(): T =
+  apiServiceOf(T::class.java)
+
+fun putDomain(domain: String, url: String) {
+  retrofitInitiator.domainsInterceptor.domains[domain] = url
+}
 
 class Initiator private constructor() {
 
   private var debug: Boolean = false
   private val headers = HashMap<String, String>()
   private val debugInterceptors = ArrayList<Interceptor>()
+  internal val domainsInterceptor:DomainsInterceptor by lazy { DomainsInterceptor(DOMAIN, domains) }
   private val okHttpClientBuilder: OkHttpClient.Builder by lazy { OkHttpClient.Builder() }
   private val retrofitBuilder: Retrofit.Builder by lazy { Retrofit.Builder() }
   internal lateinit var retrofit: Retrofit
@@ -145,9 +151,7 @@ class Initiator private constructor() {
     val baseUrl = baseUrl ?: throw NullPointerException("Please set the base url by @BaseUrl.")
     val okHttpClient = okHttpClientBuilder
       .apply {
-        if (domains.isNotEmpty()) {
-          addInterceptor(DomainsInterceptor(DOMAIN, domains))
-        }
+        addInterceptor(domainsInterceptor)
         if (headers.isNotEmpty()) {
           addInterceptor(HeaderInterceptor(headers))
         }
@@ -175,10 +179,10 @@ class Initiator private constructor() {
       return debugUrl ?: urlConfigOf<String>("baseUrl")
     }
 
-  private val domains: Map<String, String>
+  private val domains: MutableMap<String, String>
     get() {
-      val domains = urlConfigOf<Map<String, String>>("domains")
-      return domains ?: hashMapOf()
+      val domains = urlConfigOf<MutableMap<String, String>>("domains")
+      return domains ?: mutableMapOf()
     }
 
   @Suppress("UNCHECKED_CAST")

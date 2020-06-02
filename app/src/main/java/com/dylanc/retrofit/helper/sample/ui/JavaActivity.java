@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.dylanc.retrofit.helper.PartFactory;
 import com.dylanc.retrofit.helper.RetrofitHelper;
 import com.dylanc.retrofit.helper.rxjava.DownloadApi;
 import com.dylanc.retrofit.helper.rxjava.Transformers;
@@ -25,7 +27,7 @@ public class JavaActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
+    setContentView(R.layout.activity_common);
   }
 
   public void requestArticleList(View view) {
@@ -35,7 +37,7 @@ public class JavaActivity extends AppCompatActivity {
         .compose(Transformers.showLoading(new RxLoadingDialog(this)))
         .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
         .subscribe(
-            this::toast,
+            this::alert,
             e -> toast(e.getMessage())
         );
   }
@@ -47,7 +49,7 @@ public class JavaActivity extends AppCompatActivity {
         .compose(Transformers.showLoading(new RxLoadingDialog(this)))
         .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
         .subscribe(
-            this::toast,
+            this::alert,
             e -> toast(e.getMessage())
         );
   }
@@ -81,6 +83,14 @@ public class JavaActivity extends AppCompatActivity {
                   e -> toast(e.getMessage())
               );
         });
+  }
+
+  private void alert(String msg){
+    new AlertDialog.Builder(this)
+        .setTitle("Response data")
+        .setMessage(msg)
+        .create()
+        .show();
   }
 
   private void toast(String msg) {

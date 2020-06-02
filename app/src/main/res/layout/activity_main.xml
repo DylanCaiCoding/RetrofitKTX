@@ -3,52 +3,44 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  tools:context=".ui.MainActivity">
 
   <Button
-    android:id="@+id/btn_baidu_news"
+    android:id="@+id/btn_java"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="16dp"
+    android:layout_marginStart="16dp"
     android:layout_marginTop="16dp"
-    android:layout_marginRight="16dp"
-    android:onClick="requestArticleList"
-    android:text="article list"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
+    android:layout_marginEnd="16dp"
+    android:text="java"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent" />
 
   <Button
-    android:id="@+id/btn_gank"
+    android:id="@+id/btn_kotlin_rxjava"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
     android:layout_marginTop="16dp"
-    android:onClick="requestGankTodayList"
-    android:text="gank today list"
-    app:layout_constraintEnd_toEndOf="@+id/btn_baidu_news"
-    app:layout_constraintStart_toStartOf="@+id/btn_baidu_news"
-    app:layout_constraintTop_toBottomOf="@+id/btn_baidu_news" />
+    android:layout_marginEnd="16dp"
+    android:text="kotlin - rxjava"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.498"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/btn_java" />
 
   <Button
-    android:id="@+id/btn_login"
+    android:id="@+id/btn_kotlin_coroutines"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
     android:layout_marginTop="16dp"
-    android:onClick="requestLogin"
-    android:text="login"
-    app:layout_constraintEnd_toEndOf="@+id/btn_gank"
-    app:layout_constraintStart_toStartOf="@+id/btn_gank"
-    app:layout_constraintTop_toBottomOf="@+id/btn_gank" />
-
-  <Button
-    android:id="@+id/btn_download"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="16dp"
-    android:onClick="download"
-    android:text="Download"
-    app:layout_constraintEnd_toEndOf="@+id/btn_login"
-    app:layout_constraintStart_toStartOf="@+id/btn_login"
-    app:layout_constraintTop_toBottomOf="@+id/btn_login" />
-
+    android:layout_marginEnd="16dp"
+    android:text="kotlin - coroutines"
+    android:visibility="gone"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/btn_kotlin_rxjava" />
 </androidx.constraintlayout.widget.ConstraintLayout>
