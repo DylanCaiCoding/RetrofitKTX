@@ -1,11 +1,11 @@
 # RetrofitHelper
 
-[English]() | 中文
-
-[![Download](https://api.bintray.com/packages/dylancai/maven/retrofit-helper/images/download.svg)](https://bintray.com/dylancai/maven/retrofit-helper/_latestVersion)[![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://github.com/DylanCaiCoding/RetrofitHelper/blob/master/LICENSE)
+[![Download](https://api.bintray.com/packages/dylancai/maven/retrofit-helper/images/download.svg)](https://bintray.com/dylancai/maven/retrofit-helper/_latestVersion) [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://github.com/DylanCaiCoding/RetrofitHelper/blob/master/LICENSE)
 
 
 ## 用法
+
+Kotlin | [Java](https://github.com/DylanCaiCoding/RetrofitHelper/blob/master/README_JAVA.md)
 
 在 `build.gradle` 添加依赖:
 
@@ -155,8 +155,8 @@ apiServiceOf<ArticleApi>()
   .io2mainThread()
   .showLoading(RxLoadingDialog(this))
   .autoDispose(this)
-  .subscribe({
-    Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+  .subscribe({ json ->
+    Toast.makeText(this, json, Toast.LENGTH_SHORT).show()
   }, { e ->
     Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
   })
@@ -169,7 +169,7 @@ apiServiceOf<ArticleApi>()
 ```kotlin
 interface UserApi{
   @POST("/user/login")
-  fun login(requestBody: RequestBody): Single<String>
+  fun login(@Body requestBody: RequestBody): Single<String>
 }
 ```
 
@@ -182,8 +182,8 @@ apiServiceOf<UserApi>()
   .io2mainThread()
   .showLoading(RxLoadingDialog(this))
   .autoDispose(this)
-  .subscribe({
-    Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+  .subscribe({ json ->
+    Toast.makeText(this, json, Toast.LENGTH_SHORT).show()
   }, { e ->
     Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
   })
@@ -199,7 +199,7 @@ interface UploadApi{
 
   @Multipart
   @POST("/file/upload")
-  fun uploadImages(@Part images: List<MultipartBody.Part>): Single<String> //多文件上传
+  fun uploadImages(@Part images: List<MultipartBody.Part>): Single<String> // 多文件上传
 }
 ```
 
