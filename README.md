@@ -18,7 +18,7 @@ dependencies {
 
 ### 初始化
 
-使用注解配置 BaseUrl，例如：
+使用 `@BaseUrl` 注解配置 BaseUrl，例如：
 
 ```kotlin
 @BaseUrl
@@ -59,7 +59,7 @@ initRetrofit {
 
 #### 调试模式
 
-初始化时配置 debug，下面的功能才会生效。
+初始化时配置 debug，以下的功能才会生效。
 
 ```kotlin
 initRetrofit {
@@ -84,7 +84,7 @@ const val DEBUG_URL = "http://192.168.1.3"
 initRetrofit {
   debug(BuildConfig.DEBUG)
   addHttpLoggingInterceptor{ msg ->
-    Log.i(TAG,  msg);
+    Log.i(TAG,  msg)
   }
 }
 ```
@@ -93,7 +93,7 @@ initRetrofit {
 
 #### 使用 RxJava
 
-添加相应的依赖和配置 `RxJava2CallAdapterFactory `：
+添加相应的依赖和配置 `RxJava2CallAdapterFactory`：
 
 ```gradle
 dependencies {
@@ -143,9 +143,7 @@ ps：下面的例子只是展示基础的用法，实际的开发建议根据需
 ```kotlin
 interface ArticleApi {
   @GET("/article/list/{page}/json")
-  fun geArticleList(
-    @Path(value = "page") page:Int
-  ): Single<String>
+  fun geArticleList(@Path(value = "page") page:Int): Single<String>
 }
 ```
 
