@@ -30,14 +30,15 @@ val retrofitInitiator: Initiator
   get() = Initiator.INSTANCE
 
 @JvmName("init")
-fun initRetrofit(init: Initiator.() -> Unit = {}) =
+fun initRetrofit(init: Initiator.() -> Unit) =
   retrofitInitiator.apply(init).init()
 
 @JvmName("create")
-fun <T> apiServiceOf(service: Class<T>): T = if (retrofitInitiator.isInitialized) {
-  retrofitInitiator.retrofit.create(service)
-} else {
-  throw NullPointerException("RetrofitHelper is not initialized!")
+fun <T> apiServiceOf(service: Class<T>): T {
+  if (!retrofitInitiator.isInitialized) {
+    retrofitInitiator.init()
+  }
+  return retrofitInitiator.retrofit.create(service)
 }
 
 inline fun <reified T> apiServiceOf(): T = apiServiceOf(T::class.java)
@@ -185,6 +186,8 @@ class Initiator private constructor() {
     val clazz = Class.forName("com.dylanc.retrofit.helper.UrlConfig")
     val urlConfig = clazz.newInstance()
     clazz.getField(fieldName)[urlConfig] as T?
+  } catch (e: NoSuchFieldException) {
+    null
   } catch (e: Exception) {
     e.printStackTrace()
     null

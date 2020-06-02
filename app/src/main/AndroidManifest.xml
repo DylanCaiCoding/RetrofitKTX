@@ -14,8 +14,10 @@
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
     android:theme="@style/AppTheme"
-    tools:ignore="GoogleAppIndexingWarning">
-    <activity android:name=".ui.JavaActivity"></activity>
+    tools:ignore="GoogleAppIndexingWarning"
+    tools:targetApi="n">
+    <activity android:name=".ui.JavaActivity">
+    </activity>
     <activity android:name=".ui.KotlinActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />

@@ -27,13 +27,18 @@ android {
     compileOptions {
         kotlinOptions.freeCompilerArgs += ['-module-name', "retrofit_helper_rxjava"]
     }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    api 'com.squareup.retrofit2:adapter-rxjava2:2.8.1'
-    api 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    api "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
+    api "io.reactivex.rxjava2:rxandroid:$rxandroid_version"
+    api "com.uber.autodispose:autodispose:$autodispose_version"
+    api "com.uber.autodispose:autodispose-android-archcomponents:$autodispose_version"
 }
 
 publish {
@@ -41,7 +46,7 @@ publish {
     repoName = 'maven'
     groupId = 'com.dylanc'
     artifactId = 'retrofit-helper-rxjava'
-    publishVersion = '1.1.0-rc'
+    publishVersion = '1.1.0'
     desc = 'An easy-to-use tool for Retrofit'
     website = 'https://github.com/DylanCaiCoding/RetrofitHelper'
 }

@@ -11,8 +11,8 @@ import org.reactivestreams.Publisher
 
 /**
  * @author Dylan Cai
- * @since 2019/12/17
  */
+
 fun Initiator.observeProgress() =
   okHttpClientBuilder {
     ProgressManager.getInstance().with(this)

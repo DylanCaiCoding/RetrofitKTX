@@ -10,13 +10,14 @@ import java.util.*
 /**
  * @author Dylan Cai
  */
-
+@JvmOverloads
 @JvmName("create")
 fun String.toPart(
   name: String,
   contentType: String = ContentType.MULTIPART
 ) = File(this).toPart(name, contentType)
 
+@JvmOverloads
 @JvmName("create")
 fun File.toPart(
   name: String,
@@ -25,6 +26,7 @@ fun File.toPart(
   return MultipartBody.Part.createFormData(name, this.name, asRequestBody(contentType))
 }
 
+@JvmOverloads
 @JvmName("create")
 fun List<String>.toPartList(
   name: String,

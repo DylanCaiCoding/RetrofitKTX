@@ -6,6 +6,7 @@ import com.dylanc.retrofit.helper.sample.bean.UserBean
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.Path
 
 /**
  * @author Dylan Cai
@@ -13,12 +14,14 @@ import retrofit2.http.Headers
  */
 interface TestApi {
 
-  @GET("/guonei")
-  fun getBaiduNews(): Single<String>
+  @GET("/article/list/{page}/json")
+  fun geArticleList(
+    @Path(value = "page") page:Int
+  ): Single<String>
 
   @Headers(DOMAIN_HEADER + "gank")
   @GET("/api/today")
-  fun getGankData(): Single<String>
+  fun getGankTodayList(): Single<String>
 
   @GET("/user/login")
   fun login(): Single<ResultBean<UserBean>>

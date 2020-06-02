@@ -13,32 +13,33 @@ import java.io.File
 /**
  * @author Dylan Cai
  */
+
 fun <T> Observable<T>.io2mainThread(): Observable<T> =
+  compose(Transformers.io2mainThread())
+
+fun <T> Flowable<T>.io2mainThread(): Flowable<T> =
+  compose(Transformers.io2mainThread())
+
+fun <T> Single<T>.io2mainThread(): Single<T> =
   compose(Transformers.io2mainThread())
 
 fun <T> Observable<T>.showLoading(
   requestLoading: RequestLoading
 ): Observable<T> = compose(Transformers.showLoading(requestLoading))
 
-fun Observable<ResponseBody>.toFile(pathname: String): Observable<File> =
-  compose(Transformers.toFile(pathname))
-
-fun <T> Flowable<T>.io2mainThread(): Flowable<T> =
-  compose(Transformers.io2mainThread())
-
 fun <T> Flowable<T>.showLoading(
   requestLoading: RequestLoading
 ): Flowable<T> = compose(Transformers.showLoading(requestLoading))
 
-fun Flowable<ResponseBody>.toFile(pathname: String): Flowable<File> =
-  compose(Transformers.toFile(pathname))
-
-fun <T> Single<T>.io2mainThread(): Single<T> =
-  compose(Transformers.io2mainThread())
-
 fun <T> Single<T>.showLoading(
   requestLoading: RequestLoading
 ): Single<T> = compose(Transformers.showLoading(requestLoading))
+
+fun Observable<ResponseBody>.toFile(pathname: String): Observable<File> =
+  compose(Transformers.toFile(pathname))
+
+fun Flowable<ResponseBody>.toFile(pathname: String): Flowable<File> =
+  compose(Transformers.toFile(pathname))
 
 fun Single<ResponseBody>.toFile(pathname: String): Single<File> =
   compose(Transformers.toFile(pathname))

@@ -13,6 +13,7 @@ import java.io.File
 /**
  * @author Dylan Cai
  */
+@JvmOverloads
 @JvmName("create")
 fun String.toRequestBody(contentType: String = ContentType.JSON) =
   toRequestBody(contentType.toMediaTypeOrNull())
@@ -21,10 +22,12 @@ fun String.toRequestBody(contentType: String = ContentType.JSON) =
 fun Any.toJsonBody() =
   Gson().toJson(this).toRequestBody()
 
+@JvmOverloads
 @JvmName("create")
 fun File.asRequestBody(contentType: String = ContentType.JSON) =
   asRequestBody(contentType.toMediaTypeOrNull())
 
+@JvmOverloads
 @JvmName("create")
-fun jsonBodyOf(vararg params: Pair<String, Any>) =
-  hashMapOf(*params).toJsonBody()
+fun jsonBodyOf(vararg params: Pair<String, Any>, block: HashMap<String, Any>.() -> Unit = {}) =
+  hashMapOf(*params).apply(block).toJsonBody()

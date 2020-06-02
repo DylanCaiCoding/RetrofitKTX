@@ -1,30 +1,25 @@
 package com.dylanc.retrofit.helper.sample.ui;
 
-import android.annotation.SuppressLint;
+import android.Manifest;
 import android.os.Bundle;
-import android.os.Environment;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.dylanc.retrofit.helper.RetrofitHelper;
+import com.dylanc.retrofit.helper.rxjava.DownloadApi;
 import com.dylanc.retrofit.helper.rxjava.Transformers;
 import com.dylanc.retrofit.helper.sample.R;
 import com.dylanc.retrofit.helper.sample.api.TestApi;
+import com.dylanc.retrofit.helper.sample.constant.Constants;
+import com.dylanc.retrofit.helper.sample.network.RxLoadingDialog;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.uber.autodispose.AutoDispose;
+import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
 
-import java.util.concurrent.TimeUnit;
+import java.util.Objects;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.Single;
-import io.reactivex.SingleObserver;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
-
-@SuppressWarnings("ResultOfMethodCallIgnored")
-@SuppressLint("CheckResult")
 public class JavaActivity extends AppCompatActivity {
 
   @Override
@@ -33,44 +28,62 @@ public class JavaActivity extends AppCompatActivity {
     setContentView(R.layout.activity_main);
   }
 
-  public void requestBaiduNews(View view) {
+  public void requestArticleList(View view) {
     RetrofitHelper.create(TestApi.class)
-        .getBaiduNews()
+        .geArticleList(0)
         .compose(Transformers.io2mainThread())
-        .subscribe(this::onNext, this::onError);
+        .compose(Transformers.showLoading(new RxLoadingDialog(this)))
+        .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+        .subscribe(
+            this::toast,
+            e -> toast(e.getMessage())
+        );
   }
 
-  public void requestGankData(View view) {
+  public void requestGankTodayList(View view) {
     RetrofitHelper.create(TestApi.class)
-        .getGankData()
+        .getGankTodayList()
         .compose(Transformers.io2mainThread())
-        .subscribe(this::onNext, this::onError);
+        .compose(Transformers.showLoading(new RxLoadingDialog(this)))
+        .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+        .subscribe(
+            this::toast,
+            e -> toast(e.getMessage())
+        );
   }
 
   public void requestLogin(View view) {
     RetrofitHelper.create(TestApi.class)
         .login()
         .compose(Transformers.io2mainThread())
-        .subscribe(result -> Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show(), this::onError);
-  }
-
-  public void onNext(String json) {
-    Toast.makeText(JavaActivity.this, json, Toast.LENGTH_SHORT).show();
-  }
-
-  public void onError(Throwable e) {
-    Toast.makeText(JavaActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        .compose(Transformers.showLoading(new RxLoadingDialog(this)))
+        .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+        .subscribe(
+            response -> toast("登录成功"),
+            e -> toast(e.getMessage())
+        );
   }
 
   public void download(View view) {
-//    final String pathname = Environment.getExternalStorageDirectory().getPath() + "/test.png";
-//    new RxPermissions(this).request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//        .flatMap((Function<Boolean, ObservableSource<File>>) granted -> {
-//          if (granted) {
-//              return DownloadTask.with(DOWNLOAD_URL).toFile(pathname);
-//          }
-//          throw new NullPointerException("");
-//        })
-//        .subscribe(this::onNext);
+    final String pathname = Objects.requireNonNull(getExternalCacheDir()).getPath() + "/test.png";
+    new RxPermissions(this)
+        .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+        .subscribe(aBoolean -> {
+          RetrofitHelper.create(DownloadApi.class)
+              .download(Constants.DOWNLOAD_URL)
+              .compose(Transformers.toFile(pathname))
+              .compose(Transformers.io2mainThread())
+              .compose(Transformers.showLoading(new RxLoadingDialog(this)))
+              .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+              .subscribe(
+                  file -> toast("已下载到" + file.getPath()),
+                  e -> toast(e.getMessage())
+              );
+        });
+  }
+
+  private void toast(String msg) {
+    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
   }
 }
