@@ -18,7 +18,7 @@ dependencies {
 
 ### 初始化
 
-使用注解配置 BaseUrl，例如：
+使用 `@BaseUrl` 注解配置 BaseUrl，例如：
 
 ```java
 public class Constants {
@@ -63,7 +63,7 @@ RetrofitHelper.getDefault()
 
 #### 调试模式
 
-初始化时配置 debug，下面的功能才会生效。
+初始化时配置 debug，以下的功能才会生效。
 
 ```java
 RetrofitHelper.getDefault()
@@ -78,7 +78,9 @@ RetrofitHelper.getDefault()
 ```java
 public class Constants {
   @BaseUrl
-  public static final String BASE_URL = "http://192.168.1.3";
+  public static final String BASE_URL = "https://www.wanandroid.com";
+  @DebugUrl
+  public static final String DEBUG_URL = "http://192.168.1.3";
 }
 ```
 
@@ -99,7 +101,7 @@ RetrofitHelper.getDefault()
 
 #### 使用 RxJava
 
-添加相应的依赖和配置 `RxJava2CallAdapterFactory `：
+添加相应的依赖和配置 `RxJava2CallAdapterFactory`：
 
 ```gradle
 dependencies {
