@@ -41,3 +41,13 @@ fun Completable.autoDispose(
   untilEvent: Lifecycle.Event = Lifecycle.Event.ON_DESTROY
 ): CompletableSubscribeProxy =
   autoDispose(AndroidLifecycleScopeProvider.from(lifecycleOwner, untilEvent))
+
+object AutoDisposable {
+  @JvmStatic
+  @JvmOverloads
+  fun <T> bind(
+    lifecycleOwner: LifecycleOwner,
+    untilEvent: Lifecycle.Event = Lifecycle.Event.ON_DESTROY
+  ): AutoDisposeConverter<T> =
+    AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(lifecycleOwner, untilEvent))
+}

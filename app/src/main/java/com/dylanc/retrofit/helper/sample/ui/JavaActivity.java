@@ -8,8 +8,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.dylanc.retrofit.helper.PartFactory;
 import com.dylanc.retrofit.helper.RetrofitHelper;
+import com.dylanc.retrofit.helper.rxjava.AutoDisposable;
 import com.dylanc.retrofit.helper.rxjava.DownloadApi;
 import com.dylanc.retrofit.helper.rxjava.Transformers;
 import com.dylanc.retrofit.helper.sample.R;
@@ -35,7 +35,7 @@ public class JavaActivity extends AppCompatActivity {
         .geArticleList(0)
         .compose(Transformers.io2mainThread())
         .compose(Transformers.showLoading(new RxLoadingDialog(this)))
-        .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+        .as(AutoDisposable.bind(this))
         .subscribe(
             this::alert,
             e -> toast(e.getMessage())
@@ -47,7 +47,7 @@ public class JavaActivity extends AppCompatActivity {
         .getGankTodayList()
         .compose(Transformers.io2mainThread())
         .compose(Transformers.showLoading(new RxLoadingDialog(this)))
-        .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+        .as(AutoDisposable.bind(this))
         .subscribe(
             this::alert,
             e -> toast(e.getMessage())
@@ -59,7 +59,7 @@ public class JavaActivity extends AppCompatActivity {
         .login()
         .compose(Transformers.io2mainThread())
         .compose(Transformers.showLoading(new RxLoadingDialog(this)))
-        .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+        .as(AutoDisposable.bind(this))
         .subscribe(
             response -> toast("登录成功"),
             e -> toast(e.getMessage())
@@ -77,7 +77,7 @@ public class JavaActivity extends AppCompatActivity {
               .compose(Transformers.toFile(pathname))
               .compose(Transformers.io2mainThread())
               .compose(Transformers.showLoading(new RxLoadingDialog(this)))
-              .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+              .as(AutoDisposable.bind(this))
               .subscribe(
                   file -> toast("已下载到" + file.getPath()),
                   e -> toast(e.getMessage())
