@@ -3,12 +3,10 @@
 
 package com.dylanc.retrofit.helper
 
+import com.dylanc.retrofit.helper.interceptor.CacheControlInterceptor
 import com.dylanc.retrofit.helper.interceptor.DomainsInterceptor
 import com.dylanc.retrofit.helper.interceptor.HeaderInterceptor
-import okhttp3.Authenticator
-import okhttp3.CookieJar
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
+import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.CallAdapter
 import retrofit2.Converter
@@ -53,9 +51,11 @@ class Initiator private constructor() {
   private var debug: Boolean = false
   private val headers = HashMap<String, String>()
   private val debugInterceptors = ArrayList<Interceptor>()
-  internal val domainsInterceptor:DomainsInterceptor by lazy { DomainsInterceptor(DOMAIN, domains) }
   private val okHttpClientBuilder: OkHttpClient.Builder by lazy { OkHttpClient.Builder() }
   private val retrofitBuilder: Retrofit.Builder by lazy { Retrofit.Builder() }
+  internal val domainsInterceptor: DomainsInterceptor by lazy {
+    DomainsInterceptor(DOMAIN, domains)
+  }
   internal lateinit var retrofit: Retrofit
     private set
 
@@ -88,6 +88,14 @@ class Initiator private constructor() {
 
   fun authenticator(authenticator: Authenticator) = apply {
     okHttpClientBuilder.authenticator(authenticator)
+  }
+
+  fun cache(cache: Cache) = apply {
+    okHttpClientBuilder.cache(cache)
+  }
+
+  fun cacheControl(onCreateCacheControl: () -> CacheControl?) = apply {
+    okHttpClientBuilder.addNetworkInterceptor(CacheControlInterceptor(onCreateCacheControl))
   }
 
   fun cookieJar(cookieJar: CookieJar) = apply {
