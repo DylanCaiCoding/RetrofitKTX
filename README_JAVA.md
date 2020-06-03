@@ -170,7 +170,7 @@ RetrofitHelper.create(ArticleApi.class)
   .geArticleList(page)
   .compose(Transformers.io2mainThread())
   .compose(Transformers.showLoading(new RxLoadingDialog(this)))
-  .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+  .as(AutoDisposable.bind(this))
   .subscribe(
     json -> Toast.makeText(this, json, Toast.LENGTH_SHORT).show(),
     e -> Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
@@ -196,7 +196,7 @@ RetrofitHelper.create(UserApi.class)
   .login(RequestBodyFactory.create(params))
   .compose(Transformers.io2mainThread())
   .compose(Transformers.showLoading(new RxLoadingDialog(this)))
-  .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+  .as(AutoDisposable.bind(this))
   .subscribe(
     json -> Toast.makeText(this, json, Toast.LENGTH_SHORT).show(),
     e -> Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
@@ -223,7 +223,7 @@ RetrofitHelper.create(UploadApi.class)
   //.uploadImages(PartFactory.create(pathList, "files"))
   .compose(Transformers.io2mainThread())
   .compose(Transformers.showLoading(new RxLoadingDialog(this)))
-  .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+  .as(AutoDisposable.bind(this))
   .subscribe(
     json -> Toast.makeText(this, "上传成功", Toast.LENGTH_SHORT).show(),
     e -> Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
@@ -238,7 +238,7 @@ RetrofitHelper.create(DownloadApi.class)
   .compose(Transformers.toFile(pathname))
   .compose(Transformers.io2mainThread())
   .compose(Transformers.showLoading(new RxLoadingDialog(this)))
-  .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+  .as(AutoDisposable.bind(this))
   .subscribe(
     file -> Toast.makeText(this, "已下载到" + file.getPath(), Toast.LENGTH_SHORT).show(),
     e -> Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
