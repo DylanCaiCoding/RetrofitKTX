@@ -59,7 +59,7 @@ public class JavaActivity extends AppCompatActivity {
         .login()
         .compose(Transformers.io2mainThread())
         .compose(Transformers.showLoading(new RxLoadingDialog(this)))
-        .as(AutoDisposable.bind(this))
+        .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
         .subscribe(
             response -> toast("登录成功"),
             e -> toast(e.getMessage())
@@ -77,7 +77,7 @@ public class JavaActivity extends AppCompatActivity {
               .compose(Transformers.toFile(pathname))
               .compose(Transformers.io2mainThread())
               .compose(Transformers.showLoading(new RxLoadingDialog(this)))
-              .as(AutoDisposable.bind(this))
+              .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
               .subscribe(
                   file -> toast("已下载到" + file.getPath()),
                   e -> toast(e.getMessage())

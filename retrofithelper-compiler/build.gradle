@@ -18,7 +18,7 @@ publish {
     repoName = 'maven'
     groupId = 'com.dylanc'
     artifactId = 'retrofit-helper-compiler'
-    publishVersion = '1.1.0'
+    publishVersion = '1.1.1'
     desc = 'An easy-to-use tool for Retrofit'
     website = 'https://github.com/DylanCaiCoding/RetrofitHelper'
 }

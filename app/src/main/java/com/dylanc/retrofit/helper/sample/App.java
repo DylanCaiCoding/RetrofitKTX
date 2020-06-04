@@ -9,8 +9,13 @@ import com.dylanc.retrofit.helper.RetrofitHelper;
 import com.dylanc.retrofit.helper.sample.network.DebugInterceptor;
 import com.dylanc.retrofit.helper.sample.network.HandleErrorInterceptor;
 
+import java.io.File;
+import java.util.concurrent.TimeUnit;
+
 import kotlin.Unit;
 import me.jessyan.progressmanager.ProgressManager;
+import okhttp3.Cache;
+import okhttp3.CacheControl;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 public class App extends Application {
@@ -21,6 +26,10 @@ public class App extends Application {
     RetrofitHelper.getDefault()
         .debug(BuildConfig.DEBUG)
         .retryOnConnectionFailure(false)
+        .cache(new Cache(new File(getCacheDir(), "response"), 10 * 1024 * 1024))
+        .cacheControl(()-> new CacheControl.Builder()
+            .maxAge(10, TimeUnit.MINUTES)
+            .build())
         .addHttpLoggingInterceptor(message -> {
           Log.i("http", message);
         })

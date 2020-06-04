@@ -182,16 +182,14 @@ class Initiator private constructor() {
     get() = ::retrofit.isInitialized
 
   private val baseUrl: String?
-    get() {
-      val debugUrl = urlConfigOf<String>("debugUrl")
-      return debugUrl ?: urlConfigOf<String>("baseUrl")
+    get() = if (debug) {
+      urlConfigOf<String>("debugUrl") ?: urlConfigOf<String>("baseUrl")
+    } else {
+      urlConfigOf<String>("baseUrl")
     }
 
   private val domains: MutableMap<String, String>
-    get() {
-      val domains = urlConfigOf<MutableMap<String, String>>("domains")
-      return domains ?: mutableMapOf()
-    }
+    get() = urlConfigOf<MutableMap<String, String>>("domains") ?: mutableMapOf()
 
   @Suppress("UNCHECKED_CAST")
   private fun <T> urlConfigOf(fieldName: String): T? = try {
