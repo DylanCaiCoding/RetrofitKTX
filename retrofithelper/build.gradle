@@ -6,7 +6,7 @@ android {
     compileSdkVersion 29
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -42,7 +42,7 @@ publish {
     repoName = 'maven'
     groupId = 'com.dylanc'
     artifactId = 'retrofit-helper'
-    publishVersion = '1.1.1'
+    publishVersion = '1.2.0-beta'
     desc = 'An easy-to-use tool for Retrofit'
     website = 'https://github.com/DylanCaiCoding/RetrofitHelper'
 }
