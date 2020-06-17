@@ -16,5 +16,8 @@ class MainActivity : AppCompatActivity() {
     btn_kotlin_rxjava.setOnClickListener {
       startActivity(Intent(this, KotlinRxJavaActivity::class.java))
     }
+    btn_kotlin_coroutines.setOnClickListener {
+      startActivity(Intent(this, KotlinCoroutinesActivity::class.java))
+    }
   }
 }

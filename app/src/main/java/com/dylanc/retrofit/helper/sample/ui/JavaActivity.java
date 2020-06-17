@@ -15,7 +15,7 @@ import com.dylanc.retrofit.helper.rxjava.Transformers;
 import com.dylanc.retrofit.helper.sample.R;
 import com.dylanc.retrofit.helper.sample.api.TestApi;
 import com.dylanc.retrofit.helper.sample.constant.Constants;
-import com.dylanc.retrofit.helper.sample.network.RxLoadingDialog;
+import com.dylanc.retrofit.helper.sample.network.rx.RxLoadingDialog;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.uber.autodispose.AutoDispose;
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;

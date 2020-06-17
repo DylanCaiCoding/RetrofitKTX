@@ -25,6 +25,7 @@
     </activity>
     <activity android:name=".ui.JavaActivity" />
     <activity android:name=".ui.KotlinRxJavaActivity" />
+    <activity android:name=".ui.KotlinCoroutinesActivity" />
   </application>
 
 </manifest>

@@ -8,12 +8,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.dylanc.retrofit.helper.apiServiceOf
-import com.dylanc.retrofit.helper.putDomain
 import com.dylanc.retrofit.helper.rxjava.*
 import com.dylanc.retrofit.helper.sample.R
 import com.dylanc.retrofit.helper.sample.api.TestApi
 import com.dylanc.retrofit.helper.sample.constant.DOWNLOAD_URL
-import com.dylanc.retrofit.helper.sample.network.RxLoadingDialog
+import com.dylanc.retrofit.helper.sample.network.rx.RxLoadingDialog
 import com.dylanc.retrofit.helper.sample.network.observeDownload
 import com.tbruyelle.rxpermissions2.RxPermissions
 
@@ -36,7 +35,11 @@ class KotlinRxJavaActivity : AppCompatActivity() {
     apiServiceOf<TestApi>()
       .geArticleList(0)
       .io2mainThread()
-      .showLoading(RxLoadingDialog(this))
+      .showLoading(
+        RxLoadingDialog(
+          this
+        )
+      )
       .autoDispose(this)
       .subscribe({
         alert(it)
@@ -52,7 +55,11 @@ class KotlinRxJavaActivity : AppCompatActivity() {
     apiServiceOf<TestApi>()
       .getGankTodayList()
       .io2mainThread()
-      .showLoading(RxLoadingDialog(this))
+      .showLoading(
+        RxLoadingDialog(
+          this
+        )
+      )
       .autoDispose(this)
       .subscribe({
         alert(it)
@@ -68,7 +75,11 @@ class KotlinRxJavaActivity : AppCompatActivity() {
     apiServiceOf<TestApi>()
       .login()
       .io2mainThread()
-      .showLoading(RxLoadingDialog(this))
+      .showLoading(
+        RxLoadingDialog(
+          this
+        )
+      )
       .autoDispose(this)
       .subscribe({ result ->
         toast("登录${result.data.userName}成功")
@@ -97,7 +108,11 @@ class KotlinRxJavaActivity : AppCompatActivity() {
             }, { _, _ ->
               Log.e("download", "下载失败")
             })
-            .showLoading(RxLoadingDialog(this))
+            .showLoading(
+              RxLoadingDialog(
+                this
+              )
+            )
             .autoDispose(this)
             .subscribe({ file ->
               toast("已下载到${file.path}")
