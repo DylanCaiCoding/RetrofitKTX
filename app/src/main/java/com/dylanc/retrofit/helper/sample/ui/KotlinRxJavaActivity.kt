@@ -14,6 +14,7 @@ import com.dylanc.retrofit.helper.sample.api.TestApi
 import com.dylanc.retrofit.helper.sample.constant.DOWNLOAD_URL
 import com.dylanc.retrofit.helper.sample.network.rx.RxLoadingDialog
 import com.dylanc.retrofit.helper.sample.network.observeDownload
+import com.dylanc.retrofit.helper.toFile
 import com.tbruyelle.rxpermissions2.RxPermissions
 
 /**
@@ -102,17 +103,16 @@ class KotlinRxJavaActivity : AppCompatActivity() {
         } else {
           apiServiceOf<DownloadApi>()
             .download(DOWNLOAD_URL)
-            .toFile(pathname)
+            .map {
+              it.toFile(pathname)
+            }
+            .io2mainThread()
             .observeDownload(DOWNLOAD_URL, { progressInfo ->
               Log.d("download", progressInfo.percent.toString())
             }, { _, _ ->
               Log.e("download", "下载失败")
             })
-            .showLoading(
-              RxLoadingDialog(
-                this
-              )
-            )
+            .showLoading(RxLoadingDialog(this))
             .autoDispose(this)
             .subscribe({ file ->
               toast("已下载到${file.path}")

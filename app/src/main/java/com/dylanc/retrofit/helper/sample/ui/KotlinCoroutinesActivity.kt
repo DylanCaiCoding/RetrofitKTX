@@ -1,14 +1,26 @@
 package com.dylanc.retrofit.helper.sample.ui
 
+import android.Manifest
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.dylanc.retrofit.helper.apiServiceOf
+import com.dylanc.retrofit.helper.rxjava.DownloadApi
+import com.dylanc.retrofit.helper.rxjava.autoDispose
+import com.dylanc.retrofit.helper.rxjava.showLoading
+import com.dylanc.retrofit.helper.rxjava.toFile
 import com.dylanc.retrofit.helper.sample.R
+import com.dylanc.retrofit.helper.sample.api.CoroutinesApi
+import com.dylanc.retrofit.helper.sample.constant.DOWNLOAD_URL
 import com.dylanc.retrofit.helper.sample.network.LoadingDialog
+import com.dylanc.retrofit.helper.sample.network.observeDownload
+import com.dylanc.retrofit.helper.sample.network.rx.RxLoadingDialog
+import com.tbruyelle.rxpermissions2.RxPermissions
 
 @Suppress("UNUSED_PARAMETER")
 class KotlinCoroutinesActivity : AppCompatActivity() {
@@ -66,7 +78,22 @@ class KotlinCoroutinesActivity : AppCompatActivity() {
    * 测试下载文件
    */
   fun download(view: View) {
-
+    val pathname = externalCacheDir!!.path + "/test.png"
+    RxPermissions(this)
+      .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+      .autoDispose(this)
+      .subscribe { granted ->
+        if (!granted) {
+          toast("请授权访问文件权限")
+        } else {
+          loadingDialog.show(supportFragmentManager)
+          viewModel.download(DOWNLOAD_URL, pathname)
+            .observe(this, Observer { file ->
+              loadingDialog.dismiss()
+              toast("已下载到${file.path}")
+            })
+        }
+      }
   }
 
   private fun alert(msg: String) {

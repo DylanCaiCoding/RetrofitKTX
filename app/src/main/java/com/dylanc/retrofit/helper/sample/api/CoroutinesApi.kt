@@ -3,9 +3,9 @@ package com.dylanc.retrofit.helper.sample.api
 import com.dylanc.retrofit.helper.DOMAIN_HEADER
 import com.dylanc.retrofit.helper.sample.bean.ResultBean
 import com.dylanc.retrofit.helper.sample.bean.UserBean
-import retrofit2.http.GET
-import retrofit2.http.Headers
-import retrofit2.http.Path
+import io.reactivex.Single
+import okhttp3.ResponseBody
+import retrofit2.http.*
 
 /**
  * @author Dylan Cai
@@ -13,7 +13,7 @@ import retrofit2.http.Path
 interface CoroutinesApi {
 
   @GET("/article/list/{page}/json")
-  suspend fun geArticleList(@Path(value = "page") page:Int): String
+  suspend fun geArticleList(@Path(value = "page") page: Int): String
 
   @Headers(DOMAIN_HEADER + "gank")
   @GET("/api/today")
