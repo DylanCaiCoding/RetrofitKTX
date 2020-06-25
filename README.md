@@ -11,8 +11,8 @@ Kotlin | [Java](https://github.com/DylanCaiCoding/RetrofitHelper/blob/master/REA
 
 ```gradle
 dependencies {
-  implementation 'com.dylanc:retrofit-helper:1.1.0'
-  kapt 'com.dylanc:retrofit-helper-compiler:1.1.0'
+  implementation 'com.dylanc:retrofit-helper:1.1.1'
+  kapt 'com.dylanc:retrofit-helper-compiler:1.1.1'
 }
 ```
 
@@ -36,6 +36,12 @@ initRetrofit {
   retryOnConnectionFailure(false)
   authenticator(authenticator)
   cookieJar(cookieJar)
+  cache(Cache(File(getCacheDir(), "response"), 10 * 1024 * 1024))
+  cacheControl {
+    cacheControlOf{
+      maxAge(10, TimeUnit.MINUTES)
+    }
+  }
   addInterceptor(interceptor)
   addNetworkInterceptor(networkInterceptor)
   addConverterFactory(FastJsonConverterFactory.create())
@@ -97,7 +103,7 @@ initRetrofit {
 
 ```gradle
 dependencies {
-  implementation 'com.dylanc:retrofit-helper-rxjava:1.1.0'
+  implementation 'com.dylanc:retrofit-helper-rxjava:1.1.1'
 }
 ```
 
