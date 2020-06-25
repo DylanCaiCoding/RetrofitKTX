@@ -11,8 +11,8 @@
 
 ```gradle
 dependencies {
-  implementation 'com.dylanc:retrofit-helper:1.1.0'
-  kapt 'com.dylanc:retrofit-helper-compiler:1.1.0'
+  implementation 'com.dylanc:retrofit-helper:1.1.1'
+  kapt 'com.dylanc:retrofit-helper-compiler:1.1.1'
 }
 ```
 
@@ -32,6 +32,10 @@ public class Constants {
 ```java
 RetrofitHelper.getDefault()
   .addHeader("key", "value")
+  .cache(new Cache(new File(getCacheDir(), "response"), 10 * 1024 * 1024))
+  .cacheControl(() -> new CacheControl.Builder()
+    .maxAge(10, TimeUnit.MINUTES)
+    .build())
   .connectTimeout(15)
   .writeTimeout(15)
   .readTimeout(15)
@@ -105,7 +109,7 @@ RetrofitHelper.getDefault()
 
 ```gradle
 dependencies {
-  implementation 'com.dylanc:retrofit-helper-rxjava:1.1.0'
+  implementation 'com.dylanc:retrofit-helper-rxjava:1.1.1'
 }
 ```
 
