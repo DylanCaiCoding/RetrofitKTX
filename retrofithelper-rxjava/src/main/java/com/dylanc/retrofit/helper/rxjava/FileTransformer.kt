@@ -11,18 +11,10 @@ import java.io.InputStream
 /**
  * @author Dylan Cai
  */
-fun InputStream.toFile(pathname: String) = File(pathname).apply {
-  use { input ->
-    outputStream().use { fileOut ->
-      input.copyTo(fileOut)
-    }
-  }
-}
-
 class FileTransformer(private val pathname: String) : ObservableTransformer<ResponseBody, File>,
   FlowableTransformer<ResponseBody, File>, SingleTransformer<ResponseBody, File>,
   MaybeTransformer<ResponseBody, File> {
-  
+
   override fun apply(upstream: Observable<ResponseBody>): ObservableSource<File> =
     upstream.subscribeOn(Schedulers.io())
       .unsubscribeOn(Schedulers.io())
@@ -54,4 +46,13 @@ class FileTransformer(private val pathname: String) : ObservableTransformer<Resp
       .observeOn(Schedulers.computation())
       .map { it.toFile(pathname) }
       .observeOn(AndroidSchedulers.mainThread())
+
+  private fun InputStream.toFile(pathname: String) =
+    File(pathname).apply {
+      use { input ->
+        outputStream().use { fileOut ->
+          input.copyTo(fileOut)
+        }
+      }
+    }
 }

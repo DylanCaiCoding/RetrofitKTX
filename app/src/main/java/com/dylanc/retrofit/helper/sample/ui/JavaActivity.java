@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.dylanc.retrofit.helper.RetrofitHelper;
 import com.dylanc.retrofit.helper.rxjava.AutoDisposable;
-import com.dylanc.retrofit.helper.rxjava.DownloadApi;
 import com.dylanc.retrofit.helper.rxjava.Transformers;
 import com.dylanc.retrofit.helper.sample.R;
 import com.dylanc.retrofit.helper.sample.api.TestApi;
@@ -72,7 +71,7 @@ public class JavaActivity extends AppCompatActivity {
         .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
         .subscribe(aBoolean -> {
-          RetrofitHelper.create(DownloadApi.class)
+          RetrofitHelper.create(TestApi.class)
               .download(Constants.DOWNLOAD_URL)
               .compose(Transformers.toFile(pathname))
               .compose(Transformers.io2mainThread())

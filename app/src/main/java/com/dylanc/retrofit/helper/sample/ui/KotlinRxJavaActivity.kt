@@ -8,12 +8,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.dylanc.retrofit.helper.apiServiceOf
-import com.dylanc.retrofit.helper.rxjava.*
+import com.dylanc.retrofit.helper.rxjava.autoDispose
+import com.dylanc.retrofit.helper.rxjava.io2mainThread
+import com.dylanc.retrofit.helper.rxjava.showLoading
 import com.dylanc.retrofit.helper.sample.R
 import com.dylanc.retrofit.helper.sample.api.TestApi
 import com.dylanc.retrofit.helper.sample.constant.DOWNLOAD_URL
-import com.dylanc.retrofit.helper.sample.network.rx.RxLoadingDialog
 import com.dylanc.retrofit.helper.sample.network.observeDownload
+import com.dylanc.retrofit.helper.sample.network.rx.RxLoadingDialog
 import com.dylanc.retrofit.helper.toFile
 import com.tbruyelle.rxpermissions2.RxPermissions
 
@@ -101,7 +103,7 @@ class KotlinRxJavaActivity : AppCompatActivity() {
         if (!granted) {
           toast("请授权访问文件权限")
         } else {
-          apiServiceOf<DownloadApi>()
+          apiServiceOf<TestApi>()
             .download(DOWNLOAD_URL)
             .map {
               it.toFile(pathname)

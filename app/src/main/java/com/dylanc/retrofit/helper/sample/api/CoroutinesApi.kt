@@ -21,4 +21,8 @@ interface CoroutinesApi {
 
   @GET("/user/login")
   suspend fun login(): ResultBean<UserBean>
+
+  @Streaming
+  @GET
+  suspend fun download(@Url url: String): ResponseBody
 }

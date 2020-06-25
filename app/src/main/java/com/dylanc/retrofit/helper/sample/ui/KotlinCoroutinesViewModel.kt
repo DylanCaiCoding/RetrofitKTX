@@ -3,10 +3,9 @@ package com.dylanc.retrofit.helper.sample.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.dylanc.retrofit.helper.apiServiceOf
-import com.dylanc.retrofit.helper.coroutines.DownloadApi
 import com.dylanc.retrofit.helper.coroutines.RequestExceptionHandler
-import com.dylanc.retrofit.helper.toFile
 import com.dylanc.retrofit.helper.sample.api.CoroutinesApi
+import com.dylanc.retrofit.helper.toFile
 
 class KotlinCoroutinesViewModel : ViewModel() {
   private val requestExceptionHandler = RequestExceptionHandler()
@@ -25,6 +24,6 @@ class KotlinCoroutinesViewModel : ViewModel() {
   }
 
   fun download(url: String, path: String) = liveData(requestExceptionHandler) {
-    emit(apiServiceOf<DownloadApi>().download(url).toFile(path))
+    emit(apiServiceOf<CoroutinesApi>().download(url).toFile(path))
   }
 }

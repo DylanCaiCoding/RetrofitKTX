@@ -4,9 +4,8 @@ import com.dylanc.retrofit.helper.DOMAIN_HEADER
 import com.dylanc.retrofit.helper.sample.bean.ResultBean
 import com.dylanc.retrofit.helper.sample.bean.UserBean
 import io.reactivex.Single
-import retrofit2.http.GET
-import retrofit2.http.Headers
-import retrofit2.http.Path
+import okhttp3.ResponseBody
+import retrofit2.http.*
 
 /**
  * @author Dylan Cai
@@ -23,4 +22,8 @@ interface TestApi {
 
   @GET("/user/login")
   fun login(): Single<ResultBean<UserBean>>
+
+  @Streaming
+  @GET
+  fun download(@Url url: String): Single<ResponseBody>
 }
