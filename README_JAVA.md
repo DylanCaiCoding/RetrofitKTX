@@ -237,6 +237,14 @@ RetrofitHelper.create(UploadApi.class)
 ##### 下载文件
 
 ```java
+public interface UploadApi{
+  @Streaming
+  @GET
+  Single<String> download(@Url String url); 
+}
+```
+
+```java
 RetrofitHelper.create(DownloadApi.class)
   .download(url)
   .compose(Transformers.toFile(pathname))
