@@ -30,18 +30,18 @@ const val BASE_URL = "https://www.wanandroid.com"
 ```kotlin
 initRetrofit {
   addHeader("key", "value")
-  connectTimeout(15)
-  writeTimeout(15)
-  readTimeout(15)
-  retryOnConnectionFailure(false)
-  authenticator(authenticator)
-  cookieJar(cookieJar)
   cache(Cache(File(getCacheDir(), "response"), 10 * 1024 * 1024))
   cacheControl {
     cacheControlOf{
       maxAge(10, TimeUnit.MINUTES)
     }
   }
+  connectTimeout(15)
+  writeTimeout(15)
+  readTimeout(15)
+  retryOnConnectionFailure(false)
+  authenticator(authenticator)
+  cookieJar(cookieJar)
   addInterceptor(interceptor)
   addNetworkInterceptor(networkInterceptor)
   addConverterFactory(FastJsonConverterFactory.create())
@@ -224,10 +224,17 @@ apiServiceOf<UploadApi>()
 ##### 下载文件
 
 ```kotlin
+interface DownloadApi{
+  @Streaming
+  @GET
+  fun download(@Url url: String): Single<ResponseBody>
+}
+```
+
+```kotlin
 apiServiceOf<DownloadApi>()
   .download(url)
   .toFile(pathname)
-  .io2mainThread()
   .showLoading(RxLoadingDialog(this))
   .autoDispose(this)
   .subscribe({ file ->
