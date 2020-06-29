@@ -11,12 +11,12 @@ import com.dylanc.retrofit.helper.apiServiceOf
 import com.dylanc.retrofit.helper.rxjava.autoDispose
 import com.dylanc.retrofit.helper.rxjava.io2mainThread
 import com.dylanc.retrofit.helper.rxjava.showLoading
+import com.dylanc.retrofit.helper.rxjava.toFile
 import com.dylanc.retrofit.helper.sample.R
-import com.dylanc.retrofit.helper.sample.api.TestApi
+import com.dylanc.retrofit.helper.sample.api.RxJavaApi
 import com.dylanc.retrofit.helper.sample.constant.DOWNLOAD_URL
 import com.dylanc.retrofit.helper.sample.network.observeDownload
 import com.dylanc.retrofit.helper.sample.network.rx.RxLoadingDialog
-import com.dylanc.retrofit.helper.toFile
 import com.tbruyelle.rxpermissions2.RxPermissions
 
 /**
@@ -35,34 +35,24 @@ class KotlinRxJavaActivity : AppCompatActivity() {
    * 测试普通请求
    */
   fun requestArticleList(view: View) {
-    apiServiceOf<TestApi>()
+    apiServiceOf<RxJavaApi>()
       .geArticleList(0)
       .io2mainThread()
-      .showLoading(
-        RxLoadingDialog(
-          this
-        )
-      )
+      .showLoading(RxLoadingDialog(this))
       .autoDispose(this)
       .subscribe({
         alert(it)
-      }, { e ->
-        toast(e.message)
-      })
+      }, {})
   }
 
   /**
    * 测试不同 base url 的请求
    */
   fun requestGankTodayList(view: View) {
-    apiServiceOf<TestApi>()
+    apiServiceOf<RxJavaApi>()
       .getGankTodayList()
       .io2mainThread()
-      .showLoading(
-        RxLoadingDialog(
-          this
-        )
-      )
+      .showLoading(RxLoadingDialog(this))
       .autoDispose(this)
       .subscribe({
         alert(it)
@@ -75,14 +65,10 @@ class KotlinRxJavaActivity : AppCompatActivity() {
    * 测试返回本地 json 的模拟请求
    */
   fun requestLogin(view: View) {
-    apiServiceOf<TestApi>()
+    apiServiceOf<RxJavaApi>()
       .login()
       .io2mainThread()
-      .showLoading(
-        RxLoadingDialog(
-          this
-        )
-      )
+      .showLoading(RxLoadingDialog(this))
       .autoDispose(this)
       .subscribe({ result ->
         toast("登录${result.data.userName}成功")
@@ -103,12 +89,9 @@ class KotlinRxJavaActivity : AppCompatActivity() {
         if (!granted) {
           toast("请授权访问文件权限")
         } else {
-          apiServiceOf<TestApi>()
+          apiServiceOf<RxJavaApi>()
             .download(DOWNLOAD_URL)
-            .map {
-              it.toFile(pathname)
-            }
-            .io2mainThread()
+            .toFile(pathname)
             .observeDownload(DOWNLOAD_URL, { progressInfo ->
               Log.d("download", progressInfo.percent.toString())
             }, { _, _ ->

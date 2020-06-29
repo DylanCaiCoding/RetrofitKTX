@@ -12,7 +12,7 @@ import com.dylanc.retrofit.helper.RetrofitHelper;
 import com.dylanc.retrofit.helper.rxjava.AutoDisposable;
 import com.dylanc.retrofit.helper.rxjava.Transformers;
 import com.dylanc.retrofit.helper.sample.R;
-import com.dylanc.retrofit.helper.sample.api.TestApi;
+import com.dylanc.retrofit.helper.sample.api.RxJavaApi;
 import com.dylanc.retrofit.helper.sample.constant.Constants;
 import com.dylanc.retrofit.helper.sample.network.rx.RxLoadingDialog;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -30,7 +30,7 @@ public class JavaActivity extends AppCompatActivity {
   }
 
   public void requestArticleList(View view) {
-    RetrofitHelper.create(TestApi.class)
+    RetrofitHelper.create(RxJavaApi.class)
         .geArticleList(0)
         .compose(Transformers.io2mainThread())
         .compose(Transformers.showLoading(new RxLoadingDialog(this)))
@@ -42,7 +42,7 @@ public class JavaActivity extends AppCompatActivity {
   }
 
   public void requestGankTodayList(View view) {
-    RetrofitHelper.create(TestApi.class)
+    RetrofitHelper.create(RxJavaApi.class)
         .getGankTodayList()
         .compose(Transformers.io2mainThread())
         .compose(Transformers.showLoading(new RxLoadingDialog(this)))
@@ -54,7 +54,7 @@ public class JavaActivity extends AppCompatActivity {
   }
 
   public void requestLogin(View view) {
-    RetrofitHelper.create(TestApi.class)
+    RetrofitHelper.create(RxJavaApi.class)
         .login()
         .compose(Transformers.io2mainThread())
         .compose(Transformers.showLoading(new RxLoadingDialog(this)))
@@ -71,7 +71,7 @@ public class JavaActivity extends AppCompatActivity {
         .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
         .subscribe(aBoolean -> {
-          RetrofitHelper.create(TestApi.class)
+          RetrofitHelper.create(RxJavaApi.class)
               .download(Constants.DOWNLOAD_URL)
               .compose(Transformers.toFile(pathname))
               .compose(Transformers.io2mainThread())

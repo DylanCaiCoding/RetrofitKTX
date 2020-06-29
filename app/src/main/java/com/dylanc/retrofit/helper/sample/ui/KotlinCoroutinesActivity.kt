@@ -12,6 +12,7 @@ import com.dylanc.retrofit.helper.rxjava.autoDispose
 import com.dylanc.retrofit.helper.sample.R
 import com.dylanc.retrofit.helper.sample.constant.DOWNLOAD_URL
 import com.dylanc.retrofit.helper.sample.network.LoadingDialog
+import com.dylanc.retrofit.helper.coroutines.observeRequestState
 import com.tbruyelle.rxpermissions2.RxPermissions
 
 @Suppress("UNUSED_PARAMETER")
@@ -58,12 +59,22 @@ class KotlinCoroutinesActivity : AppCompatActivity() {
    * 测试返回本地 json 的模拟请求
    */
   fun requestLogin(view: View) {
-    loadingDialog.show(supportFragmentManager)
     viewModel.login()
-      .observe(this, Observer { result ->
-        loadingDialog.dismiss()
-        toast("登录${result.data.userName}成功")
-      })
+      .observeRequestState(this,
+        onLoading = {
+          if (it) {
+            loadingDialog.show(supportFragmentManager)
+          } else {
+            loadingDialog.dismiss()
+          }
+        },
+        onSuccess = { response ->
+          toast("登录${response!!.data.userName}成功")
+        },
+        onError = {
+          toast(it.message)
+        }
+      )
   }
 
   /**

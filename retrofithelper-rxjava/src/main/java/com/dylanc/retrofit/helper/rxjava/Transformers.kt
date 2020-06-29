@@ -23,17 +23,23 @@ fun <T> Flowable<T>.io2mainThread(): Flowable<T> =
 fun <T> Single<T>.io2mainThread(): Single<T> =
   compose(Transformers.io2mainThread())
 
-fun <T> Observable<T>.showLoading(
-  requestLoading: RequestLoading
-): Observable<T> = compose(Transformers.showLoading(requestLoading))
+fun <T> Observable<T>.showLoading(requestLoading: RequestLoading): Observable<T> =
+  compose(Transformers.showLoading(requestLoading))
 
-fun <T> Flowable<T>.showLoading(
-  requestLoading: RequestLoading
-): Flowable<T> = compose(Transformers.showLoading(requestLoading))
+fun <T> Flowable<T>.showLoading(requestLoading: RequestLoading): Flowable<T> =
+  compose(Transformers.showLoading(requestLoading))
 
-fun <T> Single<T>.showLoading(
-  requestLoading: RequestLoading
-): Single<T> = compose(Transformers.showLoading(requestLoading))
+fun <T> Single<T>.showLoading(requestLoading: RequestLoading): Single<T> =
+  compose(Transformers.showLoading(requestLoading))
+
+fun <T> Observable<T>.showLoading(onLoading: (Boolean) -> Unit): Observable<T> =
+  compose(Transformers.showLoading(onLoading))
+
+fun <T> Flowable<T>.showLoading(onLoading: (Boolean) -> Unit): Flowable<T> =
+  compose(Transformers.showLoading(onLoading))
+
+fun <T> Single<T>.showLoading(onLoading: (Boolean) -> Unit): Single<T> =
+  compose(Transformers.showLoading(onLoading))
 
 fun Observable<ResponseBody>.toFile(pathname: String): Observable<File> =
   compose(Transformers.toFile(pathname))
@@ -53,6 +59,14 @@ object Transformers {
   @JvmStatic
   fun <T> showLoading(requestLoading: RequestLoading) =
     LoadingTransformer<T>(requestLoading)
+
+  @JvmStatic
+  fun <T> showLoading(onLoading: (Boolean) -> Unit) =
+    LoadingTransformer<T>(object : RequestLoading {
+      override fun show(isShow: Boolean) {
+        onLoading(isShow)
+      }
+    })
 
   @JvmStatic
   fun toFile(pathname: String): FileTransformer =

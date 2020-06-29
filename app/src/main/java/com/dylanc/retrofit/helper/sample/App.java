@@ -3,8 +3,6 @@ package com.dylanc.retrofit.helper.sample;
 import android.app.Application;
 import android.util.Log;
 
-import com.dylanc.retrofit.helper.PartFactory;
-import com.dylanc.retrofit.helper.RequestBodyFactory;
 import com.dylanc.retrofit.helper.RetrofitHelper;
 import com.dylanc.retrofit.helper.sample.network.DebugInterceptor;
 import com.dylanc.retrofit.helper.sample.network.HandleErrorInterceptor;
