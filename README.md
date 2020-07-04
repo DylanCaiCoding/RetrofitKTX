@@ -63,38 +63,6 @@ initRetrofit {
 }
 ```
 
-#### 调试模式
-
-初始化时配置 debug，以下的功能才会生效。
-
-```kotlin
-initRetrofit {
-  debug(BuildConfig.DEBUG)
-}
-```
-
-##### 支持测试环境地址
-
-通常测试环境和生产环境的地址不一样，打不同的包经常改来改去会很麻烦，所以提供了 `@DebugUrl` 进行配置。如果没有使用该注解，会获取 `@BaseUrl` 配置的地址。
-
-```kotlin
-@DebugUrl
-const val DEBUG_URL = "http://192.168.1.3"
-```
-
-##### 打印请求数据日志
-
-请求的日志不应该在正式环境打印出来，所以限制了在 debug 模式下才会执行回调。
-
-```kotlin
-initRetrofit {
-  debug(BuildConfig.DEBUG)
-  addHttpLoggingInterceptor{ msg ->
-    Log.i(TAG,  msg)
-  }
-}
-```
-
 ### 网络请求
 
 #### 使用 RxJava
@@ -249,6 +217,39 @@ apiServiceOf<DownloadApi>()
 可以结合协程进行异步处理，不过暂未针对协程进行代码的封装优化，后续对协程封装后再补充例子。
 
 ### 其他用法
+
+#### 调试模式
+
+初始化时配置 debug，以下的功能才会生效。
+
+```kotlin
+initRetrofit {
+  debug(BuildConfig.DEBUG)
+}
+```
+
+##### 支持测试环境地址
+
+通常测试环境和生产环境的地址不一样，打不同的包经常改来改去会很麻烦，所以提供了 `@DebugUrl` 进行配置。如果没有使用该注解，会获取 `@BaseUrl` 配置的地址。
+
+```kotlin
+@DebugUrl
+const val DEBUG_URL = "http://192.168.1.3"
+```
+
+##### 打印请求数据日志
+
+请求的日志不应该在正式环境打印出来，所以限制了在 debug 模式下才会执行回调。
+
+```kotlin
+initRetrofit {
+  debug(BuildConfig.DEBUG)
+  addHttpLoggingInterceptor{ msg ->
+    Log.i(TAG,  msg)
+  }
+}
+```
+
 
 #### 运行时动态修改 BaseUrl
 
