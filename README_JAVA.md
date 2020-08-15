@@ -65,42 +65,6 @@ RetrofitHelper.getDefault()
   .init();
 ```
 
-#### 调试模式
-
-初始化时配置 debug，以下的功能才会生效。
-
-```java
-RetrofitHelper.getDefault()
-  .debug(BuildConfig.DEBUG)
-  .init();
-```
-
-##### 支持测试环境地址
-
-通常测试环境和生产环境的地址不一样，打不同的包经常改来改去会很麻烦，所以提供了 `@DebugUrl` 进行配置。如果没有使用该注解，会获取 `@BaseUrl` 配置的地址。
-
-```java
-public class Constants {
-  @BaseUrl
-  public static final String BASE_URL = "https://www.wanandroid.com";
-  @DebugUrl
-  public static final String DEBUG_URL = "http://192.168.1.3";
-}
-```
-
-##### 打印请求数据日志
-
-请求的日志不应该在正式环境打印出来，所以限制了在 debug 模式下才会执行回调。
-
-```java
-RetrofitHelper.getDefault()
-  .debug(BuildConfig.DEBUG)
-  .addHttpLoggingInterceptor(message -> {
-    Log.i(TAG, message);
-  })
-  .init();
-```
-
 ### 网络请求
 
 #### 使用 RxJava
@@ -258,6 +222,42 @@ RetrofitHelper.create(DownloadApi.class)
 ```
 
 ### 其他用法
+
+#### 调试模式
+
+初始化时配置 debug，以下的功能才会生效。
+
+```java
+RetrofitHelper.getDefault()
+  .debug(BuildConfig.DEBUG)
+  .init();
+```
+
+##### 支持测试环境地址
+
+通常测试环境和生产环境的地址不一样，打不同的包经常改来改去会很麻烦，所以提供了 `@DebugUrl` 进行配置。如果没有使用该注解，会获取 `@BaseUrl` 配置的地址。
+
+```java
+public class Constants {
+  @BaseUrl
+  public static final String BASE_URL = "https://www.wanandroid.com";
+  @DebugUrl
+  public static final String DEBUG_URL = "http://192.168.1.3";
+}
+```
+
+##### 打印请求数据日志
+
+请求的日志不应该在正式环境打印出来，所以限制了在 debug 模式下才会执行回调。
+
+```java
+RetrofitHelper.getDefault()
+  .debug(BuildConfig.DEBUG)
+  .addHttpLoggingInterceptor(message -> {
+    Log.i(TAG, message);
+  })
+  .init();
+```
 
 #### 运行时动态修改 BaseUrl
 
