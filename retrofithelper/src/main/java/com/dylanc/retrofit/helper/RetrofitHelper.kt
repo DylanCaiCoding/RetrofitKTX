@@ -3,9 +3,7 @@
 
 package com.dylanc.retrofit.helper
 
-import com.dylanc.retrofit.helper.interceptor.CacheControlInterceptor
-import com.dylanc.retrofit.helper.interceptor.DomainsInterceptor
-import com.dylanc.retrofit.helper.interceptor.HeaderInterceptor
+import com.dylanc.retrofit.helper.interceptor.*
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.CallAdapter
@@ -124,19 +122,17 @@ class Initiator private constructor() {
   @JvmOverloads
   fun addHttpLoggingInterceptor(
     level: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BODY,
-    log: (message: String) -> Unit
-  ) = addHttpLoggingInterceptor(level, object : HttpLoggingInterceptor.Logger {
-    override fun log(message: String) {
-      log(message)
-    }
-  })
+    logger: (message: String) -> Unit
+  ) = apply {
+    okHttpClientBuilder.addHttpLoggingInterceptor(level, logger)
+  }
 
   @JvmOverloads
   fun addHttpLoggingInterceptor(
     level: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BODY,
     logger: HttpLoggingInterceptor.Logger
   ) = apply {
-    addInterceptor(HttpLoggingInterceptor(logger).apply { this.level = level })
+    okHttpClientBuilder.addHttpLoggingInterceptor(level, logger)
   }
 
   fun addConverterFactory(factory: Converter.Factory) = apply {
@@ -160,8 +156,9 @@ class Initiator private constructor() {
     val okHttpClient = okHttpClientBuilder
       .apply {
         addInterceptor(domainsInterceptor)
+//        addDomains(DOMAIN_HEADER, domains)
         if (headers.isNotEmpty()) {
-          addInterceptor(HeaderInterceptor(headers))
+          addHeaders(headers)
         }
         if (debug) {
           for (interceptor in debugInterceptors) {

@@ -15,7 +15,7 @@ import java.io.File
  */
 @JvmOverloads
 @JvmName("create")
-fun String.toRequestBody(contentType: String = ContentType.JSON) =
+fun String.toRequestBody(contentType: String = ContentType.JSON): RequestBody =
   toRequestBody(contentType.toMediaTypeOrNull())
 
 @JvmName("create")
@@ -24,10 +24,10 @@ fun Any.toJsonBody() =
 
 @JvmOverloads
 @JvmName("create")
-fun File.asRequestBody(contentType: String = ContentType.JSON) =
+fun File.asRequestBody(contentType: String = ContentType.JSON): RequestBody =
   asRequestBody(contentType.toMediaTypeOrNull())
 
 @JvmOverloads
 @JvmName("create")
-fun jsonBodyOf(vararg params: Pair<String, Any>, block: HashMap<String, Any>.() -> Unit = {}) =
+fun jsonBodyOf(vararg params: Pair<String, Any>, block: HashMap<String, Any>.() -> Unit = {}): RequestBody =
   hashMapOf(*params).apply(block).toJsonBody()
