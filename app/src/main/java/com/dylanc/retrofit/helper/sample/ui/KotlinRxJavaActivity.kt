@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.dylanc.retrofit.helper.apiServiceOf
+import com.dylanc.retrofit.helper.create
 import com.dylanc.retrofit.helper.rxjava.autoDispose
 import com.dylanc.retrofit.helper.rxjava.io2mainThread
 import com.dylanc.retrofit.helper.rxjava.showLoading

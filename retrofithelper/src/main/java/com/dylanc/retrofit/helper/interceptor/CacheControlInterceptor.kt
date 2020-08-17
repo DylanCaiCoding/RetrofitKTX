@@ -4,9 +4,14 @@ package com.dylanc.retrofit.helper.interceptor
 
 import okhttp3.CacheControl
 import okhttp3.Interceptor
+import okhttp3.OkHttpClient
 
 fun cacheControlOf(block: CacheControl.Builder.() -> Unit): CacheControl =
   CacheControl.Builder().apply(block).build()
+
+fun OkHttpClient.Builder.cacheControl(onCreateCacheControl: () -> CacheControl?) = apply {
+  addNetworkInterceptor(CacheControlInterceptor(onCreateCacheControl))
+}
 
 class CacheControlInterceptor(
   private val onCreateCacheControl: () -> CacheControl?

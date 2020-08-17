@@ -3,6 +3,7 @@
 
 package com.dylanc.retrofit.helper
 
+import com.dylanc.retrofit.helper.annotations.ApiUrl
 import com.dylanc.retrofit.helper.interceptor.*
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
@@ -21,40 +22,63 @@ import kotlin.collections.HashMap
 private const val DOMAIN = "Domain"
 const val DOMAIN_HEADER = "$DOMAIN:"
 
-val retrofitInitiator: Initiator
-  @JvmName("getDefault")
-  get() = Initiator.INSTANCE
+@get:JvmName("getDefault")
+val retrofitInitializer: Builder by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { Builder() }
 
 @JvmName("init")
-fun initRetrofit(init: Initiator.() -> Unit) =
-  retrofitInitiator.apply(init).init()
+fun initRetrofit(init: Builder.() -> Unit) = retrofitInitializer.apply(init).init()
 
 @JvmName("create")
 fun <T> apiServiceOf(service: Class<T>): T {
-  if (!retrofitInitiator.isInitialized) {
-    retrofitInitiator.init()
+  if (!retrofitInitializer.isInitialized) {
+    retrofitInitializer.init()
   }
-  return retrofitInitiator.retrofit.create(service)
+  return retrofitInitializer.retrofit.apiServiceOf(service)
 }
 
-inline fun <reified T> apiServiceOf(): T =
-  apiServiceOf(T::class.java)
+inline fun <reified T> apiServiceOf(): T = apiServiceOf(T::class.java)
+
+fun <T> Retrofit.apiServiceOf(service: Class<T>): T {
+  val apiUrl = service.getAnnotation(ApiUrl::class.java)
+  return if (apiUrl != null) {
+    createRetrofit(apiUrl.value).create(service)
+  } else {
+    create(service)
+  }
+}
+
+//inline fun <reified T> Retrofit.create(): T = create(T::class.java)
+
+inline fun <reified T> Retrofit.create(): T =
+  if (T::class.java.getAnnotation(ApiUrl::class.java) != null) {
+    val apiUrl: ApiUrl = T::class.java.getAnnotation(ApiUrl::class.java)!!
+    createRetrofit(apiUrl.value).create(T::class.java)
+  } else {
+    create(T::class.java)
+  }
+
+@JvmOverloads
+fun Retrofit.createRetrofit(url: String, block: Retrofit.Builder.() -> Unit = {}): Retrofit =
+  newBuilder().baseUrl(url).apply(block).build()
 
 fun putDomain(domain: String, url: String) {
-  retrofitInitiator.domainsInterceptor.domains[domain] = url
+  retrofitInitializer.domains[domain] = url
 }
 
-class Initiator private constructor() {
+class Builder{
 
   private var debug: Boolean = false
   private val headers = HashMap<String, String>()
   private val debugInterceptors = ArrayList<Interceptor>()
   private val okHttpClientBuilder: OkHttpClient.Builder by lazy { OkHttpClient.Builder() }
-  private val retrofitBuilder: Retrofit.Builder by lazy { Retrofit.Builder() }
-  internal val domainsInterceptor: DomainsInterceptor by lazy {
-    DomainsInterceptor(DOMAIN, domains)
+  private val retrofitBuilder: Retrofit.Builder by lazy {
+    val baseUrl = baseUrl ?: throw NullPointerException("Please sets the base url by @BaseUrl.")
+    Retrofit.Builder().baseUrl(baseUrl)
   }
-  internal lateinit var retrofit: Retrofit
+  internal val domains: MutableMap<String, String> by lazy {
+    urlConfigOf<MutableMap<String, String>>("domains") ?: mutableMapOf()
+  }
+  lateinit var retrofit: Retrofit
     private set
 
   fun debug(debug: Boolean) = apply {
@@ -63,6 +87,10 @@ class Initiator private constructor() {
 
   fun addHeader(name: String, value: String) = apply {
     headers[name] = value
+  }
+
+  fun baseUrl(baseUrl: String) = apply {
+    retrofitBuilder.baseUrl(baseUrl)
   }
 
   @JvmOverloads
@@ -93,7 +121,7 @@ class Initiator private constructor() {
   }
 
   fun cacheControl(onCreateCacheControl: () -> CacheControl?) = apply {
-    okHttpClientBuilder.addNetworkInterceptor(CacheControlInterceptor(onCreateCacheControl))
+    okHttpClientBuilder.cacheControl(onCreateCacheControl)
   }
 
   fun cookieJar(cookieJar: CookieJar) = apply {
@@ -120,19 +148,19 @@ class Initiator private constructor() {
   }
 
   @JvmOverloads
-  fun addHttpLoggingInterceptor(
+  fun addHttpLog(
     level: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BODY,
     logger: (message: String) -> Unit
   ) = apply {
-    okHttpClientBuilder.addHttpLoggingInterceptor(level, logger)
+    okHttpClientBuilder.addHttpLog(level, logger)
   }
 
   @JvmOverloads
-  fun addHttpLoggingInterceptor(
+  fun addHttpLog(
     level: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BODY,
     logger: HttpLoggingInterceptor.Logger
   ) = apply {
-    okHttpClientBuilder.addHttpLoggingInterceptor(level, logger)
+    okHttpClientBuilder.addHttpLog(level, logger)
   }
 
   fun addConverterFactory(factory: Converter.Factory) = apply {
@@ -152,14 +180,10 @@ class Initiator private constructor() {
   }
 
   fun init() {
-    val baseUrl = baseUrl ?: throw NullPointerException("Please set the base url by @BaseUrl.")
     val okHttpClient = okHttpClientBuilder
+      .putDomains(DOMAIN_HEADER, domains)
+      .addHeaders(headers)
       .apply {
-        addInterceptor(domainsInterceptor)
-//        addDomains(DOMAIN_HEADER, domains)
-        if (headers.isNotEmpty()) {
-          addHeaders(headers)
-        }
         if (debug) {
           for (interceptor in debugInterceptors) {
             addInterceptor(interceptor)
@@ -168,7 +192,6 @@ class Initiator private constructor() {
       }
       .build()
     retrofit = retrofitBuilder
-      .baseUrl(baseUrl)
       .client(okHttpClient)
       .addConverterFactory(ScalarsConverterFactory.create())
       .addConverterFactory(GsonConverterFactory.create())
@@ -185,9 +208,6 @@ class Initiator private constructor() {
       urlConfigOf<String>("baseUrl")
     }
 
-  private val domains: MutableMap<String, String>
-    get() = urlConfigOf<MutableMap<String, String>>("domains") ?: mutableMapOf()
-
   @Suppress("UNCHECKED_CAST")
   private fun <T> urlConfigOf(fieldName: String): T? = try {
     val clazz = Class.forName("com.dylanc.retrofit.helper.UrlConfig")
@@ -198,9 +218,5 @@ class Initiator private constructor() {
   } catch (e: Exception) {
     e.printStackTrace()
     null
-  }
-
-  companion object {
-    internal val INSTANCE: Initiator by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { Initiator() }
   }
 }

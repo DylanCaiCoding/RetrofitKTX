@@ -28,7 +28,7 @@ public class App extends Application {
         .cacheControl(() -> new CacheControl.Builder()
             .maxAge(10, TimeUnit.MINUTES)
             .build())
-        .addHttpLoggingInterceptor(message -> {
+        .addHttpLog(message -> {
           Log.i("http", message);
         })
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

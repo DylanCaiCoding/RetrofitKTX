@@ -13,11 +13,12 @@ import java.util.HashMap
  * @author Dylan Cai
  */
 
-fun OkHttpClient.Builder.addHeader(name: String, value: String): OkHttpClient.Builder =
-  addHeaders(hashMapOf(name to value))
+fun OkHttpClient.Builder.addHeaders(vararg pairs: Pair<String,String>): OkHttpClient.Builder =
+  addHeaders(hashMapOf(*pairs))
 
-fun OkHttpClient.Builder.addHeaders(headers: HashMap<String, String>): OkHttpClient.Builder =
-  addInterceptor(HeaderInterceptor(headers))
+fun OkHttpClient.Builder.addHeaders(headers: HashMap<String, String>): OkHttpClient.Builder = apply {
+  if (headers.isNotEmpty()) addInterceptor(HeaderInterceptor(headers))
+}
 
 class HeaderInterceptor @JvmOverloads constructor(
   private val headers: HashMap<String, String> = HashMap()
