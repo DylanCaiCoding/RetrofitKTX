@@ -2,7 +2,7 @@
 
 package com.dylanc.retrofit.helper.sample.network
 
-import com.dylanc.retrofit.helper.Builder
+import com.dylanc.retrofit.helper.RetrofitHelper
 import io.reactivex.*
 import me.jessyan.progressmanager.ProgressListener
 import me.jessyan.progressmanager.ProgressManager
@@ -13,7 +13,7 @@ import org.reactivestreams.Publisher
  * @author Dylan Cai
  */
 
-fun Builder.observeProgress() =
+fun RetrofitHelper.Builder.observeProgress() =
   okHttpClientBuilder {
     ProgressManager.getInstance().with(this)
   }

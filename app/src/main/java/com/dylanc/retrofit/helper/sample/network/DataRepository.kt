@@ -2,8 +2,9 @@ package com.dylanc.retrofit.helper.sample.network
 
 import com.dylanc.retrofit.helper.apiServiceOf
 import com.dylanc.retrofit.helper.coroutines.request
-import com.dylanc.retrofit.helper.coroutines.requestState
+import com.dylanc.retrofit.helper.coroutines.result
 import com.dylanc.retrofit.helper.sample.api.CoroutinesApi
+import com.dylanc.retrofit.helper.sample.api.GankApi
 import com.dylanc.retrofit.helper.toFile
 
 object DataRepository {
@@ -13,10 +14,10 @@ object DataRepository {
   }
 
   suspend fun getGankTodayList() = request(responseHandler) {
-    apiServiceOf<CoroutinesApi>().getGankTodayList()
+    apiServiceOf<GankApi>().getGankTodayList()
   }
 
-  suspend fun login() = requestState(responseHandler) {
+  suspend fun login() = result(responseHandler) {
     apiServiceOf<CoroutinesApi>().login()
   }
 

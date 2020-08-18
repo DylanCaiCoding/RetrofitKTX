@@ -20,5 +20,3 @@ fun OkHttpClient.Builder.addHttpLog(
 ) = apply {
   addInterceptor(HttpLoggingInterceptor(logger).apply { this.level = level })
 }
-
-

@@ -24,10 +24,10 @@ public class App extends Application {
     RetrofitHelper.getDefault()
         .debug(BuildConfig.DEBUG)
         .retryOnConnectionFailure(false)
-        .cache(new Cache(new File(getCacheDir(), "response"), 10 * 1024 * 1024))
-        .cacheControl(() -> new CacheControl.Builder()
-            .maxAge(10, TimeUnit.MINUTES)
-            .build())
+//        .cache(new Cache(new File(getCacheDir(), "response"), 10 * 1024 * 1024))
+//        .cacheControl(() -> new CacheControl.Builder()
+//            .maxAge(10, TimeUnit.MINUTES)
+//            .build())
         .addHttpLog(message -> {
           Log.i("http", message);
         })

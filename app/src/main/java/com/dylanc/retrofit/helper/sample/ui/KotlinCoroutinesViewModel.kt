@@ -17,7 +17,7 @@ class KotlinCoroutinesViewModel : ViewModel() {
     emit(DataRepository.getGankTodayList())
   }
 
-  fun login() = requestStateLiveData {
+  fun login() = resultLiveData {
     emit(DataRepository.login())
   }
 
