@@ -26,6 +26,13 @@ const val DOMAIN_HEADER = "$DOMAIN:"
 
 fun initRetrofit(init: RetrofitHelper.Builder.() -> Unit) = RetrofitHelper.initializer.apply(init).init()
 
+fun retrofitOf(block: Retrofit.Builder.() -> Unit): Retrofit {
+  val baseUrl = urlConfigOf<String>("baseUrl") ?: throw NullPointerException("Please sets the base url by @BaseUrl.")
+  return Retrofit.Builder().baseUrl(baseUrl).apply(block).build()
+}
+
+fun okHttpClientOf(block: OkHttpClient.Builder.() -> Unit): OkHttpClient = OkHttpClient.Builder().apply(block).build()
+
 inline fun <reified T> apiServiceOf(retrofit: Retrofit = RetrofitHelper.defaultRetrofit): T = apiServiceOf(T::class.java, retrofit)
 
 fun <T> apiServiceOf(service: Class<T>, retrofit: Retrofit = RetrofitHelper.defaultRetrofit): T {
@@ -41,6 +48,18 @@ fun Retrofit.createRetrofit(url: String, block: Retrofit.Builder.() -> Unit = {}
   newBuilder().baseUrl(url).apply(block).build()
 
 fun putDomain(domain: String, url: String) = RetrofitHelper.putDomain(domain, url)
+
+@Suppress("UNCHECKED_CAST")
+private fun <T> urlConfigOf(fieldName: String): T? = try {
+  val clazz = Class.forName("com.dylanc.retrofit.helper.UrlConfig")
+  val urlConfig = clazz.newInstance()
+  clazz.getField(fieldName)[urlConfig] as T?
+} catch (e: NoSuchFieldException) {
+  null
+} catch (e: Exception) {
+  e.printStackTrace()
+  null
+}
 
 class RetrofitHelper private constructor(val retrofit: Retrofit, val domains: MutableMap<String, String>) {
   companion object {
@@ -212,17 +231,5 @@ class RetrofitHelper private constructor(val retrofit: Retrofit, val domains: Mu
       } else {
         urlConfigOf<String>("baseUrl")
       }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun <T> urlConfigOf(fieldName: String): T? = try {
-      val clazz = Class.forName("com.dylanc.retrofit.helper.UrlConfig")
-      val urlConfig = clazz.newInstance()
-      clazz.getField(fieldName)[urlConfig] as T?
-    } catch (e: NoSuchFieldException) {
-      null
-    } catch (e: Exception) {
-      e.printStackTrace()
-      null
-    }
   }
 }
