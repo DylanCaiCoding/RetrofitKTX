@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package com.dylanc.retrofit.helper
+package com.dylanc.retrofit.helper.body
 
 /**
  * @author Dylan Cai

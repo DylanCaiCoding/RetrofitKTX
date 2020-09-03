@@ -1,7 +1,7 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "NOTHING_TO_INLINE")
 @file:JvmName("RequestBodyFactory")
 
-package com.dylanc.retrofit.helper
+package com.dylanc.retrofit.helper.body
 
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -13,21 +13,21 @@ import java.io.File
 /**
  * @author Dylan Cai
  */
+
 @JvmOverloads
 @JvmName("create")
-fun String.toRequestBody(contentType: String = ContentType.JSON): RequestBody =
+inline fun String.toRequestBody(contentType: String = ContentType.JSON): RequestBody =
   toRequestBody(contentType.toMediaTypeOrNull())
 
 @JvmName("create")
-fun Any.toJsonBody() =
-  Gson().toJson(this).toRequestBody()
+inline fun Any.toJsonBody() = Gson().toJson(this).toRequestBody()
 
 @JvmOverloads
 @JvmName("create")
-fun File.asRequestBody(contentType: String = ContentType.JSON): RequestBody =
+inline fun File.asRequestBody(contentType: String = ContentType.MULTIPART): RequestBody =
   asRequestBody(contentType.toMediaTypeOrNull())
 
 @JvmOverloads
 @JvmName("create")
-fun jsonBodyOf(vararg params: Pair<String, Any>, block: HashMap<String, Any>.() -> Unit = {}): RequestBody =
+inline fun jsonBodyOf(vararg params: Pair<String, Any>, block: HashMap<String, Any>.() -> Unit = {}): RequestBody =
   hashMapOf(*params).apply(block).toJsonBody()

@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "NOTHING_TO_INLINE")
 
 package com.dylanc.retrofit.helper.rxjava
 
@@ -14,40 +14,40 @@ import java.io.File
  * @author Dylan Cai
  */
 
-fun <T> Observable<T>.io2mainThread(): Observable<T> =
+inline fun <T> Observable<T>.io2mainThread(): Observable<T> =
   compose(Transformers.io2mainThread())
 
-fun <T> Flowable<T>.io2mainThread(): Flowable<T> =
+inline fun <T> Flowable<T>.io2mainThread(): Flowable<T> =
   compose(Transformers.io2mainThread())
 
-fun <T> Single<T>.io2mainThread(): Single<T> =
+inline fun <T> Single<T>.io2mainThread(): Single<T> =
   compose(Transformers.io2mainThread())
 
-fun <T> Observable<T>.showLoading(requestLoading: RequestLoading): Observable<T> =
+inline fun <T> Observable<T>.showLoading(requestLoading: RequestLoading): Observable<T> =
   compose(Transformers.showLoading(requestLoading))
 
-fun <T> Flowable<T>.showLoading(requestLoading: RequestLoading): Flowable<T> =
+inline fun <T> Flowable<T>.showLoading(requestLoading: RequestLoading): Flowable<T> =
   compose(Transformers.showLoading(requestLoading))
 
-fun <T> Single<T>.showLoading(requestLoading: RequestLoading): Single<T> =
+inline fun <T> Single<T>.showLoading(requestLoading: RequestLoading): Single<T> =
   compose(Transformers.showLoading(requestLoading))
 
-fun <T> Observable<T>.showLoading(onLoading: (Boolean) -> Unit): Observable<T> =
+inline fun <T> Observable<T>.showLoading(noinline onLoading: (Boolean) -> Unit): Observable<T> =
   compose(Transformers.showLoading(onLoading))
 
-fun <T> Flowable<T>.showLoading(onLoading: (Boolean) -> Unit): Flowable<T> =
+inline fun <T> Flowable<T>.showLoading(noinline onLoading: (Boolean) -> Unit): Flowable<T> =
   compose(Transformers.showLoading(onLoading))
 
-fun <T> Single<T>.showLoading(onLoading: (Boolean) -> Unit): Single<T> =
+inline fun <T> Single<T>.showLoading(noinline onLoading: (Boolean) -> Unit): Single<T> =
   compose(Transformers.showLoading(onLoading))
 
-fun Observable<ResponseBody>.toFile(pathname: String): Observable<File> =
+inline fun Observable<ResponseBody>.toFile(pathname: String): Observable<File> =
   compose(Transformers.toFile(pathname))
 
-fun Flowable<ResponseBody>.toFile(pathname: String): Flowable<File> =
+inline fun Flowable<ResponseBody>.toFile(pathname: String): Flowable<File> =
   compose(Transformers.toFile(pathname))
 
-fun Single<ResponseBody>.toFile(pathname: String): Single<File> =
+inline fun Single<ResponseBody>.toFile(pathname: String): Single<File> =
   compose(Transformers.toFile(pathname))
 
 object Transformers {

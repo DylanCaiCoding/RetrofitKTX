@@ -5,7 +5,7 @@ import com.dylanc.retrofit.helper.coroutines.request
 import com.dylanc.retrofit.helper.coroutines.result
 import com.dylanc.retrofit.helper.sample.api.CoroutinesApi
 import com.dylanc.retrofit.helper.sample.api.GankApi
-import com.dylanc.retrofit.helper.toFile
+import com.dylanc.retrofit.helper.body.toFile
 
 object DataRepository {
 

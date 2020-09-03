@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "NOTHING_TO_INLINE")
 
 package com.dylanc.retrofit.helper.rxjava
 
@@ -12,31 +12,31 @@ import io.reactivex.*
  * @author Dylan Cai
  */
 
-fun <T> Observable<T>.autoDispose(
+inline fun <T> Observable<T>.autoDispose(
   lifecycleOwner: LifecycleOwner,
   untilEvent: Lifecycle.Event = Lifecycle.Event.ON_DESTROY
 ): ObservableSubscribeProxy<T> =
   autoDispose(AndroidLifecycleScopeProvider.from(lifecycleOwner, untilEvent))
 
-fun <T> Flowable<T>.autoDispose(
+inline fun <T> Flowable<T>.autoDispose(
   lifecycleOwner: LifecycleOwner,
   untilEvent: Lifecycle.Event = Lifecycle.Event.ON_DESTROY
 ): FlowableSubscribeProxy<T> =
   autoDispose(AndroidLifecycleScopeProvider.from(lifecycleOwner, untilEvent))
 
-fun <T> Single<T>.autoDispose(
+inline fun <T> Single<T>.autoDispose(
   lifecycleOwner: LifecycleOwner,
   untilEvent: Lifecycle.Event = Lifecycle.Event.ON_DESTROY
 ): SingleSubscribeProxy<T> =
   autoDispose(AndroidLifecycleScopeProvider.from(lifecycleOwner, untilEvent))
 
-fun <T> Maybe<T>.autoDispose(
+inline fun <T> Maybe<T>.autoDispose(
   lifecycleOwner: LifecycleOwner,
   untilEvent: Lifecycle.Event = Lifecycle.Event.ON_DESTROY
 ): MaybeSubscribeProxy<T> =
   autoDispose(AndroidLifecycleScopeProvider.from(lifecycleOwner, untilEvent))
 
-fun Completable.autoDispose(
+inline fun Completable.autoDispose(
   lifecycleOwner: LifecycleOwner,
   untilEvent: Lifecycle.Event = Lifecycle.Event.ON_DESTROY
 ): CompletableSubscribeProxy =

@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate", "NOTHING_TO_INLINE")
 
 package com.dylanc.retrofit.helper.interceptor
 
@@ -11,27 +11,29 @@ import okhttp3.Response
  * @author Dylan Cai
  */
 
-fun OkHttpClient.Builder.putDomains(headerKey: String, vararg pairs: Pair<String,String>): OkHttpClient.Builder =
-  putDomains(headerKey, hashMapOf(*pairs))
+private const val DOMAIN = "Domain"
+const val DOMAIN_HEADER = "$DOMAIN:"
 
-fun OkHttpClient.Builder.putDomains(headerKey: String, headers: Map<String, String>): OkHttpClient.Builder = apply {
-  if (headers.isNotEmpty()) addInterceptor(DomainsInterceptor(headerKey, headers.toMutableMap()))
+inline fun OkHttpClient.Builder.putDomains(vararg pairs: Pair<String, String>) =
+  putDomains(hashMapOf(*pairs))
+
+inline fun OkHttpClient.Builder.putDomains(domains: MutableMap<String, String>) = apply {
+  if (domains.isNotEmpty()) addInterceptor(DomainsInterceptor(domains))
 }
 
 class DomainsInterceptor(
-  private val headerKey: String,
-  private val domains: MutableMap<String, String>
+  val domains: MutableMap<String, String>
 ) : Interceptor {
 
   override fun intercept(chain: Interceptor.Chain): Response {
     val request = chain.request()
     val baseUrl = request.url
     val builder = request.newBuilder()
-    val headers = request.headers(headerKey)
+    val headers = request.headers(DOMAIN)
     return if (headers.isEmpty()) {
       chain.proceed(request)
     } else {
-      builder.removeHeader(headerKey)
+      builder.removeHeader(DOMAIN)
       val headerValue = headers[0]
       val url = if (domains.containsKey(headerValue)) {
         domains[headerValue]?.toHttpUrlOrNull()!!

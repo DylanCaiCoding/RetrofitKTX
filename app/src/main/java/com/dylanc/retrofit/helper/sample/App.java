@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.dylanc.retrofit.helper.RetrofitHelper;
+import com.dylanc.retrofit.helper.body.RequestBodyFactory;
 import com.dylanc.retrofit.helper.sample.network.DebugInterceptor;
 import com.dylanc.retrofit.helper.sample.network.HandleErrorInterceptor;
 
@@ -12,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 
 import kotlin.Unit;
 import me.jessyan.progressmanager.ProgressManager;
-import okhttp3.Cache;
 import okhttp3.CacheControl;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
@@ -24,10 +24,8 @@ public class App extends Application {
     RetrofitHelper.getDefault()
         .debug(BuildConfig.DEBUG)
         .retryOnConnectionFailure(false)
-//        .cache(new Cache(new File(getCacheDir(), "response"), 10 * 1024 * 1024))
-//        .cacheControl(() -> new CacheControl.Builder()
-//            .maxAge(10, TimeUnit.MINUTES)
-//            .build())
+//        .cache(new File(getCacheDir(), "response"), 10 * 1024 * 1024,
+//            () -> new CacheControl.Builder().maxAge(10, TimeUnit.MINUTES).build())
         .addHttpLog(message -> {
           Log.i("http", message);
         })
@@ -40,5 +38,7 @@ public class App extends Application {
           return Unit.INSTANCE;
         })
         .init();
+
+    RequestBodyFactory.create("");
   }
 }

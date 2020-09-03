@@ -30,9 +30,8 @@ const val BASE_URL = "https://www.wanandroid.com"
 ```kotlin
 initRetrofit {
   addHeader("key", "value")
-  cache(Cache(File(getCacheDir(), "response"), 10 * 1024 * 1024))
-  cacheControl {
-    cacheControlOf{
+  cache(File(getCacheDir(), "response"), 10 * 1024 * 1024) {
+    cacheControl{
       maxAge(10, TimeUnit.MINUTES)
     }
   }

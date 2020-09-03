@@ -32,10 +32,8 @@ public class Constants {
 ```java
 RetrofitHelper.getDefault()
   .addHeader("key", "value")
-  .cache(new Cache(new File(getCacheDir(), "response"), 10 * 1024 * 1024))
-  .cacheControl(() -> new CacheControl.Builder()
-    .maxAge(10, TimeUnit.MINUTES)
-    .build())
+  .cache(new File(getCacheDir(), "response"), 10 * 1024 * 1024,
+      () -> new CacheControl.Builder().maxAge(10, TimeUnit.MINUTES).build())
   .connectTimeout(15)
   .writeTimeout(15)
   .readTimeout(15)

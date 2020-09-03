@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate", "NOTHING_TO_INLINE")
 
 package com.dylanc.retrofit.helper.interceptor
 
@@ -13,20 +13,16 @@ import java.util.HashMap
  * @author Dylan Cai
  */
 
-fun OkHttpClient.Builder.addHeaders(vararg pairs: Pair<String,String>): OkHttpClient.Builder =
+inline fun OkHttpClient.Builder.addHeaders(vararg pairs: Pair<String, String>): OkHttpClient.Builder =
   addHeaders(hashMapOf(*pairs))
 
-fun OkHttpClient.Builder.addHeaders(headers: HashMap<String, String>): OkHttpClient.Builder = apply {
+inline fun OkHttpClient.Builder.addHeaders(headers: MutableMap<String, String>): OkHttpClient.Builder = apply {
   if (headers.isNotEmpty()) addInterceptor(HeaderInterceptor(headers))
 }
 
-class HeaderInterceptor @JvmOverloads constructor(
-  private val headers: HashMap<String, String> = HashMap()
+class HeaderInterceptor(
+  val headers: MutableMap<String, String>
 ) : Interceptor {
-
-  fun addHeader(name: String, value: String) {
-    headers[name] = value
-  }
 
   @Throws(IOException::class)
   override fun intercept(chain: Interceptor.Chain): Response {
