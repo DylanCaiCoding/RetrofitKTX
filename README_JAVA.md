@@ -11,8 +11,8 @@
 
 ```gradle
 dependencies {
-  implementation 'com.dylanc:retrofit-helper:1.1.1'
-  kapt 'com.dylanc:retrofit-helper-compiler:1.1.1'
+  implementation 'com.dylanc:retrofit-helper:1.2.0-beta2'
+  kapt 'com.dylanc:retrofit-helper-compiler:1.2.0-beta2'
 }
 ```
 
@@ -251,7 +251,7 @@ public class Constants {
 ```java
 RetrofitHelper.getDefault()
   .debug(BuildConfig.DEBUG)
-  .addHttpLoggingInterceptor(message -> {
+  .addHttpLog(message -> {
     Log.i(TAG, message);
   })
   .init();

@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.dylanc.retrofit.helper.apiServiceOf
+import com.dylanc.retrofit.helper.apiOf
 import com.dylanc.retrofit.helper.rxjava.autoDispose
 import com.dylanc.retrofit.helper.rxjava.io2mainThread
 import com.dylanc.retrofit.helper.rxjava.showLoading
@@ -35,7 +35,7 @@ class KotlinRxJavaActivity : AppCompatActivity() {
    * 测试普通请求
    */
   fun requestArticleList(view: View) {
-    apiServiceOf<RxJavaApi>()
+    apiOf<RxJavaApi>()
       .geArticleList(0)
       .io2mainThread()
       .showLoading(RxLoadingDialog(this))
@@ -49,7 +49,7 @@ class KotlinRxJavaActivity : AppCompatActivity() {
    * 测试不同 base url 的请求
    */
   fun requestGankTodayList(view: View) {
-    apiServiceOf<RxJavaApi>()
+    apiOf<RxJavaApi>()
       .getGankTodayList()
       .io2mainThread()
       .showLoading(RxLoadingDialog(this))
@@ -65,7 +65,7 @@ class KotlinRxJavaActivity : AppCompatActivity() {
    * 测试返回本地 json 的模拟请求
    */
   fun requestLogin(view: View) {
-    apiServiceOf<RxJavaApi>()
+    apiOf<RxJavaApi>()
       .login()
       .io2mainThread()
       .showLoading(RxLoadingDialog(this))
@@ -89,7 +89,7 @@ class KotlinRxJavaActivity : AppCompatActivity() {
         if (!granted) {
           toast("请授权访问文件权限")
         } else {
-          apiServiceOf<RxJavaApi>()
+          apiOf<RxJavaApi>()
             .download(DOWNLOAD_URL)
             .toFile(pathname)
             .observeDownload(DOWNLOAD_URL, { progressInfo ->

@@ -22,9 +22,9 @@ import kotlin.collections.HashMap
 
 inline fun initRetrofit(init: RetrofitHelper.Builder.() -> Unit) = RetrofitHelper.defaultBuilder.apply(init).init()
 
-inline fun <reified T> apiServiceOf(retrofit: Retrofit = RetrofitHelper.INSTANCE.retrofit): T = apiServiceOf(T::class.java, retrofit)
+inline fun <reified T> apiOf(retrofit: Retrofit = RetrofitHelper.INSTANCE.retrofit): T = apiOf(T::class.java, retrofit)
 
-inline fun <T> apiServiceOf(service: Class<T>, retrofit: Retrofit = RetrofitHelper.INSTANCE.retrofit): T {
+inline fun <T> apiOf(service: Class<T>, retrofit: Retrofit = RetrofitHelper.INSTANCE.retrofit): T {
   val apiUrl = service.getAnnotation(ApiUrl::class.java)
   return if (apiUrl != null) {
     retrofit.createRetrofit(apiUrl.value).create(service)
@@ -75,7 +75,7 @@ class RetrofitHelper private constructor(
     }
 
     @JvmStatic
-    fun <T> create(service: Class<T>): T = apiServiceOf(service, INSTANCE.retrofit)
+    fun <T> create(service: Class<T>): T = apiOf(service, INSTANCE.retrofit)
 
     @JvmStatic
     fun putDomain(domain: String, url: String) {

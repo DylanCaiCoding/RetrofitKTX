@@ -11,8 +11,8 @@ Kotlin | [Java](https://github.com/DylanCaiCoding/RetrofitHelper/blob/master/REA
 
 ```gradle
 dependencies {
-  implementation 'com.dylanc:retrofit-helper:1.1.1'
-  kapt 'com.dylanc:retrofit-helper-compiler:1.1.1'
+  implementation 'com.dylanc:retrofit-helper:1.2.0-beta2'
+  kapt 'com.dylanc:retrofit-helper-compiler:1.2.0-beta2'
 }
 ```
 
@@ -121,7 +121,7 @@ interface ArticleApi {
 ```
 
 ```kotlin
-apiServiceOf<ArticleApi>()
+apiOf<ArticleApi>()
   .geArticleList(page)
   .io2mainThread()
   .showLoading(RxLoadingDialog(this))
@@ -145,7 +145,7 @@ interface UserApi{
 ```
 
 ```kotlin
-apiServiceOf<UserApi>()
+apiOf<UserApi>()
   .login(jsonBodyOf(
     "username" to username,
     "password" to password
@@ -175,7 +175,7 @@ interface UploadApi{
 ```
 
 ```kotlin
-apiServiceOf<UploadApi>()
+apiOf<UploadApi>()
   .uploadImage(path.toPart("file"))
   //.uploadImages(pathList.toPartList("files"))
   .io2mainThread()
@@ -199,7 +199,7 @@ interface DownloadApi{
 ```
 
 ```kotlin
-apiServiceOf<DownloadApi>()
+apiOf<DownloadApi>()
   .download(url)
   .toFile(pathname)
   .showLoading(RxLoadingDialog(this))
@@ -243,7 +243,7 @@ const val DEBUG_URL = "http://192.168.1.3"
 ```kotlin
 initRetrofit {
   debug(BuildConfig.DEBUG)
-  addHttpLoggingInterceptor{ msg ->
+  addHttpLog{ msg ->
     Log.i(TAG,  msg)
   }
 }

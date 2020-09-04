@@ -29,9 +29,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'org.conscrypt:conscrypt-android:2.2.1'
-//    implementation 'org.javassist:javassist:3.27.0-GA'
-    api project(':retrofithelper-annotations')
-//    api "com.dylanc:retrofit-helper-annotations:$retrofit_helper_annotations_version"
+    api "com.dylanc:retrofit-helper-annotations:$retrofit_helper_annotations_version"
     api "com.squareup.okhttp3:okhttp:$okhttp_version"
     api "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
     api "com.squareup.retrofit2:retrofit:$retrofit_version"
@@ -44,7 +42,7 @@ publish {
     repoName = 'maven'
     groupId = 'com.dylanc'
     artifactId = 'retrofit-helper'
-    publishVersion = '1.2.0-beta'
+    publishVersion = '1.2.0-beta2'
     desc = 'An easy-to-use tool for Retrofit'
     website = 'https://github.com/DylanCaiCoding/RetrofitHelper'
 }
