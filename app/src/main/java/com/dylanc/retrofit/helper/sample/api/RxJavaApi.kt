@@ -1,9 +1,10 @@
 package com.dylanc.retrofit.helper.sample.api
 
-import com.dylanc.retrofit.helper.interceptor.DOMAIN_HEADER
+import com.dylanc.retrofit.helper.sample.network.DOMAIN_HEADER
 import com.dylanc.retrofit.helper.sample.bean.ApiResponse
 import com.dylanc.retrofit.helper.sample.bean.UserBean
 import io.reactivex.Single
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.http.*
 
@@ -21,7 +22,7 @@ interface RxJavaApi {
   fun getGankTodayList(): Single<String>
 
   @GET("/user/login")
-  fun login(): Single<ApiResponse<UserBean>>
+  fun login(@Body requestBody: RequestBody): Single<ApiResponse<UserBean>>
 
   @Streaming
   @GET

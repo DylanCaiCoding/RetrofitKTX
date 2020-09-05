@@ -5,22 +5,20 @@ package com.dylanc.retrofit.helper.interceptor
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
-import retrofit2.Retrofit
 import java.io.IOException
-import java.util.HashMap
 
 /**
  * @author Dylan Cai
  */
 
 inline fun OkHttpClient.Builder.addHeaders(vararg pairs: Pair<String, String>): OkHttpClient.Builder =
-  addHeaders(hashMapOf(*pairs))
+  addHeaders(mutableMapOf(*pairs))
 
 inline fun OkHttpClient.Builder.addHeaders(headers: MutableMap<String, String>): OkHttpClient.Builder = apply {
-  if (headers.isNotEmpty()) addInterceptor(HeaderInterceptor(headers))
+  if (headers.isNotEmpty()) addInterceptor(HeadersInterceptor(headers))
 }
 
-class HeaderInterceptor(
+class HeadersInterceptor(
   val headers: MutableMap<String, String>
 ) : Interceptor {
 

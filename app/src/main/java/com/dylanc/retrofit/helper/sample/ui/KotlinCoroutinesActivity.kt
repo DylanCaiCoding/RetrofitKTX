@@ -9,7 +9,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.dylanc.retrofit.helper.coroutines.observeResult
-import com.dylanc.retrofit.helper.retrofit
 import com.dylanc.retrofit.helper.rxjava.autoDispose
 import com.dylanc.retrofit.helper.sample.R
 import com.dylanc.retrofit.helper.sample.constant.DOWNLOAD_URL

@@ -2,7 +2,6 @@ package com.dylanc.retrofit.helper.compiler
 
 import com.dylanc.retrofit.helper.annotations.BaseUrl
 import com.dylanc.retrofit.helper.annotations.DebugUrl
-import com.dylanc.retrofit.helper.annotations.Domain
 import com.squareup.javapoet.*
 import java.io.IOException
 import java.util.*
@@ -32,12 +31,6 @@ class UrlProcessor : AbstractProcessor() {
   ): Boolean {
     val constructorBuilder = MethodSpec.constructorBuilder()
       .addModifiers(Modifier.PUBLIC)
-    val hashMapType = ParameterizedTypeName
-      .get(
-        ClassName.get(HashMap::class.java),
-        ClassName.get(String::class.java),
-        ClassName.get(String::class.java)
-      )
     var hasBinding = false
     val baseUrlElements = roundEnvironment.getElementsAnnotatedWith(BaseUrl::class.java)
     val debugUrlElements = roundEnvironment.getElementsAnnotatedWith(DebugUrl::class.java)
@@ -46,27 +39,13 @@ class UrlProcessor : AbstractProcessor() {
     if (baseUrlElements.size > 0) {
       hasBinding = true
     }
-    val domainElements = roundEnvironment.getElementsAnnotatedWith(Domain::class.java)
-    if (domainElements.size > 0) {
-      constructorBuilder.addStatement("domains = new \$T()", hashMapType)
-    }
-    for (element in domainElements) {
-      val variableElement = element as VariableElement
-      val className = ClassName.get(variableElement.enclosingElement.asType()).toString()
-      val fieldName = variableElement.simpleName.toString()
-      val domain = variableElement.getAnnotation(Domain::class.java)
-      checkVariableValidClass(variableElement)
-      constructorBuilder.addStatement("domains.put(\"${domain.value}\", $className.$fieldName)")
-    }
+
     val typeSpec =
       TypeSpec.classBuilder(ClassName.get("com.dylanc.retrofit.helper", "UrlConfig"))
         .addField(FieldSpec.builder(String::class.java, "baseUrl", Modifier.PUBLIC).build())
         .apply {
           if (debugUrlElements.size > 0) {
             addField(FieldSpec.builder(String::class.java, "debugUrl", Modifier.PUBLIC).build())
-          }
-          if (domainElements.size > 0) {
-            addField(FieldSpec.builder(hashMapType, "domains", Modifier.PUBLIC).build())
           }
         }
         .addMethod(constructorBuilder.build())
@@ -116,7 +95,6 @@ class UrlProcessor : AbstractProcessor() {
 
   override fun getSupportedAnnotationTypes(): Set<String> {
     return setOf(
-      Domain::class.java.canonicalName,
       DebugUrl::class.java.canonicalName,
       BaseUrl::class.java.canonicalName
     )

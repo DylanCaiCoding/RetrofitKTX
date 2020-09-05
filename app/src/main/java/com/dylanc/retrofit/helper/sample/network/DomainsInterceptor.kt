@@ -1,6 +1,6 @@
 @file:Suppress("unused", "MemberVisibilityCanBePrivate", "NOTHING_TO_INLINE")
 
-package com.dylanc.retrofit.helper.interceptor
+package com.dylanc.retrofit.helper.sample.network
 
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Interceptor

@@ -20,20 +20,13 @@ import kotlin.collections.HashMap
  * @author Dylan Cai
  */
 
+private const val NO_BASE_URL = "Please sets the base url by @BaseUrl."
+private val baseUrl get() = urlConfigOf<String>("baseUrl")
+
 inline fun initRetrofit(init: RetrofitHelper.Builder.() -> Unit) = RetrofitHelper.defaultBuilder.apply(init).init()
 
-inline fun <reified T> apiOf(retrofit: Retrofit = RetrofitHelper.INSTANCE.retrofit): T = apiOf(T::class.java, retrofit)
-
-inline fun <T> apiOf(service: Class<T>, retrofit: Retrofit = RetrofitHelper.INSTANCE.retrofit): T {
-  val apiUrl = service.getAnnotation(ApiUrl::class.java)
-  return if (apiUrl != null) {
-    retrofit.createRetrofit(apiUrl.value).create(service)
-  } else {
-    retrofit.create(service)
-  }
-}
-
-inline fun putDomain(domain: String, url: String) = RetrofitHelper.putDomain(domain, url)
+inline fun <reified T> apiOf(retrofitHelper: RetrofitHelper = RetrofitHelper.INSTANCE): T =
+  RetrofitHelper.create(T::class.java, retrofitHelper)
 
 fun retrofit(block: Retrofit.Builder.() -> Unit): Retrofit =
   Retrofit.Builder().baseUrl(baseUrl ?: throw NullPointerException(NO_BASE_URL)).apply(block).build()
@@ -43,9 +36,6 @@ inline fun Retrofit.Builder.okHttpClient(block: OkHttpClient.Builder.() -> Unit)
 
 inline fun Retrofit.createRetrofit(url: String, block: Retrofit.Builder.() -> Unit = {}): Retrofit =
   newBuilder().baseUrl(url).apply(block).build()
-
-private const val NO_BASE_URL = "Please sets the base url by @BaseUrl."
-private val baseUrl get() = urlConfigOf<String>("baseUrl")
 
 @Suppress("UNCHECKED_CAST")
 private fun <T> urlConfigOf(fieldName: String): T? = try {
@@ -59,10 +49,8 @@ private fun <T> urlConfigOf(fieldName: String): T? = try {
   null
 }
 
-class RetrofitHelper private constructor(
-  val retrofit: Retrofit,
-  val domains: MutableMap<String, String>
-) {
+class RetrofitHelper private constructor(retrofit: Retrofit) {
+  private val retrofits = mutableMapOf<String, Retrofit>().withDefault { retrofit }
 
   companion object {
     @JvmStatic
@@ -75,11 +63,14 @@ class RetrofitHelper private constructor(
     }
 
     @JvmStatic
-    fun <T> create(service: Class<T>): T = apiOf(service, INSTANCE.retrofit)
-
-    @JvmStatic
-    fun putDomain(domain: String, url: String) {
-      INSTANCE.domains[domain] = url
+    @JvmOverloads
+    fun <T> create(service: Class<T>, retrofitHelper: RetrofitHelper = INSTANCE): T {
+      val apiUrl = service.getAnnotation(ApiUrl::class.java)?.value
+      val retrofits = retrofitHelper.retrofits
+      if (apiUrl != null && retrofits[apiUrl] == null) {
+        retrofits[apiUrl] = retrofits.getValue("").createRetrofit(apiUrl)
+      }
+      return retrofits.getValue(apiUrl ?: "").create(service)
     }
   }
 
@@ -91,9 +82,6 @@ class RetrofitHelper private constructor(
     private val retrofitBuilder: Retrofit.Builder by lazy {
       Retrofit.Builder().baseUrl(baseUrlOrDebugUrl ?: throw NullPointerException(NO_BASE_URL))
     }
-    private val domains: MutableMap<String, String> by lazy {
-      urlConfigOf<MutableMap<String, String>>("domains") ?: mutableMapOf()
-    }
 
     fun debug(debug: Boolean) = apply {
       this.debug = debug
@@ -101,6 +89,10 @@ class RetrofitHelper private constructor(
 
     fun addHeader(name: String, value: String) = apply {
       headers[name] = value
+    }
+
+    fun addHeader(pair: Pair<String, String>) = apply {
+      headers[pair.first] = pair.second
     }
 
     fun baseUrl(baseUrl: String) = apply {
@@ -173,6 +165,10 @@ class RetrofitHelper private constructor(
       okHttpClientBuilder.addHttpLog(level, logger)
     }
 
+    fun doOnResponse(block: (Response, String, String) -> Response) = apply {
+      okHttpClientBuilder.doOnResponse(block)
+    }
+
     fun addConverterFactory(factory: Converter.Factory) = apply {
       retrofitBuilder.addConverterFactory(factory)
     }
@@ -191,7 +187,6 @@ class RetrofitHelper private constructor(
 
     fun build(): RetrofitHelper {
       val okHttpClient = okHttpClientBuilder
-        .putDomains(domains)
         .addHeaders(headers)
         .addDebugInterceptors()
         .build()
@@ -200,7 +195,7 @@ class RetrofitHelper private constructor(
         .addConverterFactory(ScalarsConverterFactory.create())
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-      return RetrofitHelper(retrofit, domains)
+      return RetrofitHelper(retrofit)
     }
 
     fun init() {
