@@ -1,11 +1,12 @@
 package com.dylanc.retrofit.helper.sample.api
 
-import com.dylanc.retrofit.helper.sample.network.DOMAIN_HEADER
 import com.dylanc.retrofit.helper.sample.bean.ApiResponse
 import com.dylanc.retrofit.helper.sample.bean.UserBean
-import okhttp3.RequestBody
 import okhttp3.ResponseBody
-import retrofit2.http.*
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Streaming
+import retrofit2.http.Url
 
 /**
  * @author Dylan Cai
@@ -16,7 +17,7 @@ interface CoroutinesApi {
   suspend fun geArticleList(@Path(value = "page") page: Int): String
 
   @GET("/user/login")
-  suspend fun login(@Body requestBody: RequestBody): ApiResponse<UserBean>
+  suspend fun login(): ApiResponse<UserBean>
 
   @Streaming
   @GET

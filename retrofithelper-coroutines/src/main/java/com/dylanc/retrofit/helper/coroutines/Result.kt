@@ -12,7 +12,6 @@ suspend fun <T : Any> result(
   }
 
 sealed class Result<out T> {
-  data class Loading(val isLoading: Boolean) : Result<Nothing>()
   data class Success<out T>(val data: T?) : Result<T>()
   data class Error(val error: Throwable) : Result<Nothing>()
 }

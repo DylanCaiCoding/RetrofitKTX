@@ -13,6 +13,7 @@ import com.dylanc.retrofit.helper.rxjava.io2mainThread
 import com.dylanc.retrofit.helper.rxjava.showLoading
 import com.dylanc.retrofit.helper.rxjava.toFile
 import com.dylanc.retrofit.helper.sample.R
+import com.dylanc.retrofit.helper.sample.api.GankApi
 import com.dylanc.retrofit.helper.sample.api.RxJavaApi
 import com.dylanc.retrofit.helper.sample.constant.DOWNLOAD_URL
 import com.dylanc.retrofit.helper.sample.network.observeDownload
@@ -49,8 +50,8 @@ class KotlinRxJavaActivity : AppCompatActivity() {
    * 测试不同 base url 的请求
    */
   fun requestGankTodayList(view: View) {
-    apiOf<RxJavaApi>()
-      .getGankTodayList()
+    apiOf<GankApi>()
+      .getGankTodayListByRxJava()
       .io2mainThread()
       .showLoading(RxLoadingDialog(this))
       .autoDispose(this)

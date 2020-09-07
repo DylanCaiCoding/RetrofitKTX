@@ -12,6 +12,7 @@ import com.dylanc.retrofit.helper.RetrofitHelper;
 import com.dylanc.retrofit.helper.rxjava.AutoDisposable;
 import com.dylanc.retrofit.helper.rxjava.Transformers;
 import com.dylanc.retrofit.helper.sample.R;
+import com.dylanc.retrofit.helper.sample.api.GankApi;
 import com.dylanc.retrofit.helper.sample.api.RxJavaApi;
 import com.dylanc.retrofit.helper.sample.constant.Constants;
 import com.dylanc.retrofit.helper.sample.network.rx.RxLoadingDialog;
@@ -42,8 +43,8 @@ public class JavaActivity extends AppCompatActivity {
   }
 
   public void requestGankTodayList(View view) {
-    RetrofitHelper.create(RxJavaApi.class)
-        .getGankTodayList()
+    RetrofitHelper.create(GankApi.class)
+        .getGankTodayListByRxJava()
         .compose(Transformers.io2mainThread())
         .compose(Transformers.showLoading(new RxLoadingDialog(this)))
         .as(AutoDisposable.bind(this))

@@ -1,27 +1,35 @@
 package com.dylanc.retrofit.helper.sample.ui
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
+import androidx.lifecycle.*
 import com.dylanc.retrofit.helper.coroutines.*
 import com.dylanc.retrofit.helper.sample.network.DataRepository
 
 class KotlinCoroutinesViewModel : ViewModel() {
-  private val requestExceptionHandler = RequestExceptionHandler()
-  val requestException = requestExceptionHandler.requestException
 
-  fun geArticleList() = liveData(requestExceptionHandler) {
-    emit(DataRepository.geArticleList())
-  }
+  val loading = LoadingLiveData()
+  val exception = ExceptionLiveData()
 
-  fun getGankTodayList() = liveData(requestExceptionHandler) {
-    emit(DataRepository.getGankTodayList())
-  }
+  fun geArticleList() =
+    DataRepository.geArticleList()
+      .showLoading(loading)
+      .catch(exception)
+      .asLiveData()
 
-  fun login() = resultLiveData {
-    emit(DataRepository.login())
-  }
+  fun getGankTodayList() =
+    DataRepository.getGankTodayList()
+      .showLoading(loading)
+      .catch(exception)
+      .asLiveData()
 
-  fun download(url: String, path: String) = liveData(requestExceptionHandler) {
-    emit(DataRepository.download(url, path))
-  }
+  fun login() =
+    DataRepository.login()
+      .showLoading(loading)
+      .catch(exception)
+      .asLiveData()
+
+  fun download(url: String, path: String) =
+    DataRepository.download(url, path)
+      .showLoading(loading)
+      .catch(exception)
+      .asLiveData()
 }

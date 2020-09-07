@@ -24,21 +24,24 @@ class KotlinCoroutinesActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_common)
-    viewModel.requestException
-      .observe(this, Observer {
+    viewModel.loading.observe(this, Observer {
+      if (it) {
+        loadingDialog.show(supportFragmentManager)
+      } else {
         loadingDialog.dismiss()
-        toast(it.message)
-      })
+      }
+    })
+    viewModel.exception.observe(this, Observer {
+      toast(it.message)
+    })
   }
 
   /**
    * 测试普通请求
    */
   fun requestArticleList(view: View) {
-    loadingDialog.show(supportFragmentManager)
     viewModel.geArticleList()
       .observe(this, Observer {
-        loadingDialog.dismiss()
         alert(it)
       })
   }
@@ -47,10 +50,8 @@ class KotlinCoroutinesActivity : AppCompatActivity() {
    * 测试不同 base url 的请求
    */
   fun requestGankTodayList(view: View) {
-    loadingDialog.show(supportFragmentManager)
     viewModel.getGankTodayList()
       .observe(this, Observer {
-        loadingDialog.dismiss()
         alert(it)
       })
   }
@@ -60,21 +61,9 @@ class KotlinCoroutinesActivity : AppCompatActivity() {
    */
   fun requestLogin(view: View) {
     viewModel.login()
-      .observeResult(this,
-        onLoading = {
-          if (it) {
-            loadingDialog.show(supportFragmentManager)
-          } else {
-            loadingDialog.dismiss()
-          }
-        },
-        onSuccess = { response ->
-          toast("登录${response!!.data.userName}成功")
-        },
-        onError = {
-          toast(it.message)
-        }
-      )
+      .observe(this, Observer {response->
+        toast("登录${response!!.data.userName}成功")
+      })
   }
 
   /**
@@ -89,10 +78,8 @@ class KotlinCoroutinesActivity : AppCompatActivity() {
         if (!granted) {
           toast("请授权访问文件权限")
         } else {
-          loadingDialog.show(supportFragmentManager)
           viewModel.download(DOWNLOAD_URL, pathname)
             .observe(this, Observer { file ->
-              loadingDialog.dismiss()
               toast("已下载到${file.path}")
             })
         }
