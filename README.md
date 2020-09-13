@@ -11,8 +11,8 @@ Kotlin | [Java](https://github.com/DylanCaiCoding/RetrofitHelper/blob/master/REA
 
 ```gradle
 dependencies {
-  implementation 'com.dylanc:retrofit-helper:1.2.0-beta2'
-  kapt 'com.dylanc:retrofit-helper-compiler:1.2.0-beta2'
+  implementation 'com.dylanc:retrofit-helper:1.2.0-rc'
+  kapt 'com.dylanc:retrofit-helper-compiler:1.2.0-rc'
 }
 ```
 
@@ -217,6 +217,18 @@ apiOf<DownloadApi>()
 
 ### 其他用法
 
+#### 不同 BaseUrl
+
+在接口类增加 `@ApiUrl` 注解来修改请求时的 baseUrl。
+
+```kotlin
+@ApiUrl("https://gank.io")
+interface GankApi{
+  @GET("/api/today")
+  fun getTodayList(): Single<String>
+}
+```
+
 #### 调试模式
 
 初始化时配置 debug，以下的功能才会生效。
@@ -247,32 +259,6 @@ initRetrofit {
     Log.i(TAG,  msg)
   }
 }
-```
-
-
-#### 运行时动态修改 BaseUrl
-
-在 url 常量增加 `@Domain` 注解：
-
-```kotlin
-@Domain("gank")
-const val URL_GANK = "https://gank.io"
-```
-
-请求的方法增加 Header：
-
-```kotlin
-interface GankApi{
-  @Headers(DOMAIN_HEADER + "gank")
-  @GET("/api/today")
-  fun getTodayList(): Single<String>
-}
-```
-
-如果在运行时需要动态修改域名：
-
-```kotlin
-putDomain("gank", "https://gank2.io")
 ```
 
 ### 混淆

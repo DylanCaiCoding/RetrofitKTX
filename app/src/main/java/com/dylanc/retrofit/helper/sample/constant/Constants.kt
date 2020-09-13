@@ -4,8 +4,6 @@ package com.dylanc.retrofit.helper.sample.constant
 
 import com.dylanc.retrofit.helper.annotations.BaseUrl
 import com.dylanc.retrofit.helper.annotations.DebugUrl
-import com.dylanc.retrofit.helper.annotations.Domain
-import com.dylanc.retrofit.helper.sample.BuildConfig
 
 @BaseUrl
 const val BASE_URL = "https://www.wanandroid.com"
