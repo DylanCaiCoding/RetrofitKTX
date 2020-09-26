@@ -11,8 +11,8 @@
 
 ```gradle
 dependencies {
-  implementation 'com.dylanc:retrofit-helper:1.2.0-rc'
-  kapt 'com.dylanc:retrofit-helper-compiler:1.2.0-rc'
+  implementation 'com.dylanc:retrofit-helper-core:1.2.0-rc2'
+  kapt 'com.dylanc:retrofit-helper-compiler:1.2.0-rc2'
 }
 ```
 

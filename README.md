@@ -11,8 +11,8 @@ Kotlin | [Java](https://github.com/DylanCaiCoding/RetrofitHelper/blob/master/REA
 
 ```gradle
 dependencies {
-  implementation 'com.dylanc:retrofit-helper:1.2.0-rc'
-  kapt 'com.dylanc:retrofit-helper-compiler:1.2.0-rc'
+  implementation 'com.dylanc:retrofit-helper-core:1.2.0-rc2'
+  kapt 'com.dylanc:retrofit-helper-compiler:1.2.0-rc2'
 }
 ```
 
@@ -121,7 +121,7 @@ interface ArticleApi {
 ```
 
 ```kotlin
-apiOf<ArticleApi>()
+apiServiceOf<ArticleApi>()
   .geArticleList(page)
   .io2mainThread()
   .showLoading(RxLoadingDialog(this))
@@ -145,7 +145,7 @@ interface UserApi{
 ```
 
 ```kotlin
-apiOf<UserApi>()
+apiServiceOf<UserApi>()
   .login(jsonBodyOf(
     "username" to username,
     "password" to password
@@ -175,7 +175,7 @@ interface UploadApi{
 ```
 
 ```kotlin
-apiOf<UploadApi>()
+apiServiceOf<UploadApi>()
   .uploadImage(path.toPart("file"))
   //.uploadImages(pathList.toPartList("files"))
   .io2mainThread()
@@ -199,7 +199,7 @@ interface DownloadApi{
 ```
 
 ```kotlin
-apiOf<DownloadApi>()
+apiServiceOf<DownloadApi>()
   .download(url)
   .toFile(pathname)
   .showLoading(RxLoadingDialog(this))

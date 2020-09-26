@@ -1,6 +1,6 @@
 package com.dylanc.retrofit.helper.sample.network
 
-import com.dylanc.retrofit.helper.apiOf
+import com.dylanc.retrofit.helper.apiServiceOf
 import com.dylanc.retrofit.helper.sample.api.CoroutinesApi
 import com.dylanc.retrofit.helper.sample.api.GankApi
 import com.dylanc.retrofit.helper.body.toFile
@@ -9,18 +9,18 @@ import kotlinx.coroutines.flow.flow
 object DataRepository {
 
   fun geArticleList() = flow {
-    emit(apiOf<CoroutinesApi>().geArticleList(0))
+    emit(apiServiceOf<CoroutinesApi>().geArticleList(0))
   }
 
   fun getGankTodayList() = flow {
-    emit(apiOf<GankApi>().getGankTodayListByCoroutines())
+    emit(apiServiceOf<GankApi>().getGankTodayListByCoroutines())
   }
 
   fun login() = flow {
-    emit(apiOf<CoroutinesApi>().login())
+    emit(apiServiceOf<CoroutinesApi>().login())
   }
 
   fun download(url: String, path: String) = flow {
-    emit(apiOf<CoroutinesApi>().download(url).toFile(path))
+    emit(apiServiceOf<CoroutinesApi>().download(url).toFile(path))
   }
 }
