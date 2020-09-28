@@ -71,7 +71,7 @@ RetrofitHelper.getDefault()
 
 ```gradle
 dependencies {
-  implementation 'com.dylanc:retrofit-helper-rxjava:1.1.1'
+  implementation 'com.dylanc:retrofit-helper-rxjava:1.2.0-rc2'
 }
 ```
 
