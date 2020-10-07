@@ -1,6 +1,6 @@
 # RetrofitHelper
 
-[![Download](https://api.bintray.com/packages/dylancai/maven/retrofit-helper/images/download.svg)](https://bintray.com/dylancai/maven/retrofit-helper/_latestVersion) [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://github.com/DylanCaiCoding/RetrofitHelper/blob/master/LICENSE)
+[ ![Download](https://api.bintray.com/packages/dylancai/maven/retrofit-helper-core/images/download.svg) ](https://bintray.com/dylancai/maven/retrofit-helper-core/_latestVersion)  [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://github.com/DylanCaiCoding/RetrofitHelper/blob/master/LICENSE)
 
 
 ## 用法
