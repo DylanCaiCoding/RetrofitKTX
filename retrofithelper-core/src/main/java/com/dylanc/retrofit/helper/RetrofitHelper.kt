@@ -25,7 +25,7 @@ private val baseUrl get() = urlConfigOf<String>("baseUrl")
 
 inline fun initRetrofit(init: RetrofitHelper.Builder.() -> Unit) = RetrofitHelper.defaultBuilder.apply(init).init()
 
-inline fun <reified T> apiOf(retrofitHelper: RetrofitHelper = RetrofitHelper.INSTANCE): T =
+inline fun <reified T> apiServiceOf(retrofitHelper: RetrofitHelper = RetrofitHelper.INSTANCE): T =
   RetrofitHelper.create(T::class.java, retrofitHelper)
 
 fun retrofit(block: Retrofit.Builder.() -> Unit): Retrofit =

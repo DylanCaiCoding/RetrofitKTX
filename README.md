@@ -1,6 +1,6 @@
 # RetrofitHelper
 
-[![Download](https://api.bintray.com/packages/dylancai/maven/retrofit-helper/images/download.svg)](https://bintray.com/dylancai/maven/retrofit-helper/_latestVersion) [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://github.com/DylanCaiCoding/RetrofitHelper/blob/master/LICENSE)
+[ ![Download](https://api.bintray.com/packages/dylancai/maven/retrofit-helper-core/images/download.svg) ](https://bintray.com/dylancai/maven/retrofit-helper-core/_latestVersion)  [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://github.com/DylanCaiCoding/RetrofitHelper/blob/master/LICENSE)
 
 
 ## 用法
@@ -11,8 +11,8 @@ Kotlin | [Java](https://github.com/DylanCaiCoding/RetrofitHelper/blob/master/REA
 
 ```gradle
 dependencies {
-  implementation 'com.dylanc:retrofit-helper:1.2.0-beta2'
-  kapt 'com.dylanc:retrofit-helper-compiler:1.2.0-beta2'
+  implementation 'com.dylanc:retrofit-helper-core:1.2.0-rc2'
+  kapt 'com.dylanc:retrofit-helper-compiler:1.2.0-rc2'
 }
 ```
 
@@ -70,7 +70,7 @@ initRetrofit {
 
 ```gradle
 dependencies {
-  implementation 'com.dylanc:retrofit-helper-rxjava:1.1.1'
+  implementation 'com.dylanc:retrofit-helper-rxjava:1.2.0-rc2'
 }
 ```
 
@@ -121,7 +121,7 @@ interface ArticleApi {
 ```
 
 ```kotlin
-apiOf<ArticleApi>()
+apiServiceOf<ArticleApi>()
   .geArticleList(page)
   .io2mainThread()
   .showLoading(RxLoadingDialog(this))
@@ -145,7 +145,7 @@ interface UserApi{
 ```
 
 ```kotlin
-apiOf<UserApi>()
+apiServiceOf<UserApi>()
   .login(jsonBodyOf(
     "username" to username,
     "password" to password
@@ -175,7 +175,7 @@ interface UploadApi{
 ```
 
 ```kotlin
-apiOf<UploadApi>()
+apiServiceOf<UploadApi>()
   .uploadImage(path.toPart("file"))
   //.uploadImages(pathList.toPartList("files"))
   .io2mainThread()
@@ -199,7 +199,7 @@ interface DownloadApi{
 ```
 
 ```kotlin
-apiOf<DownloadApi>()
+apiServiceOf<DownloadApi>()
   .download(url)
   .toFile(pathname)
   .showLoading(RxLoadingDialog(this))
@@ -216,6 +216,18 @@ apiOf<DownloadApi>()
 可以结合协程进行异步处理，不过暂未针对协程进行代码的封装优化，后续对协程封装后再补充例子。
 
 ### 其他用法
+
+#### 不同 BaseUrl
+
+在接口类增加 `@ApiUrl` 注解来修改请求时的 baseUrl。
+
+```kotlin
+@ApiUrl("https://gank.io")
+interface GankApi{
+  @GET("/api/today")
+  fun getTodayList(): Single<String>
+}
+```
 
 #### 调试模式
 
@@ -247,32 +259,6 @@ initRetrofit {
     Log.i(TAG,  msg)
   }
 }
-```
-
-
-#### 运行时动态修改 BaseUrl
-
-在 url 常量增加 `@Domain` 注解：
-
-```kotlin
-@Domain("gank")
-const val URL_GANK = "https://gank.io"
-```
-
-请求的方法增加 Header：
-
-```kotlin
-interface GankApi{
-  @Headers(DOMAIN_HEADER + "gank")
-  @GET("/api/today")
-  fun getTodayList(): Single<String>
-}
-```
-
-如果在运行时需要动态修改域名：
-
-```kotlin
-putDomain("gank", "https://gank2.io")
 ```
 
 ### 混淆

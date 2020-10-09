@@ -3,11 +3,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'com.novoda.bintray-release'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
@@ -41,8 +41,8 @@ publish {
     userOrg = 'dylancai'
     repoName = 'maven'
     groupId = 'com.dylanc'
-    artifactId = 'retrofit-helper'
-    publishVersion = '1.2.0-beta2'
+    artifactId = 'retrofit-helper-core'
+    publishVersion = '1.2.0-rc2'
     desc = 'An easy-to-use tool for Retrofit'
     website = 'https://github.com/DylanCaiCoding/RetrofitHelper'
 }

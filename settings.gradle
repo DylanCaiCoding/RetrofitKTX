@@ -1,5 +1,5 @@
 include ':retrofithelper-coroutines'
-include ':app', ':retrofithelper'
+include ':app', ':retrofithelper-core'
 include ':retrofithelper-rxjava'
 include ':retrofithelper-annotations'
 include ':retrofithelper-compiler'
