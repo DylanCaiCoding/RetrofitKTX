@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.dylanc.retrofit.helper.coroutines
 
 import androidx.lifecycle.*
@@ -9,11 +11,13 @@ import kotlinx.coroutines.flow.onStart
 
 @OptIn(ExperimentalCoroutinesApi::class)
 fun <T> Flow<T>.showLoading(loadingLiveData: LoadingLiveData) =
-  onStart {
-    loadingLiveData._loading.value = true
-  }.onCompletion {
-    loadingLiveData._loading.value = false
-  }
+  onStart { loadingLiveData._loading.value = true }
+    .onCompletion { loadingLiveData._loading.value = false }
+
+@OptIn(ExperimentalCoroutinesApi::class)
+fun <T> Flow<T>.showLoading(loadingLiveData: MutableLiveData<Boolean>) =
+  onStart { loadingLiveData.value = true }
+    .onCompletion { loadingLiveData.value = false }
 
 class LoadingLiveData : LiveData<Boolean>() {
   @Suppress("PropertyName")

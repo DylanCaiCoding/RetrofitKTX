@@ -122,7 +122,7 @@ class RetrofitHelper private constructor(retrofit: Retrofit) {
       okHttpClientBuilder.authenticator(authenticator)
     }
 
-    fun cache(directory: File, maxSize: Long, onCreateCacheControl: () -> CacheControl?) = apply {
+    fun cache(directory: File, maxSize: Long, onCreateCacheControl: (String) -> CacheControl?) = apply {
       okHttpClientBuilder.cache(directory, maxSize, onCreateCacheControl)
     }
 

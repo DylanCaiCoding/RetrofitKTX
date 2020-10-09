@@ -1,4 +1,4 @@
-package com.dylanc.retrofit.helper.sample.network
+package com.dylanc.retrofit.helper.sample.repository
 
 import com.dylanc.retrofit.helper.apiOf
 import com.dylanc.retrofit.helper.sample.api.CoroutinesApi

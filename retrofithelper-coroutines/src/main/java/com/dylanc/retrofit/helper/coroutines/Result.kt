@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.dylanc.retrofit.helper.coroutines
 
 

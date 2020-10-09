@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package com.dylanc.retrofit.helper.sample.network
+package com.dylanc.retrofit.helper.sample.network.rx
 
 import com.dylanc.retrofit.helper.RetrofitHelper
 import io.reactivex.*

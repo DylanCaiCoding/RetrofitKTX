@@ -4,7 +4,6 @@ import android.app.Application;
 import android.util.Log;
 
 import com.dylanc.retrofit.helper.RetrofitHelper;
-import com.dylanc.retrofit.helper.body.RequestBodyFactory;
 import com.dylanc.retrofit.helper.sample.network.DebugInterceptor;
 import com.dylanc.retrofit.helper.sample.network.HandleErrorInterceptor;
 
@@ -25,7 +24,7 @@ public class App extends Application {
         .debug(BuildConfig.DEBUG)
         .retryOnConnectionFailure(false)
 //        .cache(new File(getCacheDir(), "response"), 10 * 1024 * 1024,
-//            () -> new CacheControl.Builder().maxAge(10, TimeUnit.MINUTES).build())
+//            (url) -> new CacheControl.Builder().maxAge(1, TimeUnit.DAYS).build())
         .addHttpLog(message -> {
           Log.i("http", message);
         })
@@ -39,6 +38,5 @@ public class App extends Application {
         })
         .init();
 
-    RequestBodyFactory.create("");
   }
 }

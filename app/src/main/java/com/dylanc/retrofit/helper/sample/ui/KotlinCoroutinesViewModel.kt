@@ -2,7 +2,7 @@ package com.dylanc.retrofit.helper.sample.ui
 
 import androidx.lifecycle.*
 import com.dylanc.retrofit.helper.coroutines.*
-import com.dylanc.retrofit.helper.sample.network.DataRepository
+import com.dylanc.retrofit.helper.sample.repository.DataRepository
 
 class KotlinCoroutinesViewModel : ViewModel() {
 

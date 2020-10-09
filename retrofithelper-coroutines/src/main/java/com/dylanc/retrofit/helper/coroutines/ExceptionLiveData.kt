@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.dylanc.retrofit.helper.coroutines
 
 import androidx.lifecycle.*
@@ -8,9 +10,11 @@ import kotlinx.coroutines.flow.catch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 fun <T> Flow<T>.catch(exceptionLiveData: ExceptionLiveData) =
-  catch { e ->
-    exceptionLiveData._exception.value = e
-  }
+  catch { exceptionLiveData._exception.value = it }
+
+@OptIn(ExperimentalCoroutinesApi::class)
+fun <T> Flow<T>.catch(exceptionLiveData: MutableLiveData<Throwable>) =
+  catch { exceptionLiveData.value = it }
 
 class ExceptionLiveData : LiveData<Throwable>() {
   @Suppress("PropertyName")

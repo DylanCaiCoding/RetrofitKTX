@@ -59,7 +59,7 @@ public class JavaActivity extends AppCompatActivity {
         .login()
         .compose(Transformers.io2mainThread())
         .compose(Transformers.showLoading(new RxLoadingDialog(this)))
-        .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+        .as(AutoDisposable.bind(this))
         .subscribe(
             response -> toast("登录成功"),
             e -> toast(e.getMessage())
@@ -70,14 +70,14 @@ public class JavaActivity extends AppCompatActivity {
     final String pathname = Objects.requireNonNull(getExternalCacheDir()).getPath() + "/test.png";
     new RxPermissions(this)
         .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+        .as(AutoDisposable.bind(this))
         .subscribe(aBoolean -> {
           RetrofitHelper.create(RxJavaApi.class)
               .download(Constants.DOWNLOAD_URL)
               .compose(Transformers.toFile(pathname))
               .compose(Transformers.io2mainThread())
               .compose(Transformers.showLoading(new RxLoadingDialog(this)))
-              .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+              .as(AutoDisposable.bind(this))
               .subscribe(
                   file -> toast("已下载到" + file.getPath()),
                   e -> toast(e.getMessage())

@@ -16,7 +16,7 @@ import com.dylanc.retrofit.helper.sample.R
 import com.dylanc.retrofit.helper.sample.api.GankApi
 import com.dylanc.retrofit.helper.sample.api.RxJavaApi
 import com.dylanc.retrofit.helper.sample.constant.DOWNLOAD_URL
-import com.dylanc.retrofit.helper.sample.network.observeDownload
+import com.dylanc.retrofit.helper.sample.network.rx.observeDownload
 import com.dylanc.retrofit.helper.sample.network.rx.RxLoadingDialog
 import com.tbruyelle.rxpermissions2.RxPermissions
 
