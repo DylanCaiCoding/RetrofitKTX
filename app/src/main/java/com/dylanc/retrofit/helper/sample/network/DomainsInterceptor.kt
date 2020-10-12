@@ -1,7 +1,9 @@
 @file:Suppress("unused", "MemberVisibilityCanBePrivate", "NOTHING_TO_INLINE")
+@file:JvmName("Domain")
 
 package com.dylanc.retrofit.helper.sample.network
 
+import com.dylanc.retrofit.helper.RetrofitHelper
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -14,12 +16,11 @@ import okhttp3.Response
 private const val DOMAIN = "Domain"
 const val DOMAIN_HEADER = "$DOMAIN:"
 
-inline fun OkHttpClient.Builder.putDomains(vararg pairs: Pair<String, String>) =
-  putDomains(hashMapOf(*pairs))
+inline fun OkHttpClient.Builder.putDomains(domains: MutableMap<String, String>) =
+  addInterceptor(DomainsInterceptor(domains))
 
-inline fun OkHttpClient.Builder.putDomains(domains: MutableMap<String, String>) = apply {
-  if (domains.isNotEmpty()) addInterceptor(DomainsInterceptor(domains))
-}
+inline fun RetrofitHelper.Builder.putDomains(domains: MutableMap<String, String>) =
+  addInterceptor(DomainsInterceptor(domains))
 
 class DomainsInterceptor(
   val domains: MutableMap<String, String>

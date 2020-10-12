@@ -6,13 +6,10 @@ import android.util.Log;
 import com.dylanc.retrofit.helper.RetrofitHelper;
 import com.dylanc.retrofit.helper.sample.network.DebugInterceptor;
 import com.dylanc.retrofit.helper.sample.network.HandleErrorInterceptor;
-
-import java.io.File;
-import java.util.concurrent.TimeUnit;
+import com.dylanc.retrofit.helper.sample.network.PersistentCookie;
 
 import kotlin.Unit;
 import me.jessyan.progressmanager.ProgressManager;
-import okhttp3.CacheControl;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 public class App extends Application {
@@ -28,6 +25,7 @@ public class App extends Application {
         .addHttpLog(message -> {
           Log.i("http", message);
         })
+        .cookieJar(PersistentCookie.create(this))
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .addInterceptor(new HandleErrorInterceptor())
         .addInterceptor(new DebugInterceptor(this, "user/login", R.raw.login_success), true)
@@ -37,6 +35,5 @@ public class App extends Application {
           return Unit.INSTANCE;
         })
         .init();
-
   }
 }
