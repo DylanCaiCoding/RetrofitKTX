@@ -1,0 +1,53 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.novoda.bintray-release'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        kotlinOptions.freeCompilerArgs += ['-module-name', "retrofit_helper_autodispose"]
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    api "com.uber.autodispose:autodispose:$autodispose_version"
+    api "com.uber.autodispose:autodispose-android-archcomponents:$autodispose_version"
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+}
+
+publish {
+    userOrg = 'dylancai'
+    repoName = 'maven'
+    groupId = 'com.dylanc'
+    artifactId = 'retrofit-helper-autodispose'
+    publishVersion = '1.2.0-rc3'
+    desc = 'An easy-to-use tool for Retrofit'
+    website = 'https://github.com/DylanCaiCoding/RetrofitHelper'
+}
