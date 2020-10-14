@@ -13,17 +13,17 @@ import java.util.*
 
 @JvmOverloads
 @JvmName("create")
-inline fun String.toPart(name: String, contentType: String = ContentType.MULTIPART): MultipartBody.Part =
+inline fun String.toPart(name: String, contentType: String = "multipart/form-data"): MultipartBody.Part =
   File(this).toPart(name, contentType)
 
 @JvmOverloads
 @JvmName("create")
-inline fun File.toPart(name: String, contentType: String = ContentType.MULTIPART): MultipartBody.Part =
+inline fun File.toPart(name: String, contentType: String = "multipart/form-data"): MultipartBody.Part =
   MultipartBody.Part.createFormData(name, this.name, asRequestBody(contentType))
 
 @JvmOverloads
 @JvmName("create")
-inline fun List<String>.toPartList(name: String, contentType: String = ContentType.MULTIPART): List<MultipartBody.Part> {
+inline fun List<String>.toPartList(name: String, contentType: String = "multipart/form-data"): List<MultipartBody.Part> {
   val list = ArrayList<MultipartBody.Part>()
   for (pathname in this) {
     list.add(pathname.toPart(name, contentType))

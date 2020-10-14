@@ -63,8 +63,8 @@ object Transformers {
   @JvmStatic
   fun <T> showLoading(onLoading: (Boolean) -> Unit) =
     LoadingTransformer<T>(object : RequestLoading {
-      override fun show(isShow: Boolean) {
-        onLoading(isShow)
+      override fun show(isLoading: Boolean) {
+        onLoading(isLoading)
       }
     })
 

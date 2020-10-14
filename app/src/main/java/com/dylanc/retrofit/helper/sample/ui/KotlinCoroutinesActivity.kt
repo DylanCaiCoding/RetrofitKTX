@@ -8,8 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import com.dylanc.retrofit.helper.coroutines.observeResult
-import com.dylanc.retrofit.helper.rxjava.autoDispose
+import com.dylanc.retrofit.helper.autodispose.autoDispose
 import com.dylanc.retrofit.helper.sample.R
 import com.dylanc.retrofit.helper.sample.constant.DOWNLOAD_URL
 import com.dylanc.retrofit.helper.sample.network.LoadingDialog
@@ -19,17 +18,13 @@ import com.tbruyelle.rxpermissions2.RxPermissions
 class KotlinCoroutinesActivity : AppCompatActivity() {
 
   private val viewModel: KotlinCoroutinesViewModel by viewModels()
-  private val loadingDialog = LoadingDialog()
+  private val loadingDialog by lazy { LoadingDialog(this) }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_common)
     viewModel.loading.observe(this, Observer {
-      if (it) {
-        loadingDialog.show(supportFragmentManager)
-      } else {
-        loadingDialog.dismiss()
-      }
+      loadingDialog.show(it)
     })
     viewModel.exception.observe(this, Observer {
       toast(it.message)

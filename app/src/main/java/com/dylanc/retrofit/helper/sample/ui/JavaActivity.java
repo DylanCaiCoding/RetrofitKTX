@@ -9,13 +9,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dylanc.retrofit.helper.RetrofitHelper;
-import com.dylanc.retrofit.helper.rxjava.AutoDisposable;
+import com.dylanc.retrofit.helper.autodispose.AutoDisposable;
 import com.dylanc.retrofit.helper.rxjava.Transformers;
 import com.dylanc.retrofit.helper.sample.R;
 import com.dylanc.retrofit.helper.sample.api.GankApi;
 import com.dylanc.retrofit.helper.sample.api.RxJavaApi;
 import com.dylanc.retrofit.helper.sample.constant.Constants;
-import com.dylanc.retrofit.helper.sample.network.rx.RxLoadingDialog;
+import com.dylanc.retrofit.helper.sample.network.LoadingDialog;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.Objects;
@@ -32,7 +32,7 @@ public class JavaActivity extends AppCompatActivity {
     RetrofitHelper.create(RxJavaApi.class)
         .geArticleList(0)
         .compose(Transformers.io2mainThread())
-        .compose(Transformers.showLoading(new RxLoadingDialog(this)))
+        .compose(Transformers.showLoading(new LoadingDialog(this)))
         .as(AutoDisposable.bind(this))
         .subscribe(
             this::alert,
@@ -44,7 +44,7 @@ public class JavaActivity extends AppCompatActivity {
     RetrofitHelper.create(GankApi.class)
         .getGankTodayListByRxJava()
         .compose(Transformers.io2mainThread())
-        .compose(Transformers.showLoading(new RxLoadingDialog(this)))
+        .compose(Transformers.showLoading(new LoadingDialog(this)))
         .as(AutoDisposable.bind(this))
         .subscribe(
             this::alert,
@@ -56,7 +56,7 @@ public class JavaActivity extends AppCompatActivity {
     RetrofitHelper.create(RxJavaApi.class)
         .login()
         .compose(Transformers.io2mainThread())
-        .compose(Transformers.showLoading(new RxLoadingDialog(this)))
+        .compose(Transformers.showLoading(new LoadingDialog(this)))
         .as(AutoDisposable.bind(this))
         .subscribe(
             response -> toast("登录成功"),
@@ -74,7 +74,7 @@ public class JavaActivity extends AppCompatActivity {
               .download(Constants.DOWNLOAD_URL)
               .compose(Transformers.toFile(pathname))
               .compose(Transformers.io2mainThread())
-              .compose(Transformers.showLoading(new RxLoadingDialog(this)))
+              .compose(Transformers.showLoading(new LoadingDialog(this)))
               .as(AutoDisposable.bind(this))
               .subscribe(
                   file -> toast("已下载到" + file.getPath()),

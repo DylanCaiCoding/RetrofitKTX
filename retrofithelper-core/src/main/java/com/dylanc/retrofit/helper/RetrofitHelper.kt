@@ -95,6 +95,10 @@ class RetrofitHelper private constructor(retrofit: Retrofit) {
       headers[pair.first] = pair.second
     }
 
+    fun addHeaders(vararg pairs: Pair<String, String>) = apply {
+      okHttpClientBuilder.addHeaders(*pairs)
+    }
+
     fun baseUrl(baseUrl: String) = apply {
       retrofitBuilder.baseUrl(baseUrl)
     }

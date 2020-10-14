@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.dylanc.retrofit.helper.RetrofitHelper;
 import com.dylanc.retrofit.helper.sample.network.DebugInterceptor;
-import com.dylanc.retrofit.helper.sample.network.HandleErrorInterceptor;
+import com.dylanc.retrofit.helper.sample.network.GlobalErrorHandler;
 import com.dylanc.retrofit.helper.sample.network.PersistentCookie;
 
 import kotlin.Unit;
@@ -25,9 +25,9 @@ public class App extends Application {
         .addHttpLog(message -> {
           Log.i("http", message);
         })
+        .doOnResponse(GlobalErrorHandler::handleResponse)
         .cookieJar(PersistentCookie.create(this))
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-        .addInterceptor(new HandleErrorInterceptor())
         .addInterceptor(new DebugInterceptor(this, "user/login", R.raw.login_success), true)
         .okHttpClientBuilder(builder -> {
           ProgressManager.getInstance().with(builder);

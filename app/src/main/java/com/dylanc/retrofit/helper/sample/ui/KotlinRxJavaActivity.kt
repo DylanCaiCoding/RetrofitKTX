@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.dylanc.retrofit.helper.apiServiceOf
-import com.dylanc.retrofit.helper.rxjava.autoDispose
+import com.dylanc.retrofit.helper.autodispose.autoDispose
 import com.dylanc.retrofit.helper.rxjava.io2mainThread
 import com.dylanc.retrofit.helper.rxjava.showLoading
 import com.dylanc.retrofit.helper.rxjava.toFile
@@ -16,8 +16,8 @@ import com.dylanc.retrofit.helper.sample.R
 import com.dylanc.retrofit.helper.sample.api.GankApi
 import com.dylanc.retrofit.helper.sample.api.RxJavaApi
 import com.dylanc.retrofit.helper.sample.constant.DOWNLOAD_URL
-import com.dylanc.retrofit.helper.sample.network.rx.observeDownload
-import com.dylanc.retrofit.helper.sample.network.rx.RxLoadingDialog
+import com.dylanc.retrofit.helper.sample.network.LoadingDialog
+import com.dylanc.retrofit.helper.sample.network.observeDownload
 import com.tbruyelle.rxpermissions2.RxPermissions
 
 /**
@@ -39,7 +39,7 @@ class KotlinRxJavaActivity : AppCompatActivity() {
     apiServiceOf<RxJavaApi>()
       .geArticleList(0)
       .io2mainThread()
-      .showLoading(RxLoadingDialog(this))
+      .showLoading(LoadingDialog(this))
       .autoDispose(this)
       .subscribe({
         alert(it)
@@ -53,7 +53,7 @@ class KotlinRxJavaActivity : AppCompatActivity() {
     apiServiceOf<GankApi>()
       .getGankTodayListByRxJava()
       .io2mainThread()
-      .showLoading(RxLoadingDialog(this))
+      .showLoading(LoadingDialog(this))
       .autoDispose(this)
       .subscribe({
         alert(it)
@@ -69,7 +69,7 @@ class KotlinRxJavaActivity : AppCompatActivity() {
     apiServiceOf<RxJavaApi>()
       .login()
       .io2mainThread()
-      .showLoading(RxLoadingDialog(this))
+      .showLoading(LoadingDialog(this))
       .autoDispose(this)
       .subscribe({ result ->
         toast("登录${result.data.userName}成功")
@@ -98,7 +98,7 @@ class KotlinRxJavaActivity : AppCompatActivity() {
             }, { _, _ ->
               Log.e("download", "下载失败")
             })
-            .showLoading(RxLoadingDialog(this))
+            .showLoading(LoadingDialog(this))
             .autoDispose(this)
             .subscribe({ file ->
               toast("已下载到${file.path}")
