@@ -7,7 +7,7 @@ buildscript {
         okhttp_version = '4.7.2'
         retrofit_version = '2.9.0'
         rxandroid_version = '2.1.1'
-        retrofit_helper_annotations_version = '1.2.0-rc2'
+        retrofit_helper_annotations_version = '1.2.0-rc3'
     }
     repositories {
         google()
