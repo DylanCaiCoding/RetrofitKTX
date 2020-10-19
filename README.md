@@ -1,7 +1,16 @@
 # RetrofitHelper
 
-[ ![Download](https://api.bintray.com/packages/dylancai/maven/retrofit-helper-core/images/download.svg) ](https://bintray.com/dylancai/maven/retrofit-helper-core/_latestVersion)  [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://github.com/DylanCaiCoding/RetrofitHelper/blob/master/LICENSE)
+[![Download](https://api.bintray.com/packages/dylancai/maven/retrofit-helper-core/images/download.svg)](https://bintray.com/dylancai/maven/retrofit-helper-core/_latestVersion)  [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://github.com/DylanCaiCoding/RetrofitHelper/blob/master/LICENSE)
 
+## 简介
+
+RetrofitHelper 是使用 Kotlin 封装的 Retrofit 工具，让 Retrofit 的请求更加简单方便。
+
+- 兼顾 Java 和 Kotlin 的使用。结合了 Kotlin 的特性，在使用 Kotlin 请求时会更加简洁；
+- 用注解管理 baseUrl；
+- 增加 debug 模式；
+- 可配置 loading 弹框；
+- 对协程进行了封装优化；
 
 ## 用法
 
@@ -11,30 +20,31 @@ Kotlin | [Java](https://github.com/DylanCaiCoding/RetrofitHelper/blob/master/REA
 
 ```gradle
 dependencies {
-  implementation 'com.dylanc:retrofit-helper-core:1.2.0-rc2'
-  kapt 'com.dylanc:retrofit-helper-compiler:1.2.0-rc2'
+  implementation 'com.dylanc:retrofit-helper-core:1.2.0'
+  kapt 'com.dylanc:retrofit-helper-compiler:1.2.0'
+  // 可选
+  implementation 'com.dylanc:retrofit-helper-rxjava:1.2.0'
+  implementation 'com.dylanc:retrofit-helper-autodispose:1.2.0'
+  implementation 'com.dylanc:retrofit-helper-coroutines:1.2.0'
 }
 ```
 
 ### 初始化
 
-使用 `@BaseUrl` 注解配置 BaseUrl，例如：
-
-```kotlin
-@BaseUrl
-const val BASE_URL = "https://www.wanandroid.com"
-```
-
-没有其它配置要求就可以直接请求了，如有需要可以进行以下配置：
+初始化是非必要的，以下是可选的常用配置：
 
 ```kotlin
 initRetrofit {
+  debug(BuildConfig.DEBUG)
   addHeader("key", "value")
-  cache(File(getCacheDir(), "response"), 10 * 1024 * 1024) {
-    cacheControl{
-      maxAge(10, TimeUnit.MINUTES)
+  cache(File(cacheDir, "response"), 10 * 1024 * 1024) { // 缓存策略
+    if (!NetworkUtils.isAvailable()) {
+      cacheControl { maxAge(1, TimeUnit.DAYS) } // 比如在网络不可用时取一天内的缓存
+    } else {
+      null
     }
   }
+  addHttpLog { Log.d("http", it) }  // 开启了 debug 模式才会打印日志
   connectTimeout(15)
   writeTimeout(15)
   readTimeout(15)
@@ -48,11 +58,11 @@ initRetrofit {
 }
 ```
 
-如果上述提供的常用配置方法还不满足需求，可以配置 OkHttpClientBuilder 和 RetrofitBuilder 达到所需的效果，比如：
+如果上述提供的常用配置方法还不满足需求，可以直接对 OkHttpClientBuilder 和 RetrofitBuilder 进行配置，比如：
 
 ```kotlin
 initRetrofit {
-  // 其它配置
+  ...
   okHttpClientBuilder {
     sslSocketFactory(sslSocketFactory)
   }
@@ -62,17 +72,33 @@ initRetrofit {
 }
 ```
 
+### 配置 baseUrl
+
+用注解 `@BaseUrl` 配置 baseUrl。如果初始化时设置了 debug ，会使用 `@DebugUrl` 注解修饰的域名。
+
+```kotlin
+@BaseUrl
+const val BASE_URL = "https://www.wanandroid.com/"
+
+@DebugUrl  // 可选
+const val DEBUG_URL = "http://192.168.1.3"
+```
+
+如果想实现多 baseUrl，在接口类增加 `@ApiUrl` 注解来修改该类请求的 baseUrl。
+
+```kotlin
+@ApiUrl("https://gank.io")
+interface GankApi{
+  @GET("/api/today")
+  fun getTodayList(): Single<String>
+}
+```
+
 ### 网络请求
 
 #### 使用 RxJava
 
-添加相应的依赖和配置 `RxJava2CallAdapterFactory`：
-
-```gradle
-dependencies {
-  implementation 'com.dylanc:retrofit-helper-rxjava:1.2.0-rc2'
-}
-```
+添加 rxjava 和 autodispose 依赖，并配置 `RxJava2CallAdapterFactory`：
 
 ```kotlin
 initRetrofit {
@@ -83,27 +109,20 @@ initRetrofit {
 如果需要在请求的时候显示 loading 动画，先实现 `RequestLoading` 接口：
 
 ```kotlin
-class RxLoadingDialog(private val activity: FragmentActivity) : RequestLoading {
-
-  private val loadingDialog = LoadingDialogFragment()
-
-  override fun show() {
-    loadingDialog.show(activity.supportFragmentManager, "loading")
+class LoadingDialog(private val fragmentActivity: FragmentActivity) : DialogFragment(), RequestLoading {
+  override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+    return AlertDialog.Builder(fragmentActivity)
+        .setTitle("loading")
+        .setMessage("wait a minute...")
+        .setCancelable(false)
+        .create()
   }
 
-  override fun dismiss() {
-    loadingDialog.dismiss()
-  }
-
-  class LoadingDialogFragment : DialogFragment() {
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-      return activity?.let {
-        AlertDialog.Builder(it)
-          .setTitle("loading")
-          .setMessage("wait a minute...")
-          .setCancelable(false)
-          .create()
-      } ?: throw IllegalStateException("Activity cannot be null")
+  override fun show(isLoading: Boolean) {
+    if (isLoading) {
+      show(fragmentActivity.supportFragmentManager, "loading")
+    } else {
+      dismiss()
     }
   }
 }
@@ -123,9 +142,9 @@ interface ArticleApi {
 ```kotlin
 apiServiceOf<ArticleApi>()
   .geArticleList(page)
-  .io2mainThread()
-  .showLoading(RxLoadingDialog(this))
-  .autoDispose(this)
+  .io2mainThread()                  // 切换线程
+  .showLoading(LoadingDialog(this)) // 显示弹框，参数是 RequestLoading 接口
+  .autoDispose(this)                // 绑定生命周期
   .subscribe({ json ->
     Toast.makeText(this, json, Toast.LENGTH_SHORT).show()
   }, { e ->
@@ -135,23 +154,19 @@ apiServiceOf<ArticleApi>()
 
 ##### Post 请求
 
-键值对的请求方式大同小异，这里以传 Json 数据的请求方式为例：
-
 ```kotlin
 interface UserApi{
+  @FormUrlEncoded
   @POST("/user/login")
-  fun login(@Body requestBody: RequestBody): Single<String>
+  fun login(@Field("username") username: String, @Field("password") password: String): Single<String>
 }
 ```
 
 ```kotlin
 apiServiceOf<UserApi>()
-  .login(jsonBodyOf(
-    "username" to username,
-    "password" to password
-  ))
+  .login(username, password)
   .io2mainThread()
-  .showLoading(RxLoadingDialog(this))
+  .showLoading(LoadingDialog(this))
   .autoDispose(this)
   .subscribe({ json ->
     Toast.makeText(this, json, Toast.LENGTH_SHORT).show()
@@ -179,7 +194,7 @@ apiServiceOf<UploadApi>()
   .uploadImage(path.toPart("file"))
   //.uploadImages(pathList.toPartList("files"))
   .io2mainThread()
-  .showLoading(RxLoadingDialog(this))
+  .showLoading(LoadingDialog(this))
   .autoDispose(this)
   .subscribe({
     Toast.makeText(this, "上传成功", Toast.LENGTH_SHORT).show()
@@ -202,7 +217,7 @@ interface DownloadApi{
 apiServiceOf<DownloadApi>()
   .download(url)
   .toFile(pathname)
-  .showLoading(RxLoadingDialog(this))
+  .showLoading(LoadingDialog(this))
   .autoDispose(this)
   .subscribe({ file ->
     Toast.makeText(this, "已下载到${file.path}", Toast.LENGTH_SHORT).show()
@@ -213,53 +228,7 @@ apiServiceOf<DownloadApi>()
 
 #### 使用协程
 
-可以结合协程进行异步处理，不过暂未针对协程进行代码的封装优化，后续对协程封装后再补充例子。
-
-### 其他用法
-
-#### 不同 BaseUrl
-
-在接口类增加 `@ApiUrl` 注解来修改请求时的 baseUrl。
-
-```kotlin
-@ApiUrl("https://gank.io")
-interface GankApi{
-  @GET("/api/today")
-  fun getTodayList(): Single<String>
-}
-```
-
-#### 调试模式
-
-初始化时配置 debug，以下的功能才会生效。
-
-```kotlin
-initRetrofit {
-  debug(BuildConfig.DEBUG)
-}
-```
-
-##### 支持测试环境地址
-
-通常测试环境和生产环境的地址不一样，打不同的包经常改来改去会很麻烦，所以提供了 `@DebugUrl` 进行配置。如果没有使用该注解，会获取 `@BaseUrl` 配置的地址。
-
-```kotlin
-@DebugUrl
-const val DEBUG_URL = "http://192.168.1.3"
-```
-
-##### 打印请求数据日志
-
-请求的日志不应该在正式环境打印出来，所以限制了在 debug 模式下才会执行回调。
-
-```kotlin
-initRetrofit {
-  debug(BuildConfig.DEBUG)
-  addHttpLog{ msg ->
-    Log.i(TAG,  msg)
-  }
-}
-```
+待补充。
 
 ### 混淆
 
