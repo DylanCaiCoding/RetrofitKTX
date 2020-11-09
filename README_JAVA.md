@@ -1,7 +1,16 @@
 # RetrofitHelper
 
-[ ![Download](https://api.bintray.com/packages/dylancai/maven/retrofit-helper-core/images/download.svg) ](https://bintray.com/dylancai/maven/retrofit-helper-core/_latestVersion) [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://github.com/DylanCaiCoding/RetrofitHelper/blob/master/LICENSE)
+[![Download](https://api.bintray.com/packages/dylancai/maven/retrofit-helper-core/images/download.svg)](https://bintray.com/dylancai/maven/retrofit-helper-core/_latestVersion) [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://github.com/DylanCaiCoding/RetrofitHelper/blob/master/LICENSE)
 
+## 简介
+
+RetrofitHelper 是使用 Kotlin 封装的 Retrofit 工具，让 Retrofit 的请求更加简单方便。
+
+- 兼顾 Java 和 Kotlin 的使用。结合了 Kotlin 的特性，在使用 Kotlin 请求时会更加简洁；
+- 用注解管理 baseUrl；
+- 增加 debug 模式；
+- 可配置 loading 弹框；
+- 对协程进行了封装优化；
 
 ## 用法
 
@@ -11,29 +20,33 @@
 
 ```gradle
 dependencies {
-  implementation 'com.dylanc:retrofit-helper-core:1.2.0-rc2'
-  kapt 'com.dylanc:retrofit-helper-compiler:1.2.0-rc2'
+  implementation 'com.dylanc:retrofit-helper-core:1.2.0'
+  annotationProcessor 'com.dylanc:retrofit-helper-compiler:1.2.0'
+  // 可选
+  implementation 'com.dylanc:retrofit-helper-rxjava:1.2.0'
+  implementation 'com.dylanc:retrofit-helper-autodispose:1.2.0'
 }
 ```
 
 ### 初始化
 
-使用 `@BaseUrl` 注解配置 BaseUrl，例如：
-
-```java
-public class Constants {
-  @BaseUrl
-  public static final String BASE_URL = "https://www.wanandroid.com";
-}
-```
-
-没有其它配置要求就可以直接请求了，如有需要可以进行以下配置：
+初始化是非必要的，以下是可选的常用配置：
 
 ```java
 RetrofitHelper.getDefault()
+  .debug(BuildConfig.DEBUG)
   .addHeader("key", "value")
-  .cache(new File(getCacheDir(), "response"), 10 * 1024 * 1024,
-      () -> new CacheControl.Builder().maxAge(10, TimeUnit.MINUTES).build())
+  .cache(new File(getCacheDir(), "response"), 10 * 1024 * 1024, // 缓存策略
+      () -> {
+        if (!NetworkUtils.isAvailable()) {
+          return new CacheControl.Builder().maxAge(10, TimeUnit.MINUTES).build()); // 比如在网络不可用时取一天内的缓存
+        } else {
+          return null;
+        }
+      }
+  .addHttpLog(message -> { // 开启了 debug 模式才会打印日志
+    Log.i("http", message);
+  })
   .connectTimeout(15)
   .writeTimeout(15)
   .readTimeout(15)
@@ -47,9 +60,9 @@ RetrofitHelper.getDefault()
   .init();
 ```
 
-如果上述提供的常用配置方法还不满足需求，可以配置 OkHttpClientBuilder 和 RetrofitBuilder 达到所需的效果，比如：
+如果上述提供的常用配置方法还不满足需求，可以直接对 OkHttpClientBuilder 和 RetrofitBuilder 进行配置，比如：
 
-```kotlin
+```java
 RetrofitHelper.getDefault()
   // 其它配置
   .okHttpClientBuilder(builder -> {
@@ -63,17 +76,35 @@ RetrofitHelper.getDefault()
   .init();
 ```
 
+### 配置 baseUrl
+
+用注解 `@BaseUrl` 配置 baseUrl。如果初始化时设置了 debug ，会使用 `@DebugUrl` 注解修饰的域名。
+
+```java
+public class Constants {
+  @BaseUrl
+  public static final String BASE_URL = "https://www.wanandroid.com";
+    
+  @DebugUrl //可选
+  public static final String DEBUG_URL = "http://192.168.1.3";
+}
+```
+
+如果想实现多 baseUrl，在接口类增加 `@ApiUrl` 注解来修改该类请求的 baseUrl。
+
+```java
+@ApiUrl("https://gank.io")
+public interface GankApi{
+  @GET("/api/today")
+  Single<String> getTodayList();
+}
+```
+
 ### 网络请求
 
 #### 使用 RxJava
 
-添加相应的依赖和配置 `RxJava2CallAdapterFactory`：
-
-```gradle
-dependencies {
-  implementation 'com.dylanc:retrofit-helper-rxjava:1.2.0-rc2'
-}
-```
+添加 rxjava 和 autodispose 依赖，并配置 `RxJava2CallAdapterFactory`：
 
 ```java
 RetrofitHelper.getDefault()
@@ -84,37 +115,30 @@ RetrofitHelper.getDefault()
 如果需要在请求的时候显示 loading 动画，先实现 `RequestLoading` 接口：
 
 ```java
-public class RxLoadingDialog implements RequestLoading {
-  private LoadingDialogFragment loadingDialog = new LoadingDialogFragment();
-  private FragmentActivity activity;
+class LoadingDialog extends DialogFragment implements RequestLoading {
 
-  public RxLoadingDialog(FragmentActivity activity) {
-    this.activity = activity;
+  private FragmentActivity fragmentActivity;
+
+  public LoadingDialog(FragmentActivity fragmentActivity) {
+    this.fragmentActivity = fragmentActivity;
+  }
+
+  @NonNull
+  @Override
+  public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    return new AlertDialog.Builder(fragmentActivity)
+        .setTitle("loading")
+        .setMessage("wait a minute...")
+        .setCancelable(false)
+        .create();
   }
 
   @Override
-  public void show() {
-    loadingDialog.show(activity.getSupportFragmentManager(), "loading");
-  }
-
-  @Override
-  public void dismiss() {
-    loadingDialog.dismiss();
-  }
-
-  public static class LoadingDialogFragment extends DialogFragment {
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-      if (getActivity() == null) {
-        throw new IllegalStateException("Activity cannot be null");
-      }
-      return new AlertDialog.Builder(getActivity())
-          .setTitle("loading")
-          .setMessage("wait a minute...")
-          .setCancelable(false)
-          .create();
+  public void show(boolean isLoading) {
+    if (isLoading) {
+      show(fragmentActivity.getSupportFragmentManager(), "loading");
+    } else {
+      dismiss();
     }
   }
 }
@@ -145,21 +169,17 @@ RetrofitHelper.create(ArticleApi.class)
 
 ##### Post 请求
 
-键值对的请求方式大同小异，这里以传 Json 数据的请求方式为例：
-
 ```java
 public interface UserApi{
+  @FormUrlEncoded
   @POST("/user/login")
-  Single<String> login(@Body RequestBody requestBody);
+  Single<String> login(@Field("username") String username, @Field("password") String password);
 }
 ```
 
 ```java
-Map<String, Object> params = new HashMap<>();
-params.put("username", username);
-params.put("password", password);
 RetrofitHelper.create(UserApi.class)
-  .login(RequestBodyFactory.create(params))
+  .login(username, password)
   .compose(Transformers.io2mainThread())
   .compose(Transformers.showLoading(new RxLoadingDialog(this)))
   .as(AutoDisposable.bind(this))
@@ -217,56 +237,6 @@ RetrofitHelper.create(DownloadApi.class)
     file -> Toast.makeText(this, "已下载到" + file.getPath(), Toast.LENGTH_SHORT).show(),
     e -> Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
   );
-```
-
-### 其他用法
-
-#### 不同 BaseUrl
-
-在接口类增加 `@ApiUrl` 注解来修改请求时的 baseUrl。
-
-```java
-@ApiUrl("https://gank.io")
-public interface GankApi{
-  @GET("/api/today")
-  Single<String> getTodayList();
-}
-```
-
-#### 调试模式
-
-初始化时配置 debug，以下的功能才会生效。
-
-```java
-RetrofitHelper.getDefault()
-  .debug(BuildConfig.DEBUG)
-  .init();
-```
-
-##### 支持测试环境地址
-
-通常测试环境和生产环境的地址不一样，打不同的包经常改来改去会很麻烦，所以提供了 `@DebugUrl` 进行配置。如果没有使用该注解，会获取 `@BaseUrl` 配置的地址。
-
-```java
-public class Constants {
-  @BaseUrl
-  public static final String BASE_URL = "https://www.wanandroid.com";
-  @DebugUrl
-  public static final String DEBUG_URL = "http://192.168.1.3";
-}
-```
-
-##### 打印请求数据日志
-
-请求的日志不应该在正式环境打印出来，所以限制了在 debug 模式下才会执行回调。
-
-```java
-RetrofitHelper.getDefault()
-  .debug(BuildConfig.DEBUG)
-  .addHttpLog(message -> {
-    Log.i(TAG, message);
-  })
-  .init();
 ```
 
 ### 混淆
