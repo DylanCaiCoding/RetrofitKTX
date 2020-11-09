@@ -205,6 +205,8 @@ class RetrofitHelper private constructor(retrofit: Retrofit) {
     fun init() {
       if (defaultRetrofitHelper == null) {
         defaultRetrofitHelper = build()
+      } else {
+        throw IllegalStateException("Don't allow the default retrofit to reinitialize.")
       }
     }
 
