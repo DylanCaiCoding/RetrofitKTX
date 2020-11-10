@@ -6,7 +6,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection DifferentStdlibGradleVersion
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "com.dylanc:retrofit-helper-annotations:$retrofit_helper_annotations_version"
+//    implementation "com.dylanc:retrofit-helper-annotations:$retrofit_helper_annotations_version"
+    implementation project(':retrofithelper-annotations')
     implementation "com.squareup:javapoet:1.12.1"
 }
 

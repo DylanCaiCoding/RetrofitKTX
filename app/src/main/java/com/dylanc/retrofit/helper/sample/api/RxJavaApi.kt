@@ -2,7 +2,6 @@ package com.dylanc.retrofit.helper.sample.api
 
 import com.dylanc.retrofit.helper.sample.bean.ApiResponse
 import com.dylanc.retrofit.helper.sample.bean.UserBean
-import com.dylanc.retrofit.helper.sample.network.DOMAIN_HEADER
 import io.reactivex.Single
 import okhttp3.ResponseBody
 import retrofit2.http.*

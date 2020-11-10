@@ -1,7 +1,7 @@
 @file:Suppress("unused", "MemberVisibilityCanBePrivate", "NOTHING_TO_INLINE")
 @file:JvmName("Domain")
 
-package com.dylanc.retrofit.helper.sample.network
+package com.dylanc.retrofit.helper.interceptor
 
 import com.dylanc.retrofit.helper.RetrofitHelper
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
