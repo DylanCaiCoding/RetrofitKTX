@@ -21,12 +21,15 @@ import kotlin.collections.HashMap
  */
 
 private const val NO_BASE_URL = "Please sets the base url by @BaseUrl."
+
 private val baseUrl get() = urlConfigOf<String>("baseUrl")
 
 inline fun initRetrofit(init: RetrofitHelper.Builder.() -> Unit) = RetrofitHelper.defaultBuilder.apply(init).init()
 
 inline fun <reified T> apiServiceOf(retrofitHelper: RetrofitHelper = RetrofitHelper.INSTANCE): T =
   RetrofitHelper.create(T::class.java, retrofitHelper)
+
+inline val retrofitDomains: MutableMap<String, String> get() = RetrofitHelper.INSTANCE.domains
 
 fun retrofit(block: Retrofit.Builder.() -> Unit): Retrofit =
   Retrofit.Builder().baseUrl(baseUrl ?: throw NullPointerException(NO_BASE_URL)).apply(block).build()
@@ -49,7 +52,7 @@ private fun <T> urlConfigOf(fieldName: String): T? = try {
   null
 }
 
-class RetrofitHelper private constructor(retrofit: Retrofit) {
+class RetrofitHelper private constructor(retrofit: Retrofit, val domains: MutableMap<String, String>) {
   private val retrofits = mutableMapOf<String, Retrofit>().withDefault { retrofit }
 
   companion object {
@@ -60,6 +63,12 @@ class RetrofitHelper private constructor(retrofit: Retrofit) {
     private var defaultRetrofitHelper: RetrofitHelper? = null
     val INSTANCE: RetrofitHelper by lazy {
       defaultRetrofitHelper ?: defaultBuilder.build()
+    }
+
+    @JvmStatic
+    @JvmOverloads
+    fun putDomain(name: String, url: String, retrofitHelper: RetrofitHelper = INSTANCE){
+      retrofitHelper.domains[name] = url
     }
 
     @JvmStatic
@@ -78,9 +87,13 @@ class RetrofitHelper private constructor(retrofit: Retrofit) {
     private var debug: Boolean = false
     private val headers = HashMap<String, String>()
     private val debugInterceptors = ArrayList<Interceptor>()
-    private val okHttpClientBuilder: OkHttpClient.Builder by lazy { OkHttpClient.Builder() }
-    private val retrofitBuilder: Retrofit.Builder by lazy {
+    private val okHttpClientBuilder by lazy { OkHttpClient.Builder() }
+    private val retrofitBuilder by lazy {
       Retrofit.Builder().baseUrl(baseUrlOrDebugUrl ?: throw NullPointerException(NO_BASE_URL))
+    }
+    private val domains by lazy {
+      mutableMapOf<String, String>()
+        .apply { urlConfigOf<HashMap<String, String>>("domains")?.let { putAll(it) } }
     }
 
     fun debug(debug: Boolean) = apply {
@@ -101,6 +114,10 @@ class RetrofitHelper private constructor(retrofit: Retrofit) {
 
     fun baseUrl(baseUrl: String) = apply {
       retrofitBuilder.baseUrl(baseUrl)
+    }
+
+    fun putDomain(name: String, url: String){
+      domains[name] = url
     }
 
     @JvmOverloads
@@ -192,6 +209,7 @@ class RetrofitHelper private constructor(retrofit: Retrofit) {
     fun build(): RetrofitHelper {
       val okHttpClient = okHttpClientBuilder
         .addHeaders(headers)
+        .putDomains(domains)
         .addDebugInterceptors()
         .build()
       val retrofit = retrofitBuilder
@@ -199,7 +217,7 @@ class RetrofitHelper private constructor(retrofit: Retrofit) {
         .addConverterFactory(ScalarsConverterFactory.create())
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-      return RetrofitHelper(retrofit)
+      return RetrofitHelper(retrofit, domains)
     }
 
     fun init() {
