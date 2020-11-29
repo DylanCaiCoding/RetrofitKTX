@@ -9,7 +9,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.dylanc.retrofit.helper.apiServiceOf
 import com.dylanc.retrofit.helper.autodispose.autoDispose
-import com.dylanc.retrofit.helper.rxjava.io2mainThread
+import com.dylanc.retrofit.helper.rxjava.*
 import com.dylanc.retrofit.helper.rxjava.showLoading
 import com.dylanc.retrofit.helper.rxjava.toFile
 import com.dylanc.retrofit.helper.sample.R
@@ -90,8 +90,8 @@ class KotlinRxJavaActivity : AppCompatActivity() {
         if (!granted) {
           toast("请授权访问文件权限")
         } else {
-          apiServiceOf<RxJavaApi>()
-            .download(DOWNLOAD_URL)
+          apiServiceOf<RxDownloadApi>()
+            .download(DOWNLOAD_URL,100)
             .toFile(pathname)
             .observeDownload(DOWNLOAD_URL, { progressInfo ->
               Log.d("download", progressInfo.percent.toString())

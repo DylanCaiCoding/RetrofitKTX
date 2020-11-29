@@ -9,6 +9,7 @@ import org.json.JSONObject
  */
 object GlobalErrorHandler  {
 
+  @Suppress("UNUSED_PARAMETER")
   @JvmStatic
   fun handleResponse(response: Response, url: String, body: String): Response {
     var jsonObject: JSONObject? = null
