@@ -8,12 +8,13 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
+import java.util.*
 
 /**
  * @author Dylan Cai
  */
 
-private const val DOMAIN = "Domain"
+private const val DOMAIN = "Domain-Name"
 const val DOMAIN_HEADER = "$DOMAIN:"
 
 inline fun OkHttpClient.Builder.putDomains(domains: MutableMap<String, String>) =
@@ -42,6 +43,19 @@ class DomainsInterceptor(
         baseUrl
       }
       val newFullUrl = request.url.newBuilder()
+        .apply {
+          domains[headerValue]?.let {
+            for (i in 0 until baseUrl.pathSize) {
+              removePathSegment(0)
+            }
+            val newPathSegments: MutableList<String> = ArrayList()
+            newPathSegments.addAll(url.encodedPathSegments)
+            newPathSegments.addAll(baseUrl.encodedPathSegments)
+            newPathSegments.forEach {
+              addEncodedPathSegment(it)
+            }
+          }
+        }
         .scheme(url.scheme)
         .host(url.host)
         .port(url.port)
