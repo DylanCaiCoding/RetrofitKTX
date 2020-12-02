@@ -1,9 +1,8 @@
 @file:JvmName("Constants")
 
-package com.dylanc.retrofit.helper.sample.constant
+package com.dylanc.retrofit.helper.sample.data.constant
 
 import com.dylanc.retrofit.helper.annotations.BaseUrl
-import com.dylanc.retrofit.helper.annotations.DebugUrl
 import com.dylanc.retrofit.helper.annotations.Domain
 
 @BaseUrl

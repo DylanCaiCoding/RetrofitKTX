@@ -13,9 +13,9 @@ import com.dylanc.retrofit.helper.autodispose.AutoDisposable;
 import com.dylanc.retrofit.helper.rxjava.RxDownloadApi;
 import com.dylanc.retrofit.helper.rxjava.Transformers;
 import com.dylanc.retrofit.helper.sample.R;
-import com.dylanc.retrofit.helper.sample.api.GankApi;
-import com.dylanc.retrofit.helper.sample.api.RxJavaApi;
-import com.dylanc.retrofit.helper.sample.constant.Constants;
+import com.dylanc.retrofit.helper.sample.data.api.GankApi;
+import com.dylanc.retrofit.helper.sample.data.api.RxJavaApi;
+import com.dylanc.retrofit.helper.sample.data.constant.Constants;
 import com.dylanc.retrofit.helper.sample.network.LoadingDialog;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -84,7 +84,7 @@ public class JavaActivity extends AppCompatActivity {
         });
   }
 
-  private void alert(String msg){
+  private void alert(String msg) {
     new AlertDialog.Builder(this)
         .setTitle("Response data")
         .setMessage(msg)

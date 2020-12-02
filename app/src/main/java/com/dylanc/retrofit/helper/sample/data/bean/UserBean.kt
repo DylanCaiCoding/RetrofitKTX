@@ -1,4 +1,4 @@
-package com.dylanc.retrofit.helper.sample.bean
+package com.dylanc.retrofit.helper.sample.data.bean
 
 /**
  * @author Dylan Cai

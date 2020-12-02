@@ -1,7 +1,7 @@
-package com.dylanc.retrofit.helper.sample.api
+package com.dylanc.retrofit.helper.sample.data.api
 
-import com.dylanc.retrofit.helper.sample.bean.ApiResponse
-import com.dylanc.retrofit.helper.sample.bean.UserBean
+import com.dylanc.retrofit.helper.sample.data.bean.ApiResponse
+import com.dylanc.retrofit.helper.sample.data.bean.UserBean
 import okhttp3.ResponseBody
 import retrofit2.http.GET
 import retrofit2.http.Path

@@ -1,4 +1,4 @@
-package com.dylanc.retrofit.helper.sample.api
+package com.dylanc.retrofit.helper.sample.data.api
 
 import com.dylanc.retrofit.helper.interceptor.DOMAIN_HEADER
 import io.reactivex.Single

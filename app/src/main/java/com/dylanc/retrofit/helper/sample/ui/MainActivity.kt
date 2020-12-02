@@ -3,10 +3,7 @@ package com.dylanc.retrofit.helper.sample.ui
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import com.dylanc.retrofit.helper.annotations.ApiUrl
 import com.dylanc.retrofit.helper.sample.R
-import com.dylanc.retrofit.helper.sample.api.GankApi
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {

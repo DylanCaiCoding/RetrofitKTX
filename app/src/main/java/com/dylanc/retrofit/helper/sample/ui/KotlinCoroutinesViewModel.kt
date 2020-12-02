@@ -2,34 +2,34 @@ package com.dylanc.retrofit.helper.sample.ui
 
 import androidx.lifecycle.*
 import com.dylanc.retrofit.helper.coroutines.*
-import com.dylanc.retrofit.helper.sample.repository.DataRepository
+import com.dylanc.retrofit.helper.sample.data.repository.DataRepository
+import com.dylanc.retrofit.helper.sample.data.request.WanAndroidRequest
 
-class KotlinCoroutinesViewModel : ViewModel() {
+class KotlinCoroutinesViewModel : RequestViewModel() {
 
-  val loading = LoadingLiveData()
-  val exception = ExceptionLiveData()
+  val wanandroidRequest: WanAndroidRequest by requests()
 
-  fun geArticleList() =
-    DataRepository.geArticleList()
-      .showLoading(loading)
-      .catch(exception)
-      .asLiveData()
+//  fun geArticleList() =
+//    DataRepository.geArticleList()
+//      .showLoading(isLoading)
+//      .catch(exception)
+//      .asLiveData()
 
   fun getGankTodayList() =
     DataRepository.getGankTodayList()
-      .showLoading(loading)
+      .showLoading(isLoading)
       .catch(exception)
       .asLiveData()
 
   fun login() =
     DataRepository.login()
-      .showLoading(loading)
+      .showLoading(isLoading)
       .catch(exception)
       .asLiveData()
 
   fun download(url: String, path: String) =
     DataRepository.download(url, path)
-      .showLoading(loading)
+      .showLoading(isLoading)
       .catch(exception)
       .asLiveData()
 }

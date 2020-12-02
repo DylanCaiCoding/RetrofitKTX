@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.dylanc.retrofit.helper.autodispose.autoDispose
 import com.dylanc.retrofit.helper.sample.R
-import com.dylanc.retrofit.helper.sample.constant.DOWNLOAD_URL
+import com.dylanc.retrofit.helper.sample.data.constant.DOWNLOAD_URL
 import com.dylanc.retrofit.helper.sample.network.LoadingDialog
 import com.tbruyelle.rxpermissions2.RxPermissions
 
@@ -23,19 +23,21 @@ class KotlinCoroutinesActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_common)
-    viewModel.loading.observe(this, Observer {
+    viewModel.isLoading.observe(this) {
       loadingDialog.show(it)
-    })
-    viewModel.exception.observe(this, Observer {
+    }
+    viewModel.exception.observe(this) {
       toast(it.message)
-    })
+    }
+    listOf(0).toMutableList()
   }
 
   /**
    * 测试普通请求
    */
   fun requestArticleList(view: View) {
-    viewModel.geArticleList()
+    viewModel.wanandroidRequest
+      .geArticleList()
       .observe(this, Observer {
         alert(it)
       })
@@ -56,7 +58,7 @@ class KotlinCoroutinesActivity : AppCompatActivity() {
    */
   fun requestLogin(view: View) {
     viewModel.login()
-      .observe(this, Observer {response->
+      .observe(this, Observer { response ->
         toast("登录${response!!.data.userName}成功")
       })
   }
