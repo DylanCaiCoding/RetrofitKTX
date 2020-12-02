@@ -9,6 +9,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.dylanc.retrofit.helper.autodispose.autoDispose
+import com.dylanc.retrofit.helper.coroutines.observeException
+import com.dylanc.retrofit.helper.coroutines.observeLoading
 import com.dylanc.retrofit.helper.sample.R
 import com.dylanc.retrofit.helper.sample.data.constant.DOWNLOAD_URL
 import com.dylanc.retrofit.helper.sample.network.LoadingDialog
@@ -23,22 +25,23 @@ class KotlinCoroutinesActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_common)
-    viewModel.isLoading.observe(this) {
-      loadingDialog.show(it)
-    }
-    viewModel.exception.observe(this) {
-      toast(it.message)
-    }
-    listOf(0).toMutableList()
+    viewModel.allRequest
+      .observeLoading(this) {
+        loadingDialog.show(it)
+      }
+    viewModel.allRequest
+      .observeException(this) {
+        toast(it.message)
+      }
   }
 
   /**
    * 测试普通请求
    */
   fun requestArticleList(view: View) {
-    viewModel.wanandroidRequest
+    viewModel.testRequest
       .geArticleList()
-      .observe(this, Observer {
+      .observe(this, {
         alert(it)
       })
   }
@@ -47,8 +50,8 @@ class KotlinCoroutinesActivity : AppCompatActivity() {
    * 测试不同 base url 的请求
    */
   fun requestGankTodayList(view: View) {
-    viewModel.getGankTodayList()
-      .observe(this, Observer {
+    viewModel.testRequest.getGankTodayList()
+      .observe(this, {
         alert(it)
       })
   }
@@ -57,8 +60,8 @@ class KotlinCoroutinesActivity : AppCompatActivity() {
    * 测试返回本地 json 的模拟请求
    */
   fun requestLogin(view: View) {
-    viewModel.login()
-      .observe(this, Observer { response ->
+    viewModel.loginRequest.login()
+      .observe(this, { response ->
         toast("登录${response!!.data.userName}成功")
       })
   }
@@ -75,8 +78,8 @@ class KotlinCoroutinesActivity : AppCompatActivity() {
         if (!granted) {
           toast("请授权访问文件权限")
         } else {
-          viewModel.download(DOWNLOAD_URL, pathname)
-            .observe(this, Observer { file ->
+          viewModel.downloadRequest.download(DOWNLOAD_URL, pathname)
+            .observe(this, { file ->
               toast("已下载到${file.path}")
             })
         }

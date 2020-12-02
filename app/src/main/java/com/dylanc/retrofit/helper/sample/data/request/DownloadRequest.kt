@@ -6,12 +6,11 @@ import com.dylanc.retrofit.helper.coroutines.catch
 import com.dylanc.retrofit.helper.coroutines.showLoading
 import com.dylanc.retrofit.helper.sample.data.repository.DataRepository
 
-class LoginRequest : ViewModelRequest() {
+class DownloadRequest : ViewModelRequest() {
 
-  fun login() =
-    DataRepository.login()
+  fun download(url: String, path: String) =
+    DataRepository.download(url, path)
       .showLoading(isLoading)
       .catch(exception)
       .asLiveData()
-
 }
