@@ -1,4 +1,4 @@
-package com.dylanc.retrofit.helper.cookiejar
+package com.dylanc.retrofit.helper.cookie
 
 import android.util.Log
 import okhttp3.Cookie

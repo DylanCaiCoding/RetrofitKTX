@@ -4,7 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.dylanc.retrofit.helper.RetrofitHelper;
-import com.dylanc.retrofit.helper.cookiejar.PersistentCookie;
+import com.dylanc.retrofit.helper.cookie.PersistentCookie;
 import com.dylanc.retrofit.helper.sample.network.DebugInterceptor;
 import com.dylanc.retrofit.helper.sample.network.GlobalErrorHandler;
 

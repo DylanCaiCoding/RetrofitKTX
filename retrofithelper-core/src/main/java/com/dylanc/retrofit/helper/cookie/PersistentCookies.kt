@@ -1,13 +1,13 @@
 @file:Suppress("unused")
 @file:JvmName("PersistentCookie")
 
-package com.dylanc.retrofit.helper.cookiejar
+package com.dylanc.retrofit.helper.cookie
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import com.dylanc.retrofit.helper.RetrofitHelper
-import com.dylanc.retrofit.helper.cookiejar.PersistentCookieJar.IdentifiableCookie.Companion.decorateAll
+import com.dylanc.retrofit.helper.cookie.PersistentCookieJar.IdentifiableCookie.Companion.decorateAll
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
