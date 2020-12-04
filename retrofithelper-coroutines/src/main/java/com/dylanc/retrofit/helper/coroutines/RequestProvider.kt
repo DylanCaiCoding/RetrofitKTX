@@ -1,17 +1,15 @@
 package com.dylanc.retrofit.helper.coroutines
 
-private val map = hashMapOf<String, ViewModelRequest>()
 
-class RequestProvider() {
+object RequestProvider {
+  private val viewModelRequestStore = hashMapOf<String, ViewModelRequest>()
 
-  fun get(clazz: Class<ViewModelRequest>): ViewModelRequest? {
-//    if (map[clazz.name] == null) {
-////      map[clazz.name] =
-//    }
-    return map[clazz.name]!!
-  }
-
-  internal fun clear(){
-
+  @Suppress("UNCHECKED_CAST")
+  fun <T : ViewModelRequest> get(clazz: Class<T>): T {
+    val qualifiedName = clazz.canonicalName!!
+    if (viewModelRequestStore[qualifiedName] == null) {
+      viewModelRequestStore[qualifiedName] = clazz.newInstance()
+    }
+    return viewModelRequestStore[qualifiedName] as T
   }
 }
