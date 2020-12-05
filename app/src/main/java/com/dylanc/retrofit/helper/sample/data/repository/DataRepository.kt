@@ -4,6 +4,7 @@ import com.dylanc.retrofit.helper.apiServiceOf
 import com.dylanc.retrofit.helper.sample.data.api.CoroutinesApi
 import com.dylanc.retrofit.helper.sample.data.api.GankApi
 import com.dylanc.retrofit.helper.body.toFile
+import com.dylanc.retrofit.helper.coroutines.DownloadApi
 import kotlinx.coroutines.flow.flow
 
 object DataRepository {
@@ -21,6 +22,6 @@ object DataRepository {
   }
 
   fun download(url: String, path: String) = flow {
-    emit(apiServiceOf<CoroutinesApi>().download(url).toFile(path))
+    emit(apiServiceOf<DownloadApi>().download(url).toFile(path))
   }
 }

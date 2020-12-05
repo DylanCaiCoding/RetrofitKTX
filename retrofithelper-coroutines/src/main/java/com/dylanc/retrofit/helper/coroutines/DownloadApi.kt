@@ -1,8 +1,7 @@
 @file:Suppress("unused")
 
-package com.dylanc.retrofit.helper.rxjava
+package com.dylanc.retrofit.helper.coroutines
 
-import io.reactivex.Single
 import okhttp3.ResponseBody
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -13,10 +12,10 @@ import retrofit2.http.Url
  * @author Dylan Cai
  */
 
-fun RxDownloadApi.download(url: String, startByte: Int) =
+suspend fun DownloadApi.download(url: String, startByte: Int) =
   download(url, "bytes=$startByte-")
 
-fun RxDownloadApi.download(url: String, vararg bytesRange: Pair<Int?, Int?>): Single<ResponseBody> {
+suspend fun DownloadApi.download(url: String, vararg bytesRange: Pair<Int?, Int?>): ResponseBody {
   val stringBuilder = StringBuilder()
   for ((start, end) in bytesRange) {
     if (stringBuilder.isBlank()) {
@@ -28,14 +27,14 @@ fun RxDownloadApi.download(url: String, vararg bytesRange: Pair<Int?, Int?>): Si
   return download(url, stringBuilder.toString())
 }
 
-interface RxDownloadApi {
+interface DownloadApi {
 
   @Streaming
   @GET
-  fun download(@Url url: String): Single<ResponseBody>
+  fun download(@Url url: String): ResponseBody
 
 
   @Streaming
   @GET
-  fun download(@Url url: String, @Header("Range") range: String): Single<ResponseBody>
+  suspend fun download(@Url url: String, @Header("Range") range: String): ResponseBody
 }
