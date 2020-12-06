@@ -1,6 +1,6 @@
 include ':retrofithelper-autodispose'
 include ':retrofithelper-coroutines'
-include ':app', ':retrofithelper-core'
+include ':sample-java', ':retrofithelper-core'
 include ':retrofithelper-rxjava'
 include ':retrofithelper-annotations'
 include ':retrofithelper-compiler'
