@@ -3,7 +3,10 @@
 
 package com.dylanc.retrofit.helper.body
 
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.util.*
 
@@ -30,3 +33,8 @@ inline fun List<String>.toPartList(name: String, contentType: String = "multipar
   }
   return list
 }
+
+@JvmOverloads
+@JvmName("create")
+inline fun File.asRequestBody(contentType: String = "multipart/form-data"): RequestBody =
+  asRequestBody(contentType.toMediaTypeOrNull())

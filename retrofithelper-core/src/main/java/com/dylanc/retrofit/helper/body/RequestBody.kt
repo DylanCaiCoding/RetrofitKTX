@@ -14,21 +14,21 @@ import java.io.File
  * @author Dylan Cai
  */
 
-@JvmOverloads
-@JvmName("create")
-inline fun String.toRequestBody(contentType: String = "application/json"): RequestBody =
-  toRequestBody(contentType.toMediaTypeOrNull())
-
-@JvmName("create")
-inline fun Any.toRequestBody(contentType: String = "application/json") =
-  Gson().toJson(this).toRequestBody(contentType)
-
-@JvmOverloads
-@JvmName("create")
-inline fun File.asRequestBody(contentType: String = "multipart/form-data"): RequestBody =
-  asRequestBody(contentType.toMediaTypeOrNull())
-
-@JvmOverloads
-@JvmName("create")
-inline fun jsonBodyOf(vararg params: Pair<String, Any>, block: HashMap<String, Any>.() -> Unit = {}): RequestBody =
-  hashMapOf(*params).apply(block).toRequestBody()
+//@JvmOverloads
+//@JvmName("create")
+//inline fun String.toRequestBody(contentType: String = "application/json"): RequestBody =
+//  toRequestBody(contentType.toMediaTypeOrNull())
+//
+//@JvmName("create")
+//inline fun Any.toRequestBody(contentType: String = "application/json") =
+//  Gson().toJson(this).toRequestBody(contentType)
+//
+//@JvmOverloads
+//@JvmName("create")
+//inline fun File.asRequestBody(contentType: String = "multipart/form-data"): RequestBody =
+//  asRequestBody(contentType.toMediaTypeOrNull())
+//
+//@JvmOverloads
+//@JvmName("create")
+//inline fun jsonBodyOf(vararg params: Pair<String, Any>, block: HashMap<String, Any>.() -> Unit = {}): RequestBody =
+//  hashMapOf(*params).apply(block).toRequestBody()
