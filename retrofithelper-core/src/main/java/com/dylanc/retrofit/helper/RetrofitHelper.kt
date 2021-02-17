@@ -23,7 +23,8 @@ private const val NO_BASE_URL = "Please sets the base url by @BaseUrl."
 
 private val baseUrl get() = urlConfigOf<String>("baseUrl")
 
-inline fun initRetrofit(init: RetrofitHelper.Builder.() -> Unit) = RetrofitHelper.defaultBuilder.apply(init).init()
+inline fun initRetrofit(init: RetrofitHelper.Builder.() -> Unit) =
+  RetrofitHelper.defaultBuilder.apply(init).init()
 
 inline fun <reified T> apiServiceOf(retrofitHelper: RetrofitHelper = RetrofitHelper.INSTANCE): T =
   RetrofitHelper.create(T::class.java, retrofitHelper)
@@ -31,7 +32,8 @@ inline fun <reified T> apiServiceOf(retrofitHelper: RetrofitHelper = RetrofitHel
 inline val retrofitDomains: MutableMap<String, String> get() = RetrofitHelper.INSTANCE.domains
 
 fun retrofit(block: Retrofit.Builder.() -> Unit): Retrofit =
-  Retrofit.Builder().baseUrl(baseUrl ?: throw NullPointerException(NO_BASE_URL)).apply(block).build()
+  Retrofit.Builder().baseUrl(baseUrl ?: throw NullPointerException(NO_BASE_URL)).apply(block)
+    .build()
 
 inline fun Retrofit.Builder.okHttpClient(block: OkHttpClient.Builder.() -> Unit): Retrofit.Builder =
   client(OkHttpClient.Builder().apply(block).build())
@@ -51,7 +53,10 @@ private fun <T> urlConfigOf(fieldName: String): T? = try {
   null
 }
 
-class RetrofitHelper private constructor(retrofit: Retrofit, val domains: MutableMap<String, String>) {
+class RetrofitHelper private constructor(
+  retrofit: Retrofit,
+  val domains: MutableMap<String, String>
+) {
   private val retrofits = mutableMapOf<String, Retrofit>().withDefault { retrofit }
 
   companion object {
@@ -66,7 +71,7 @@ class RetrofitHelper private constructor(retrofit: Retrofit, val domains: Mutabl
 
     @JvmStatic
     @JvmOverloads
-    fun putDomain(name: String, url: String, retrofitHelper: RetrofitHelper = INSTANCE){
+    fun putDomain(name: String, url: String, retrofitHelper: RetrofitHelper = INSTANCE) {
       retrofitHelper.domains[name] = url
     }
 
@@ -82,14 +87,22 @@ class RetrofitHelper private constructor(retrofit: Retrofit, val domains: Mutabl
     }
   }
 
-  class Builder {
+  class Builder @JvmOverloads constructor(retrofit: Retrofit? = null) {
     private var debug: Boolean = false
     private val headers = HashMap<String, String>()
     private val debugInterceptors = ArrayList<Interceptor>()
     private val okHttpClientBuilder by lazy { OkHttpClient.Builder() }
-    private val retrofitBuilder by lazy {
-      Retrofit.Builder().baseUrl(baseUrlOrDebugUrl ?: throw NullPointerException(NO_BASE_URL))
+    private val retrofitBuilder: Retrofit.Builder
+
+    init {
+      retrofitBuilder = if (retrofit != null) {
+        retrofit.newBuilder()
+      } else {
+        val baseUrl = baseUrlOrDebugUrl ?: throw NullPointerException(NO_BASE_URL)
+        Retrofit.Builder().baseUrl(baseUrl)
+      }
     }
+
     private val domains by lazy {
       mutableMapOf<String, String>()
         .apply { urlConfigOf<HashMap<String, String>>("domains")?.let { putAll(it) } }
@@ -115,7 +128,7 @@ class RetrofitHelper private constructor(retrofit: Retrofit, val domains: Mutabl
       retrofitBuilder.baseUrl(baseUrl)
     }
 
-    fun putDomain(name: String, url: String){
+    fun putDomain(name: String, url: String) {
       domains[name] = url
     }
 
@@ -142,9 +155,10 @@ class RetrofitHelper private constructor(retrofit: Retrofit, val domains: Mutabl
       okHttpClientBuilder.authenticator(authenticator)
     }
 
-    fun cache(directory: File, maxSize: Long, onCreateCacheControl: (String) -> CacheControl?) = apply {
-      okHttpClientBuilder.cache(directory, maxSize, onCreateCacheControl)
-    }
+    fun cache(directory: File, maxSize: Long, onCreateCacheControl: (String) -> CacheControl?) =
+      apply {
+        okHttpClientBuilder.cache(directory, maxSize, onCreateCacheControl)
+      }
 
     fun cookieJar(cookieJar: CookieJar) = apply {
       okHttpClientBuilder.cookieJar(cookieJar)

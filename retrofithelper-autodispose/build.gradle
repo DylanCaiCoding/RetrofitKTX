@@ -47,7 +47,7 @@ publish {
     repoName = 'maven'
     groupId = 'com.dylanc'
     artifactId = 'retrofit-helper-autodispose'
-    publishVersion = '1.2.1-alpha2'
+    publishVersion = '1.2.1-alpha3'
     desc = 'An easy-to-use tool for Retrofit'
     website = 'https://github.com/DylanCaiCoding/RetrofitHelper'
 }
