@@ -2,7 +2,7 @@ buildscript {
     ext {
         autodispose_version = '1.4.0'
         coroutines_version = '1.4.1'
-        kotlin_version = '1.4.21'
+        kotlin_version = '1.4.30'
         lifecycle_version = '2.2.0'
         okhttp_version = '4.9.0'
         retrofit_version = '2.9.0'
