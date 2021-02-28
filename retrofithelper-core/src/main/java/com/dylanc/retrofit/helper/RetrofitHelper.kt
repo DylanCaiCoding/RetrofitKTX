@@ -31,9 +31,7 @@ inline fun <reified T> apiServiceOf(retrofitHelper: RetrofitHelper = RetrofitHel
 
 inline val retrofitDomains: MutableMap<String, String> get() = RetrofitHelper.INSTANCE.domains
 
-fun retrofit(block: Retrofit.Builder.() -> Unit): Retrofit =
-  Retrofit.Builder().baseUrl(baseUrl ?: throw NullPointerException(NO_BASE_URL)).apply(block)
-    .build()
+fun retrofit(block: Retrofit.Builder.() -> Unit): Retrofit = Retrofit.Builder().apply(block).build()
 
 inline fun Retrofit.Builder.okHttpClient(block: OkHttpClient.Builder.() -> Unit): Retrofit.Builder =
   client(OkHttpClient.Builder().apply(block).build())
@@ -66,7 +64,8 @@ class RetrofitHelper private constructor(
 
     private var defaultRetrofitHelper: RetrofitHelper? = null
     val INSTANCE: RetrofitHelper by lazy {
-      defaultRetrofitHelper ?: defaultBuilder.build()
+      if (defaultRetrofitHelper == null) defaultBuilder.init()
+      defaultRetrofitHelper!!
     }
 
     @JvmStatic
@@ -87,25 +86,22 @@ class RetrofitHelper private constructor(
     }
   }
 
-  class Builder @JvmOverloads constructor(retrofit: Retrofit? = null) {
+  class Builder {
     private var debug: Boolean = false
     private val headers = HashMap<String, String>()
     private val debugInterceptors = ArrayList<Interceptor>()
     private val okHttpClientBuilder by lazy { OkHttpClient.Builder() }
-    private val retrofitBuilder: Retrofit.Builder
-
-    init {
-      retrofitBuilder = if (retrofit != null) {
-        retrofit.newBuilder()
-      } else {
-        val baseUrl = baseUrlOrDebugUrl ?: throw NullPointerException(NO_BASE_URL)
-        Retrofit.Builder().baseUrl(baseUrl)
-      }
-    }
+    private var retrofitBuilder = Retrofit.Builder()
+    private var initializedBaseUrl = false
 
     private val domains by lazy {
       mutableMapOf<String, String>()
         .apply { urlConfigOf<HashMap<String, String>>("domains")?.let { putAll(it) } }
+    }
+
+    fun with(retrofit: Retrofit) {
+      initializedBaseUrl = true
+      retrofitBuilder = retrofit.newBuilder()
     }
 
     fun debug(debug: Boolean) = apply {
@@ -125,6 +121,7 @@ class RetrofitHelper private constructor(
     }
 
     fun baseUrl(baseUrl: String) = apply {
+      initializedBaseUrl = true
       retrofitBuilder.baseUrl(baseUrl)
     }
 
@@ -226,6 +223,11 @@ class RetrofitHelper private constructor(
         .addDebugInterceptors()
         .build()
       val retrofit = retrofitBuilder
+        .apply {
+          if (!initializedBaseUrl){
+            baseUrl(baseUrlOrDebugUrl ?: throw NullPointerException(NO_BASE_URL))
+          }
+        }
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
