@@ -48,12 +48,10 @@ class DomainsInterceptor(
             for (i in 0 until baseUrl.pathSize) {
               removePathSegment(0)
             }
-            val newPathSegments: MutableList<String> = ArrayList()
-            newPathSegments.addAll(url.encodedPathSegments)
-            newPathSegments.addAll(baseUrl.encodedPathSegments)
-            newPathSegments.forEach {
-              addEncodedPathSegment(it)
-            }
+            url.encodedPathSegments + baseUrl.encodedPathSegments
+              .forEach {
+                addEncodedPathSegment(it)
+              }
           }
         }
         .scheme(url.scheme)

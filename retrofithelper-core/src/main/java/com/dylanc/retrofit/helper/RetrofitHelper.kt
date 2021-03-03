@@ -195,10 +195,8 @@ class RetrofitHelper private constructor(
         .build()
       val retrofit = retrofitBuilder
         .apply {
-          if (useNewBaseUrl) {
-            baseUrl(baseUrlOrDebugUrl
-                ?: throw NullPointerException("Please sets the base url by @BaseUrl."))
-          }
+          if (useNewBaseUrl)
+            baseUrl(baseUrlOrDebugUrl)
         }
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
@@ -222,7 +220,11 @@ class RetrofitHelper private constructor(
       }
     }
 
-    private val baseUrlOrDebugUrl: String?
-      get() = if (debug) debugUrl ?: baseUrl else baseUrl
+    private val baseUrlOrDebugUrl: String
+      get() = if (debug) {
+        debugUrl ?: baseUrl
+      } else {
+        baseUrl
+      } ?: throw NullPointerException("Please sets the base url by @BaseUrl.")
   }
 }
