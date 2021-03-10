@@ -27,6 +27,7 @@ android {
     compileOptions {
         kotlinOptions.freeCompilerArgs += ['-module-name', "retrofit_helper_autodispose"]
     }
+
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
@@ -34,10 +35,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     api "com.uber.autodispose:autodispose:$autodispose_version"
     api "com.uber.autodispose:autodispose-android-archcomponents:$autodispose_version"
-    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }

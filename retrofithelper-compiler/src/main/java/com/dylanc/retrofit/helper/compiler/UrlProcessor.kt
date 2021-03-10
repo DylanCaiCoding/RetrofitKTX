@@ -2,7 +2,7 @@ package com.dylanc.retrofit.helper.compiler
 
 import com.dylanc.retrofit.helper.annotations.BaseUrl
 import com.dylanc.retrofit.helper.annotations.DebugUrl
-import com.dylanc.retrofit.helper.annotations.Domain
+import com.dylanc.retrofit.helper.annotations.DomainUrl
 import com.squareup.javapoet.*
 import java.io.IOException
 import java.util.*
@@ -46,7 +46,7 @@ class UrlProcessor : AbstractProcessor() {
     if (baseUrlElements.size > 0) {
       hasBinding = true
     }
-    val domainElements = roundEnvironment.getElementsAnnotatedWith(Domain::class.java)
+    val domainElements = roundEnvironment.getElementsAnnotatedWith(DomainUrl::class.java)
     if (domainElements.size > 0) {
       constructorBuilder.addStatement("domains = new \$T()", hashMapType)
     }
@@ -54,9 +54,9 @@ class UrlProcessor : AbstractProcessor() {
       val variableElement = element as VariableElement
       val className = ClassName.get(variableElement.enclosingElement.asType()).toString()
       val fieldName = variableElement.simpleName.toString()
-      val domain = variableElement.getAnnotation(Domain::class.java)
+      val domain = variableElement.getAnnotation(DomainUrl::class.java)
       checkVariableValidClass(variableElement)
-      constructorBuilder.addStatement("domains.put(\"${domain.value}\", $className.$fieldName)")
+      constructorBuilder.addStatement("domains.put(\"${domain.name}\", $className.$fieldName)")
     }
     val typeSpec =
       TypeSpec.classBuilder(ClassName.get("com.dylanc.retrofit.helper", "UrlConfig"))
@@ -118,7 +118,7 @@ class UrlProcessor : AbstractProcessor() {
     return setOf(
       DebugUrl::class.java.canonicalName,
       BaseUrl::class.java.canonicalName,
-      Domain::class.java.canonicalName
+      DomainUrl::class.java.canonicalName
     )
   }
 
