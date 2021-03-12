@@ -1,3 +1,5 @@
+-keep class com.dylanc.retrofit.helper.*{*;}
+
 -dontwarn com.dylanc.retrofit.helper.cookie.**
 -keep class com.dylanc.retrofit.helper.cookie.**
 
