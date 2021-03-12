@@ -25,8 +25,8 @@ public class App extends Application {
     RetrofitHelper.getDefault()
         .debug(BuildConfig.DEBUG)
         .retryOnConnectionFailure(false)
-        .cache(new File(getCacheDir(), "response"), 10 * 1024 * 1024,
-            (url) -> new CacheControl.Builder().maxAge(1, TimeUnit.DAYS).build())
+//        .cache(new File(getCacheDir(), "response"), 10 * 1024 * 1024,
+//            (url) -> new CacheControl.Builder().maxAge(1, TimeUnit.DAYS).build())
         .addHttpLog(message -> {
           Log.i("http", message);
         })
