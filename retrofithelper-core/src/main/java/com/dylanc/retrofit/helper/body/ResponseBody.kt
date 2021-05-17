@@ -3,9 +3,11 @@
 
 package com.dylanc.retrofit.helper.body
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import okhttp3.ResponseBody
 import java.io.File
@@ -15,59 +17,43 @@ import java.io.File
  */
 
 inline fun ResponseBody.toFile(pathname: String): File =
-  File(pathname).apply {
-    use {
-      outputStream().use { fileOut ->
-        byteStream().copyTo(fileOut)
+  use {
+    File(pathname).apply {
+      outputStream().use { byteStream().copyTo(it) }
+    }
+  }
+
+inline fun ResponseBody.toMediaImageUri(context: Context, block: ContentValues.() -> Unit = {}): Uri =
+  toMediaUri(context, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, block)
+
+inline fun ResponseBody.toMediaVideoUri(context: Context, block: ContentValues.() -> Unit = {}): Uri =
+  toMediaUri(context, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, block)
+
+inline fun ResponseBody.toMediaAudioUri(context: Context, block: ContentValues.() -> Unit = {}): Uri =
+  toMediaUri(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, block)
+
+inline fun ResponseBody.toMediaUri(context: Context, uri: Uri, block: ContentValues.() -> Unit = {}): Uri =
+  use {
+    ContentValues().apply(block)
+      .let { context.contentResolver.insert(uri, it)!! }
+      .apply {
+        use { byteStream().copyTo(context.contentResolver.openOutputStream(this)!!) }
       }
-    }
   }
 
-inline fun ResponseBody.toImageUri(
-  context: Context,
-  displayName: String? = null,
-  relativePath: String? = null,
-  block: ContentValues.() -> Unit = {}
-): Uri =
-  toMediaUri(context, MediaStore.Images.Media.EXTERNAL_CONTENT_URI) {
-    put(MediaStore.Images.Media.DISPLAY_NAME, displayName)
-    put(MediaStore.Images.Media.RELATIVE_PATH, relativePath)
-    apply(block)
+inline var ContentValues.displayName: String?
+  get() = get(MediaStore.MediaColumns.DISPLAY_NAME) as String?
+  set(value) {
+    put(MediaStore.MediaColumns.DISPLAY_NAME, value)
   }
 
-inline fun ResponseBody.toVideoUri(
-  context: Context,
-  displayName: String? = null,
-  relativePath: String? = null,
-  block: ContentValues.() -> Unit = {}
-): Uri =
-  toMediaUri(context, MediaStore.Video.Media.EXTERNAL_CONTENT_URI) {
-    put(MediaStore.Video.Media.DISPLAY_NAME, displayName)
-    put(MediaStore.Video.Media.RELATIVE_PATH, relativePath)
-    apply(block)
+inline var ContentValues.relativePath: String?
+  get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+    get(MediaStore.MediaColumns.RELATIVE_PATH) as String?
+  } else {
+    null
   }
-
-inline fun ResponseBody.toAudioUri(
-  context: Context,
-  displayName: String? = null,
-  relativePath: String? = null,
-  block: ContentValues.() -> Unit = {}
-): Uri =
-  toMediaUri(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI) {
-    put(MediaStore.Audio.Media.DISPLAY_NAME, displayName)
-    put(MediaStore.Audio.Media.RELATIVE_PATH, relativePath)
-    apply(block)
-  }
-
-inline fun ResponseBody.toMediaUri(
-  context: Context,
-  uri: Uri,
-  block: ContentValues.() -> Unit = {}
-): Uri =
-  ContentValues().apply(block).let {
-    context.contentResolver.insert(uri, it)!!
-  }.apply {
-    use {
-      byteStream().copyTo(context.contentResolver.openOutputStream(this)!!)
-    }
+  @SuppressLint("InlinedApi")
+  set(value) {
+    put(MediaStore.MediaColumns.RELATIVE_PATH, value)
   }
