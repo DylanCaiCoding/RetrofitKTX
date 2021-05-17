@@ -1,7 +1,5 @@
 package com.dylanc.retrofit.helper.sample.ui
 
-import android.Manifest
-import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -10,27 +8,19 @@ import androidx.appcompat.app.AppCompatActivity
 import com.dylanc.retrofit.helper.apiServiceOf
 import com.dylanc.retrofit.helper.autodispose.autoDispose
 import com.dylanc.retrofit.helper.rxjava.*
-import com.dylanc.retrofit.helper.rxjava.showLoading
-import com.dylanc.retrofit.helper.rxjava.toFile
 import com.dylanc.retrofit.helper.sample.R
 import com.dylanc.retrofit.helper.sample.data.api.GankApi
 import com.dylanc.retrofit.helper.sample.data.api.RxJavaApi
 import com.dylanc.retrofit.helper.sample.data.constant.DOWNLOAD_URL
 import com.dylanc.retrofit.helper.sample.network.LoadingDialog
 import com.dylanc.retrofit.helper.sample.network.observeDownload
-import com.tbruyelle.rxpermissions2.RxPermissions
 
 /**
  * @author Dylan Cai
  * @since 2019/7/13
  */
 @Suppress("UNUSED_PARAMETER")
-class KotlinRxJavaActivity : AppCompatActivity() {
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_common)
-  }
+class KotlinRxJavaActivity : AppCompatActivity(R.layout.activity_common) {
 
   /**
    * 测试普通请求
@@ -83,30 +73,21 @@ class KotlinRxJavaActivity : AppCompatActivity() {
    */
   fun download(view: View) {
     val pathname = externalCacheDir!!.path + "/test.png"
-    RxPermissions(this)
-      .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    apiServiceOf<RxDownloadApi>()
+      .download(DOWNLOAD_URL, 100)
+      .toFile(pathname)
+      .observeDownload(DOWNLOAD_URL, { progressInfo ->
+        Log.d("download", progressInfo.percent.toString())
+      }, { _, _ ->
+        Log.e("download", "下载失败")
+      })
+      .showLoading(LoadingDialog(this))
       .autoDispose(this)
-      .subscribe { granted ->
-        if (!granted) {
-          toast("请授权访问文件权限")
-        } else {
-          apiServiceOf<RxDownloadApi>()
-            .download(DOWNLOAD_URL,100)
-            .toFile(pathname)
-            .observeDownload(DOWNLOAD_URL, { progressInfo ->
-              Log.d("download", progressInfo.percent.toString())
-            }, { _, _ ->
-              Log.e("download", "下载失败")
-            })
-            .showLoading(LoadingDialog(this))
-            .autoDispose(this)
-            .subscribe({ file ->
-              toast("已下载到${file.path}")
-            }, { e ->
-              toast(e.message)
-            })
-        }
-      }
+      .subscribe({ file ->
+        toast("已下载到${file.path}")
+      }, { e ->
+        toast(e.message)
+      })
   }
 
   private fun alert(msg: String) {

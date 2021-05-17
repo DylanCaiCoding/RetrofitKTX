@@ -31,7 +31,6 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation project(':retrofithelper-core')
     kapt project(':retrofithelper-compiler')
     implementation project(':retrofithelper-rxjava')
@@ -39,17 +38,17 @@ dependencies {
     implementation project(':retrofithelper-autodispose')
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
     implementation "com.github.VictorAlbertos.RxCache:runtime:1.8.3-2.x"
     implementation 'me.jessyan:progressmanager:1.5.0'
     implementation "com.squareup.retrofit2:converter-scalars:$retrofit_version"
+    implementation 'top.zibin:Luban:1.1.8'
 
-    implementation 'androidx.activity:activity-ktx:1.1.0'
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    implementation 'androidx.activity:activity-ktx:1.2.3'
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_extensions_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 
-    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }

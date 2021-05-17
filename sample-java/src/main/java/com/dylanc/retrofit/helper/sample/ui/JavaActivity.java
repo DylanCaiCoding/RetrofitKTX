@@ -1,6 +1,5 @@
 package com.dylanc.retrofit.helper.sample.ui;
 
-import android.Manifest;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -17,7 +16,6 @@ import com.dylanc.retrofit.helper.sample.data.api.GankApi;
 import com.dylanc.retrofit.helper.sample.data.api.RxJavaApi;
 import com.dylanc.retrofit.helper.sample.data.constant.Constants;
 import com.dylanc.retrofit.helper.sample.network.LoadingDialog;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.Objects;
 
@@ -67,21 +65,16 @@ public class JavaActivity extends AppCompatActivity {
 
   public void download(View view) {
     final String pathname = Objects.requireNonNull(getExternalCacheDir()).getPath() + "/test.png";
-    new RxPermissions(this)
-        .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    RetrofitHelper.create(RxDownloadApi.class)
+        .download(Constants.DOWNLOAD_URL)
+        .compose(Transformers.toFile(pathname))
+        .compose(Transformers.io2mainThread())
+        .compose(Transformers.showLoading(new LoadingDialog(this)))
         .as(AutoDisposable.bind(this))
-        .subscribe(aBoolean -> {
-          RetrofitHelper.create(RxDownloadApi.class)
-              .download(Constants.DOWNLOAD_URL)
-              .compose(Transformers.toFile(pathname))
-              .compose(Transformers.io2mainThread())
-              .compose(Transformers.showLoading(new LoadingDialog(this)))
-              .as(AutoDisposable.bind(this))
-              .subscribe(
-                  file -> toast("已下载到" + file.getPath()),
-                  e -> toast(e.getMessage())
-              );
-        });
+        .subscribe(
+            file -> toast("已下载到" + file.getPath()),
+            e -> toast(e.getMessage())
+        );
   }
 
   private void alert(String msg) {
