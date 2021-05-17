@@ -5,12 +5,11 @@ import androidx.collection.arraySetOf
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * @author Dylan Cai
  */
-class EventLiveData<T> : MutableLiveData<T>() {
+class RequestLiveData<T> : MutableLiveData<T>() {
 
   private val observers = arraySetOf<ObserverWrapper<in T>>()
 
@@ -34,17 +33,18 @@ class EventLiveData<T> : MutableLiveData<T>() {
 
   @MainThread
   override fun setValue(t: T?) {
-    observers.forEach { it.pending.set(true) }
+    observers.forEach { it.pending = true }
     super.setValue(t)
   }
 
   private class ObserverWrapper<T>(val observer: Observer<T>) : Observer<T> {
 
-    var pending = AtomicBoolean(false)
+    var pending = false
 
     override fun onChanged(t: T) {
-      if (pending.compareAndSet(true, false)) {
+      if (pending) {
         observer.onChanged(t)
+        pending = false
       }
     }
   }

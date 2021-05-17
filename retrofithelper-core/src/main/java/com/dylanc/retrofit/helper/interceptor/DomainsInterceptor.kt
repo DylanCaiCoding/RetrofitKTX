@@ -1,27 +1,24 @@
-@file:Suppress("unused", "MemberVisibilityCanBePrivate", "NOTHING_TO_INLINE")
-@file:JvmName("Domain")
+@file:Suppress("unused", "NOTHING_TO_INLINE")
 
 package com.dylanc.retrofit.helper.interceptor
 
-import com.dylanc.retrofit.helper.RetrofitHelper
+import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
-import okhttp3.Response
 import retrofit2.Invocation
 
 /**
  * @author Dylan Cai
  */
 
-inline fun OkHttpClient.Builder.putDomains(domains: Map<String, String>) =
+inline fun OkHttpClient.Builder.putDomains(domains: MutableMap<String, String>) =
   addInterceptor(DomainsInterceptor(domains))
 
-inline fun RetrofitHelper.Builder.putDomains(domains: Map<String, String>) =
-  addInterceptor(DomainsInterceptor(domains))
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.FUNCTION)
+annotation class DomainName(val value: String)
 
 class DomainsInterceptor(
-  private val domains: Map<String, String>
+  private val domains: MutableMap<String, String>
 ) : Interceptor {
 
   override fun intercept(chain: Interceptor.Chain): Response {

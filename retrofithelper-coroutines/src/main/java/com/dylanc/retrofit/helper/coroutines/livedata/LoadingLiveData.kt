@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "NOTHING_TO_INLINE")
 
 package com.dylanc.retrofit.helper.coroutines.livedata
 
@@ -15,16 +15,16 @@ import kotlinx.coroutines.flow.onStart
  * @author Dylan Cai
  */
 
-private const val TAG_LOADING = "loading"
+const val TAG_LOADING = "loading"
 
-typealias LoadingLiveData = EventLiveData<Boolean>
+typealias LoadingLiveData = RequestLiveData<Boolean>
 
 @OptIn(ExperimentalCoroutinesApi::class)
-fun <T> Flow<T>.showLoading(isLoading: LoadingLiveData) =
+inline fun <T> Flow<T>.showLoading(isLoading: LoadingLiveData) =
   onStart { isLoading.value = true }
     .onCompletion { isLoading.value = false }
 
-fun LoadingLiveData.observe(
+inline fun LoadingLiveData.observe(
   activity: FragmentActivity,
   dialog: DialogFragment,
   tag: String = TAG_LOADING
@@ -38,7 +38,7 @@ fun LoadingLiveData.observe(
   }
 }
 
-fun LoadingLiveData.observe(
+inline fun LoadingLiveData.observe(
   fragment: Fragment,
   dialog: DialogFragment,
   tag: String = TAG_LOADING
@@ -52,22 +52,14 @@ fun LoadingLiveData.observe(
   }
 }
 
-fun LoadingLiveData.observe(activity: FragmentActivity, dialog: Dialog?) {
-  observe(activity) {
-    if (it) {
-      dialog?.show()
-    } else {
-      dialog?.dismiss()
-    }
+inline fun LoadingLiveData.observe(activity: FragmentActivity, dialog: Dialog?) {
+  observe(activity) { isLoading ->
+    dialog?.let { if (isLoading) it.show() else it.dismiss() }
   }
 }
 
-fun LoadingLiveData.observe(fragment: Fragment, dialog: Dialog?) {
-  observe(fragment.viewLifecycleOwner) {
-    if (it) {
-      dialog?.show()
-    } else {
-      dialog?.dismiss()
-    }
+inline fun LoadingLiveData.observe(fragment: Fragment, dialog: Dialog?) {
+  observe(fragment.viewLifecycleOwner) { isLoading ->
+    dialog?.let { if (isLoading) it.show() else it.dismiss() }
   }
 }

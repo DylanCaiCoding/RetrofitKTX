@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "NOTHING_TO_INLINE")
 
 package com.dylanc.retrofit.helper.coroutines.livedata
 
@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 
 
-typealias ExceptionLiveData = EventLiveData<Throwable>
+typealias ExceptionLiveData = RequestLiveData<Throwable>
 
-fun <T> Flow<T>.catch(exception: ExceptionLiveData) =
-  catch { exception.value = it }
+inline fun <T> Flow<T>.catch(exception: ExceptionLiveData) = catch { exception.value = it }
