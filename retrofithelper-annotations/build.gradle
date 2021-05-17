@@ -1,6 +1,5 @@
 apply plugin: 'java-library'
 apply plugin: 'kotlin'
-apply plugin: 'com.novoda.bintray-release'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -10,13 +9,3 @@ dependencies {
 
 sourceCompatibility = "7"
 targetCompatibility = "7"
-
-publish {
-    userOrg = 'dylancai'
-    repoName = 'maven'
-    groupId = 'com.dylanc'
-    artifactId = 'retrofit-helper-annotations'
-    publishVersion = '1.2.1-alpha3'
-    desc = 'An easy-to-use tool for Retrofit'
-    website = 'https://github.com/DylanCaiCoding/RetrofitHelper'
-}

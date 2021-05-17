@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 30
@@ -40,14 +39,4 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-}
-
-publish {
-    userOrg = 'dylancai'
-    repoName = 'maven'
-    groupId = 'com.dylanc'
-    artifactId = 'retrofit-helper-autodispose'
-    publishVersion = '1.2.1-alpha3'
-    desc = 'An easy-to-use tool for Retrofit'
-    website = 'https://github.com/DylanCaiCoding/RetrofitHelper'
 }

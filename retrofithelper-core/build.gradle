@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 30
@@ -32,14 +31,4 @@ dependencies {
     api "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
     api "com.squareup.retrofit2:retrofit:$retrofit_version"
     api "com.squareup.retrofit2:converter-gson:$retrofit_version"
-}
-
-publish {
-    userOrg = 'dylancai'
-    repoName = 'maven'
-    groupId = 'com.dylanc'
-    artifactId = 'retrofit-helper-core'
-    publishVersion = '1.2.1-alpha3'
-    desc = 'An easy-to-use tool for Retrofit'
-    website = 'https://github.com/DylanCaiCoding/RetrofitHelper'
 }
