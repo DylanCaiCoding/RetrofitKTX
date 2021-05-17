@@ -1,11 +1,13 @@
 apply plugin: 'java-library'
 apply plugin: 'kotlin'
+apply plugin: 'maven'
+
+group = 'com.github.DylanCaiCoding'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection DifferentStdlibGradleVersion
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-//    api "com.dylanc:retrofit-helper-annotations:$retrofit_helper_annotations_version"
     api project(':retrofithelper-annotations')
     implementation "com.squareup:javapoet:1.13.0"
 }
