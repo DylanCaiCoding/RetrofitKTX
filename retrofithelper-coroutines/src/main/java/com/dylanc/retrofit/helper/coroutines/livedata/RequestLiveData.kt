@@ -31,6 +31,10 @@ class RequestLiveData<T> : MutableLiveData<T>() {
     }
   }
 
+  override fun onInactive() {
+    observers.forEach { it.pending = false }
+  }
+
   @MainThread
   override fun setValue(t: T?) {
     observers.forEach { it.pending = true }

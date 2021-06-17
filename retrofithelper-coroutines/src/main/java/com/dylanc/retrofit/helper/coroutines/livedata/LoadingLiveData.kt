@@ -27,28 +27,28 @@ inline fun <T> Flow<T>.showLoading(isLoading: LoadingLiveData) =
 
 inline fun LoadingLiveData.observe(
   activity: FragmentActivity,
-  dialog: DialogFragment,
+  dialogFragment: DialogFragment,
   tag: String = TAG_LOADING
 ) {
-  observe(activity) { show ->
-    if (show && dialog.dialog?.isShowing != true && dialog.isRemoving) {
-      dialog.show(activity.supportFragmentManager, tag)
-    } else if (!show && dialog.dialog?.isShowing == true && !dialog.isRemoving) {
-      dialog.dismiss()
+  observe(activity) { isLoading ->
+    if (isLoading && !dialogFragment.isShowing) {
+      dialogFragment.show(activity.supportFragmentManager, tag)
+    } else if (!isLoading && dialogFragment.isShowing) {
+      dialogFragment.dismiss()
     }
   }
 }
 
 inline fun LoadingLiveData.observe(
   fragment: Fragment,
-  dialog: DialogFragment,
+  dialogFragment: DialogFragment,
   tag: String = TAG_LOADING
 ) {
   observe(fragment.viewLifecycleOwner) { isLoading ->
-    if (isLoading && dialog.dialog?.isShowing != true && dialog.isRemoving) {
-      dialog.show(fragment.parentFragmentManager, tag)
-    } else if (!isLoading && dialog.dialog?.isShowing == true && !dialog.isRemoving) {
-      dialog.dismiss()
+    if (isLoading && !dialogFragment.isShowing) {
+      dialogFragment.show(fragment.parentFragmentManager, tag)
+    } else if (!isLoading && dialogFragment.isShowing) {
+      dialogFragment.dismiss()
     }
   }
 }
@@ -62,3 +62,6 @@ inline fun LoadingLiveData.observe(lifecycleOwner: LifecycleOwner, dialog: Dialo
     }
   }
 }
+
+inline val DialogFragment.isShowing: Boolean
+  get() = dialog?.isShowing == true && !isRemoving
