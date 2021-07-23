@@ -1,10 +1,8 @@
 package com.dylanc.retrofit.helper.sample.data.repository
 
-import android.content.Context
-import com.dylanc.retrofit.helper.apiServiceOf
-import com.dylanc.retrofit.helper.body.displayName
+import androidx.lifecycle.MutableLiveData
+import com.dylanc.retrofit.helper.apiServices
 import com.dylanc.retrofit.helper.body.toFile
-import com.dylanc.retrofit.helper.body.toMediaImageUri
 import com.dylanc.retrofit.helper.coroutines.DownloadApi
 import com.dylanc.retrofit.helper.sample.data.api.CoroutinesApi
 import com.dylanc.retrofit.helper.sample.data.api.GankApi
@@ -12,19 +10,26 @@ import kotlinx.coroutines.flow.flow
 
 object DataRepository {
 
+  private val coroutinesApi: CoroutinesApi by apiServices()
+  private val gankApi: GankApi by apiServices()
+  private val downloadApi: DownloadApi by apiServices()
+
+  val userLiveData = MutableLiveData<String>()
+
   fun geArticleList() = flow {
-    emit(apiServiceOf<CoroutinesApi>().geArticleList(0))
+    emit(coroutinesApi.geArticleList(0))
   }
 
   fun getGankTodayList() = flow {
-    emit(apiServiceOf<GankApi>().getGankTodayListByCoroutines())
+    emit(gankApi.getGankTodayListByCoroutines())
   }
 
   fun login() = flow {
-    emit(apiServiceOf<CoroutinesApi>().login())
+    emit(coroutinesApi.login())
   }
 
   fun download(url: String, path: String) = flow {
-    emit(apiServiceOf<DownloadApi>().download(url).toFile(path))
+    emit(downloadApi.download(url).toFile(path))
   }
+
 }

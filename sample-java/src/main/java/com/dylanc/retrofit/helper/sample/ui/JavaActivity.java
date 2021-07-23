@@ -31,7 +31,7 @@ public class JavaActivity extends AppCompatActivity {
     RetrofitHelper.create(RxJavaApi.class)
         .geArticleList(0)
         .compose(Transformers.io2mainThread())
-        .compose(Transformers.showLoading(new LoadingDialog(this)))
+//        .compose(Transformers.showLoading(new LoadingDialog(this)))
         .as(AutoDisposable.bind(this))
         .subscribe(
             this::alert,
@@ -43,7 +43,7 @@ public class JavaActivity extends AppCompatActivity {
     RetrofitHelper.create(GankApi.class)
         .getGankTodayListByRxJava()
         .compose(Transformers.io2mainThread())
-        .compose(Transformers.showLoading(new LoadingDialog(this)))
+//        .compose(Transformers.showLoading(new LoadingDialog(this)))
         .as(AutoDisposable.bind(this))
         .subscribe(
             this::alert,
@@ -55,7 +55,7 @@ public class JavaActivity extends AppCompatActivity {
     RetrofitHelper.create(RxJavaApi.class)
         .login()
         .compose(Transformers.io2mainThread())
-        .compose(Transformers.showLoading(new LoadingDialog(this)))
+//        .compose(Transformers.showLoading(new LoadingDialog(this)))
         .as(AutoDisposable.bind(this))
         .subscribe(
             response -> toast("登录成功"),
@@ -69,7 +69,7 @@ public class JavaActivity extends AppCompatActivity {
         .download(Constants.DOWNLOAD_URL)
         .compose(Transformers.toFile(pathname))
         .compose(Transformers.io2mainThread())
-        .compose(Transformers.showLoading(new LoadingDialog(this)))
+//        .compose(Transformers.showLoading(new LoadingDialog(this)))
         .as(AutoDisposable.bind(this))
         .subscribe(
             file -> toast("已下载到" + file.getPath()),

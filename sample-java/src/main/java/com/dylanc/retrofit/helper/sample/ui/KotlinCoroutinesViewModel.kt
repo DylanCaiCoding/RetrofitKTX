@@ -1,16 +1,37 @@
 package com.dylanc.retrofit.helper.sample.ui
 
-import androidx.lifecycle.ViewModel
-import com.dylanc.retrofit.helper.coroutines.requests
-import com.dylanc.retrofit.helper.sample.data.request.DownloadRequest
-import com.dylanc.retrofit.helper.sample.data.request.LoginRequest
-import com.dylanc.retrofit.helper.sample.data.request.TestRequest
+import androidx.lifecycle.asLiveData
+import com.dylanc.retrofit.helper.coroutines.RequestViewModel
+import com.dylanc.retrofit.helper.coroutines.livedata.catch
+import com.dylanc.retrofit.helper.coroutines.livedata.showLoading
+import com.dylanc.retrofit.helper.sample.data.repository.DataRepository
 
-class KotlinCoroutinesViewModel : ViewModel() {
+class KotlinCoroutinesViewModel : RequestViewModel() {
 
-  val testRequest: TestRequest by requests()
-  val loginRequest: LoginRequest by requests()
-  val downloadRequest: DownloadRequest by requests()
-  val allRequest = listOf(testRequest, loginRequest, downloadRequest)
+  val user = DataRepository.userLiveData
+
+  fun geArticleList() =
+    DataRepository.geArticleList()
+      .showLoading(isLoading)
+      .catch(exception)
+      .asLiveData()
+
+  fun getGankTodayList() =
+    DataRepository.getGankTodayList()
+      .showLoading(isLoading)
+      .catch(exception)
+      .asLiveData()
+
+  fun login() =
+    DataRepository.login()
+      .showLoading(isLoading)
+      .catch(exception)
+      .asLiveData()
+
+  fun download(url: String, path: String) =
+    DataRepository.download(url, path)
+      .showLoading(isLoading)
+      .catch(exception)
+      .asLiveData()
 
 }

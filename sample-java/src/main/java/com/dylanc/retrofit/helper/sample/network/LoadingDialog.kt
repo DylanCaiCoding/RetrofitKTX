@@ -9,23 +9,13 @@ import androidx.fragment.app.FragmentManager
 import com.dylanc.retrofit.helper.rxjava.RequestLoading
 
 
-class LoadingDialog(
-  private val fragmentActivity: FragmentActivity
-) : DialogFragment(), RequestLoading {
+class LoadingDialog : DialogFragment() {
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    return AlertDialog.Builder(fragmentActivity)
+    return AlertDialog.Builder(requireContext())
         .setTitle("loading")
         .setMessage("wait a minute...")
         .setCancelable(false)
         .create()
-  }
-
-  override fun show(isLoading: Boolean) {
-    if (isLoading) {
-      show(fragmentActivity.supportFragmentManager, "loading")
-    } else {
-      dismiss()
-    }
   }
 }

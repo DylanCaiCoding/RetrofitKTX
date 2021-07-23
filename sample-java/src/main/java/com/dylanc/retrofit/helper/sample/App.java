@@ -31,14 +31,13 @@ public class App extends Application {
           Log.i("http", message);
         })
         .doOnResponse(GlobalErrorHandler::handleResponse)
-        .cookieJar(PersistentCookie.create(this))
+        .cookieJar(PersistentCookie.create())
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .addConverterFactory(ScalarsConverterFactory.create())
         .addInterceptor(new DebugInterceptor(this, "user/login", R.raw.login_success), true)
         .okHttpClientBuilder(builder -> {
           ProgressManager.getInstance().with(builder);
           ProgressManager.getInstance().setRefreshTime(10);
-          return Unit.INSTANCE;
         })
         .init();
   }
