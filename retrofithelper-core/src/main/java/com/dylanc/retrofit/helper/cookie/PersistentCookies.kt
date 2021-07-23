@@ -1,12 +1,11 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "NOTHING_TO_INLINE")
 @file:JvmName("PersistentCookie")
 
 package com.dylanc.retrofit.helper.cookie
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import com.dylanc.retrofit.helper.RetrofitHelper
+import com.dylanc.retrofit.helper.application
 import com.dylanc.retrofit.helper.cookie.PersistentCookieJar.IdentifiableCookie.Companion.decorateAll
 import okhttp3.Cookie
 import okhttp3.CookieJar
@@ -17,15 +16,11 @@ import java.util.*
 
 private lateinit var persistentCookieJar: PersistentCookieJar
 
-fun OkHttpClient.Builder.persistentCookies(context: Context) =
-  cookieJar(persistentCookieJarOf(context))
-
-fun RetrofitHelper.Builder.persistentCookies(context: Context) =
-  cookieJar(persistentCookieJarOf(context))
+inline fun OkHttpClient.Builder.persistentCookies() = cookieJar(PersistentCookieJar())
 
 @JvmName("create")
-fun persistentCookieJarOf(context: Context): PersistentCookieJar {
-  persistentCookieJar = PersistentCookieJar(context)
+fun PersistentCookieJar(): PersistentCookieJar {
+  persistentCookieJar = PersistentCookieJar(application)
   return persistentCookieJar
 }
 
@@ -34,14 +29,15 @@ fun clearPersistentCookies() {
   persistentCookieJar.clear()
 }
 
-@SuppressLint("ApplySharedPref")
 class PersistentCookieJar(private val sharedPreferences: SharedPreferences) : CookieJar {
 
   private val cookies: MutableSet<IdentifiableCookie> = HashSet()
 
   private val iterator: MutableIterator<IdentifiableCookie> = cookies.iterator()
 
-  constructor(context: Context) : this(context.getSharedPreferences("CookiePersistence", Context.MODE_PRIVATE))
+  constructor(context: Context) : this(
+    context.getSharedPreferences("CookiePersistence", Context.MODE_PRIVATE)
+  )
 
   init {
     cookies.addAll(sharedPreferences.loadAll())
@@ -108,7 +104,7 @@ class PersistentCookieJar(private val sharedPreferences: SharedPreferences) : Co
     for (cookie in cookies) {
       editor.putString(createCookieKey(cookie), SerializableCookie().encode(cookie))
     }
-    editor.commit()
+    editor.apply()
   }
 
   private fun SharedPreferences.removeAll(cookies: Collection<Cookie>) {
@@ -116,11 +112,11 @@ class PersistentCookieJar(private val sharedPreferences: SharedPreferences) : Co
     for (cookie in cookies) {
       editor.remove(createCookieKey(cookie))
     }
-    editor.commit()
+    editor.apply()
   }
 
   private fun SharedPreferences.clear() {
-    edit().clear().commit()
+    edit().clear().apply()
   }
 
   companion object {

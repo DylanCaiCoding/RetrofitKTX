@@ -2,9 +2,11 @@
 
 package com.dylanc.retrofit.helper.interceptor
 
-import okhttp3.*
+import com.dylanc.retrofit.helper.methodAnnotationOf
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import retrofit2.Invocation
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.Response
 
 /**
  * @author Dylan Cai
@@ -25,9 +27,8 @@ class DomainsInterceptor(
     val request = chain.request()
     val baseUrl = request.url
     val builder = request.newBuilder()
-    val invocation = request.tag(Invocation::class.java)
-    val domainName = invocation?.method()?.getAnnotation(DomainName::class.java)?.value
-    return if (invocation == null && domainName.isNullOrBlank()) {
+    val domainName = request.methodAnnotationOf<DomainName>()?.value
+    return if (domainName.isNullOrBlank()) {
       chain.proceed(request)
     } else {
       val url = domains[domainName]?.toHttpUrlOrNull() ?: baseUrl

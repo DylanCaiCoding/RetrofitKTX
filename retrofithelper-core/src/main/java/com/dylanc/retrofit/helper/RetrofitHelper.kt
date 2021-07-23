@@ -2,9 +2,12 @@
 
 package com.dylanc.retrofit.helper
 
+import com.dylanc.callbacks.Callback1
 import com.dylanc.retrofit.helper.annotations.ApiUrl
+import com.dylanc.retrofit.helper.cookie.PersistentCookieJar
 import com.dylanc.retrofit.helper.interceptor.*
 import okhttp3.*
+import okhttp3.CacheControl
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.CallAdapter
 import retrofit2.Converter
@@ -20,8 +23,8 @@ import java.util.concurrent.TimeUnit
 inline fun initRetrofit(init: RetrofitHelper.Builder.() -> Unit) =
   RetrofitHelper.defaultBuilder.apply(init).init()
 
-inline fun <reified T> apiServiceOf(retrofitHelper: RetrofitHelper = RetrofitHelper.INSTANCE): T =
-  RetrofitHelper.create(T::class.java, retrofitHelper)
+inline fun <reified T> apiServices(retrofitHelper: RetrofitHelper = RetrofitHelper.INSTANCE) =
+  lazy { RetrofitHelper.create(T::class.java, retrofitHelper) }
 
 inline val retrofitDomains: MutableMap<String, String> get() = RetrofitHelper.INSTANCE.domains
 
@@ -83,12 +86,12 @@ class RetrofitHelper private constructor(
       headers[name] = value
     }
 
-    fun addHeader(pair: Pair<String, String>) = apply {
-      headers[pair.first] = pair.second
+    fun addHeaders(vararg pairs: Pair<String, String>) = apply {
+      headers.putAll(pairs)
     }
 
-    fun addHeaders(vararg pairs: Pair<String, String>) = apply {
-      okHttpClientBuilder.addHeaders(*pairs)
+    fun addHeaders(headers: Map<String, String>) = apply {
+      this.headers.putAll(headers)
     }
 
     fun baseUrl(baseUrl: String) = apply {
@@ -123,14 +126,26 @@ class RetrofitHelper private constructor(
       okHttpClientBuilder.authenticator(authenticator)
     }
 
-    fun cache(directory: File, maxSize: Long, onCreateCacheControl: (String) -> CacheControl?) =
-      apply {
-        okHttpClientBuilder.cache(directory, maxSize, onCreateCacheControl)
-      }
+    fun cache(
+      maxSize: Long = 10 * 1024 * 1024,
+      onCreateCacheControl: (Request) -> CacheControl?
+    ) = apply {
+      okHttpClientBuilder.cache(maxSize, onCreateCacheControl)
+    }
+
+    fun cache(
+      directory: File,
+      maxSize: Long = 10 * 1024 * 1024,
+      onCreateCacheControl: (Request) -> CacheControl?
+    ) = apply {
+      okHttpClientBuilder.cache(directory, maxSize, onCreateCacheControl)
+    }
 
     fun cookieJar(cookieJar: CookieJar) = apply {
       okHttpClientBuilder.cookieJar(cookieJar)
     }
+
+    fun persistentCookies() = cookieJar(PersistentCookieJar())
 
     @JvmOverloads
     fun addInterceptor(interceptor: Interceptor, debug: Boolean = false) = apply {
@@ -183,8 +198,16 @@ class RetrofitHelper private constructor(
       okHttpClientBuilder.apply(block)
     }
 
+    fun okHttpClientBuilder(block: Callback1<OkHttpClient.Builder>) = apply {
+      block(okHttpClientBuilder)
+    }
+
     fun retrofitBuilder(block: Retrofit.Builder.() -> Unit) = apply {
       retrofitBuilder.apply(block)
+    }
+
+    fun retrofitBuilder(block: Callback1<Retrofit.Builder>) = apply {
+      block(retrofitBuilder)
     }
 
     fun build(): RetrofitHelper {
@@ -194,10 +217,7 @@ class RetrofitHelper private constructor(
         .addDebugInterceptors()
         .build()
       val retrofit = retrofitBuilder
-        .apply {
-          if (useNewBaseUrl)
-            baseUrl(baseUrlOrDebugUrl)
-        }
+        .apply { if (useNewBaseUrl) baseUrl(baseUrlOrDebugUrl) }
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
