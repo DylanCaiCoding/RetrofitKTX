@@ -21,7 +21,7 @@ inline fun File.asRequestBody(contentType: String = "multipart/form-data"): Requ
 
 @JvmOverloads
 @JvmName("create")
-fun Uri.toRequestBody(
+fun Uri.asRequestBody(
   contentType: String = "multipart/form-data",
   offset: Int = 0,
   byteCount: Int? = null

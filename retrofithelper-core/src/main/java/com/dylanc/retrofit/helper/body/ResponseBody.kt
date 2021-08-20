@@ -5,10 +5,10 @@ package com.dylanc.retrofit.helper.body
 
 import android.annotation.SuppressLint
 import android.content.ContentValues
-import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import com.dylanc.retrofit.helper.application
 import okhttp3.ResponseBody
 import java.io.File
 
@@ -23,21 +23,21 @@ inline fun ResponseBody.toFile(pathname: String): File =
     }
   }
 
-inline fun ResponseBody.toMediaImageUri(context: Context, block: ContentValues.() -> Unit = {}): Uri =
-  toMediaUri(context, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, block)
+inline fun ResponseBody.toMediaImageUri(noinline block: ContentValues.() -> Unit = {}): Uri =
+  toMediaUri(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, block)
 
-inline fun ResponseBody.toMediaVideoUri(context: Context, block: ContentValues.() -> Unit = {}): Uri =
-  toMediaUri(context, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, block)
+inline fun ResponseBody.toMediaVideoUri(noinline block: ContentValues.() -> Unit = {}): Uri =
+  toMediaUri(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, block)
 
-inline fun ResponseBody.toMediaAudioUri(context: Context, block: ContentValues.() -> Unit = {}): Uri =
-  toMediaUri(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, block)
+inline fun ResponseBody.toMediaAudioUri(noinline block: ContentValues.() -> Unit = {}): Uri =
+  toMediaUri(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, block)
 
-inline fun ResponseBody.toMediaUri(context: Context, uri: Uri, block: ContentValues.() -> Unit = {}): Uri =
+fun ResponseBody.toMediaUri(uri: Uri, block: ContentValues.() -> Unit = {}): Uri =
   use {
     ContentValues().apply(block)
-      .let { context.contentResolver.insert(uri, it)!! }
+      .let { application.contentResolver.insert(uri, it)!! }
       .apply {
-        use { byteStream().copyTo(context.contentResolver.openOutputStream(this)!!) }
+        use { byteStream().copyTo(application.contentResolver.openOutputStream(this)!!) }
       }
   }
 

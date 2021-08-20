@@ -26,7 +26,7 @@ inline fun Uri.toPart(
   offset: Int = 0,
   byteCount: Int? = null
 ): MultipartBody.Part =
-  toRequestBody(contentType, offset, byteCount).toPart(name, filename)
+  asRequestBody(contentType, offset, byteCount).toPart(name, filename)
 
 @JvmOverloads
 @JvmName("create")
