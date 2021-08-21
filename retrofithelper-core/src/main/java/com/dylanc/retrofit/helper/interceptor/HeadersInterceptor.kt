@@ -10,12 +10,15 @@ import okhttp3.Response
 /**
  * @author Dylan Cai
  */
-inline fun OkHttpClient.Builder.addHeaders(crossinline onCreateHeaders: (Request) -> Map<String, String>) =
-  addInterceptor(object : BaseHeadersInterceptor() {
-    override fun onCreateHeaders(request: Request) = onCreateHeaders(request)
+inline fun OkHttpClient.Builder.addHeaders(
+  crossinline block: MutableMap<String, String>.(Request) -> Unit
+) =
+  addInterceptor(object : HeadersInterceptor() {
+    override fun onCreateHeaders(request: Request) =
+      mutableMapOf<String, String>().apply { block(request) }
   })
 
-abstract class BaseHeadersInterceptor : Interceptor {
+abstract class HeadersInterceptor : Interceptor {
 
   override fun intercept(chain: Interceptor.Chain): Response {
     val request = chain.request()
@@ -23,8 +26,8 @@ abstract class BaseHeadersInterceptor : Interceptor {
       .method(request.method, request.body)
       .apply {
         val headers = onCreateHeaders(request)
-        for ((key, value) in headers) {
-          header(key, value)
+        for ((name, value) in headers) {
+          header(name, value)
         }
       }
       .build()

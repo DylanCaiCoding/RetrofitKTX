@@ -1,4 +1,4 @@
-@file:Suppress("unused", "NOTHING_TO_INLINE")
+@file:Suppress("unused", "NOTHING_TO_INLINE", "FunctionName")
 
 package com.dylanc.retrofit.helper.interceptor
 
@@ -12,20 +12,22 @@ import java.util.concurrent.TimeUnit
 inline fun cacheControl(noinline block: okhttp3.CacheControl.Builder.() -> Unit): okhttp3.CacheControl =
   okhttp3.CacheControl.Builder().apply(block).build()
 
-fun OkHttpClient.Builder.cache(
+fun OkHttpClient.Builder.cacheControl(
   maxSize: Long = 10 * 1024 * 1024,
-  onCreateCacheControl: (Request) -> okhttp3.CacheControl?
+  block: okhttp3.CacheControl.Builder.(Request) -> Unit = {}
 ) =
-  cache(File(application.externalCacheDir, "responses"), maxSize, onCreateCacheControl)
+  cacheControl(File(application.externalCacheDir, "responses.cache"), maxSize, block)
 
-inline fun OkHttpClient.Builder.cache(
+inline fun OkHttpClient.Builder.cacheControl(
   directory: File,
   maxSize: Long = 10 * 1024 * 1024,
-  noinline onCreateCacheControl: (Request) -> okhttp3.CacheControl?
+  noinline block: okhttp3.CacheControl.Builder.(Request) -> Unit = {}
 ) =
   apply {
     cache(Cache(directory, maxSize))
-    addNetworkInterceptor(CacheControlInterceptor(onCreateCacheControl))
+    addNetworkInterceptor(CacheControlInterceptor {
+      com.dylanc.retrofit.helper.interceptor.cacheControl { block(it) }
+    })
   }
 
 @Retention(AnnotationRetention.RUNTIME)
@@ -42,8 +44,8 @@ annotation class CacheControl(
   val timeUnit: TimeUnit = TimeUnit.SECONDS
 )
 
-class CacheControlInterceptor(
-  private val onCreateCacheControl: (Request) -> okhttp3.CacheControl?
+class CacheControlInterceptor @JvmOverloads constructor(
+  private val onCreateCacheControl: (Request) -> okhttp3.CacheControl? = { null }
 ) : Interceptor {
 
   override fun intercept(chain: Interceptor.Chain): Response {
@@ -61,9 +63,9 @@ class CacheControlInterceptor(
       }
     } ?: onCreateCacheControl(request)
     return chain.proceed(request).newBuilder()
-      .removeHeader("Pragma")
       .apply {
         if (cacheControl != null) {
+          removeHeader("Pragma")
           removeHeader("Cache-Control")
           header("Cache-Control", cacheControl.toString())
         }

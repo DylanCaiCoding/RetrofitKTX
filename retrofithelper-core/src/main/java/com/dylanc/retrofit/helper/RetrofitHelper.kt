@@ -28,6 +28,11 @@ inline fun <reified T> apiServices(retrofitHelper: RetrofitHelper = RetrofitHelp
 
 inline val retrofitDomains: MutableMap<String, String> get() = RetrofitHelper.INSTANCE.domains
 
+inline fun RetrofitHelper.Builder.addHeaders(crossinline block: (Request) -> Map<String, String>) =
+  addInterceptor(object : HeadersInterceptor() {
+    override fun onCreateHeaders(request: Request) = block(request)
+  })
+
 class RetrofitHelper private constructor(
   retrofit: Retrofit,
   val domains: MutableMap<String, String>
@@ -94,6 +99,10 @@ class RetrofitHelper private constructor(
       this.headers.putAll(headers)
     }
 
+    fun addHeaders(block: MutableMap<String, String>.(Request) -> Unit) = apply {
+      okHttpClientBuilder.addHeaders(block)
+    }
+
     fun baseUrl(baseUrl: String) = apply {
       retrofitBuilder.baseUrl(baseUrl)
       useNewBaseUrl = false
@@ -126,19 +135,19 @@ class RetrofitHelper private constructor(
       okHttpClientBuilder.authenticator(authenticator)
     }
 
-    fun cache(
+    fun cacheControl(
       maxSize: Long = 10 * 1024 * 1024,
-      onCreateCacheControl: (Request) -> CacheControl?
+      block: CacheControl.Builder.(Request) -> Unit = {}
     ) = apply {
-      okHttpClientBuilder.cache(maxSize, onCreateCacheControl)
+      okHttpClientBuilder.cacheControl(maxSize, block)
     }
 
-    fun cache(
+    fun cacheControl(
       directory: File,
       maxSize: Long = 10 * 1024 * 1024,
-      onCreateCacheControl: (Request) -> CacheControl?
+      block: CacheControl.Builder.(Request) -> Unit = {}
     ) = apply {
-      okHttpClientBuilder.cache(directory, maxSize, onCreateCacheControl)
+      okHttpClientBuilder.cacheControl(directory, maxSize, block)
     }
 
     fun cookieJar(cookieJar: CookieJar) = apply {

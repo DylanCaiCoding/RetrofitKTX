@@ -18,7 +18,7 @@ inline fun OkHttpClient.Builder.addHeaders(headers: Map<String, String>): OkHttp
 
 class GlobalHeadersInterceptor(
   private val headers: Map<String, String>
-) : BaseHeadersInterceptor() {
+) : HeadersInterceptor() {
 
   override fun onCreateHeaders(request: Request) = headers
 }

@@ -18,5 +18,5 @@ internal class AppInitializer : Initializer<Unit> {
     application = context as Application
   }
 
-  override fun dependencies() = mutableListOf<Class<Initializer<*>>>()
+  override fun dependencies() = emptyList<Class<Initializer<*>>>()
 }
