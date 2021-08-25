@@ -34,7 +34,6 @@ interface RxDownloadApi {
   @GET
   fun download(@Url url: String): Single<ResponseBody>
 
-
   @Streaming
   @GET
   fun download(@Url url: String, @Header("Range") range: String): Single<ResponseBody>

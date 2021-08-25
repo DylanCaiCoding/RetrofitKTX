@@ -3,6 +3,6 @@ package com.dylanc.retrofit.helper.rxjava
 /**
  * @author Dylan Cai
  */
-interface RequestLoading {
-  fun show(isLoading:Boolean)
+fun interface RequestLoading {
+  fun onRequestLoading(isLoading: Boolean)
 }

@@ -36,6 +36,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.3.0'
     api "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     api "io.reactivex.rxjava2:rxandroid:$rxandroid_version"
     api 'com.github.qingmei2.rxweaver:rxweaver:0.3.0'
