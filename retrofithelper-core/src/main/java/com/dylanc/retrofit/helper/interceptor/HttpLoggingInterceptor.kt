@@ -11,11 +11,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 
 inline fun OkHttpClient.Builder.addHttpLog(
   level: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BODY,
-  noinline log: (message: String) -> Unit
-) = addHttpLog(level, HttpLoggingInterceptor.Logger { log(it) })
-
-inline fun OkHttpClient.Builder.addHttpLog(
-  level: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BODY,
   logger: HttpLoggingInterceptor.Logger
 ) =
   addInterceptor(HttpLoggingInterceptor(logger).apply { this.level = level })

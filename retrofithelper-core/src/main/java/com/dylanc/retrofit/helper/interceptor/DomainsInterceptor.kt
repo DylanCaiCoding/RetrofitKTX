@@ -2,6 +2,7 @@
 
 package com.dylanc.retrofit.helper.interceptor
 
+import com.dylanc.retrofit.helper.domains
 import com.dylanc.retrofit.helper.methodAnnotationOf
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Interceptor
@@ -11,6 +12,10 @@ import okhttp3.Response
 /**
  * @author Dylan Cai
  */
+
+val retrofitDomains: MutableMap<String, String> by domains()
+
+inline fun OkHttpClient.Builder.multipleDomains() = putDomains(retrofitDomains)
 
 inline fun OkHttpClient.Builder.putDomains(domains: MutableMap<String, String>) =
   addInterceptor(DomainsInterceptor(domains))

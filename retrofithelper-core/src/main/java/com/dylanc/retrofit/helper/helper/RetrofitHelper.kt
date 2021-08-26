@@ -1,10 +1,12 @@
 @file:Suppress("unused", "NOTHING_TO_INLINE")
 
-package com.dylanc.retrofit.helper
+package com.dylanc.retrofit.helper.helper
 
 import com.dylanc.callbacks.Callback1
-import com.dylanc.retrofit.helper.annotations.ApiUrl
+import com.dylanc.retrofit.helper.baseUrl
 import com.dylanc.retrofit.helper.cookie.PersistentCookieJar
+import com.dylanc.retrofit.helper.createRetrofitServiceWithApiUrl
+import com.dylanc.retrofit.helper.initRetrofit
 import com.dylanc.retrofit.helper.interceptor.*
 import okhttp3.*
 import okhttp3.CacheControl
@@ -19,63 +21,27 @@ import java.util.concurrent.TimeUnit
 /**
  * @author Dylan Cai
  */
+object RetrofitHelper {
 
-inline fun initRetrofit(init: RetrofitHelper.Builder.() -> Unit) =
-  RetrofitHelper.defaultBuilder.apply(init).init()
+  @JvmStatic
+  fun getDefault() = Builder()
 
-inline fun <reified T> apiServices(retrofitHelper: RetrofitHelper = RetrofitHelper.INSTANCE) =
-  lazy { RetrofitHelper.create(T::class.java, retrofitHelper) }
+  @JvmStatic
+  fun putDomain(name: String, url: String) {
+    retrofitDomains[name] = url
+  }
 
-inline val retrofitDomains: MutableMap<String, String> get() = RetrofitHelper.INSTANCE.domains
-
-inline fun RetrofitHelper.Builder.addHeaders(crossinline block: (Request) -> Map<String, String>) =
-  addInterceptor(object : HeadersInterceptor() {
-    override fun onCreateHeaders(request: Request) = block(request)
-  })
-
-class RetrofitHelper private constructor(
-  retrofit: Retrofit,
-  val domains: MutableMap<String, String>
-) {
-  private val retrofits = mutableMapOf<String, Retrofit>().withDefault { retrofit }
-
-  companion object {
-    @JvmStatic
-    @get:JvmName("getDefault")
-    val defaultBuilder: Builder = Builder()
-
-    private var defaultRetrofitHelper: RetrofitHelper? = null
-    val INSTANCE: RetrofitHelper by lazy {
-      if (defaultRetrofitHelper == null) defaultBuilder.init()
-      defaultRetrofitHelper!!
-    }
-
-    @JvmStatic
-    @JvmOverloads
-    fun putDomain(name: String, url: String, retrofitHelper: RetrofitHelper = INSTANCE) {
-      retrofitHelper.domains[name] = url
-    }
-
-    @JvmStatic
-    @JvmOverloads
-    fun <T> create(service: Class<T>, retrofitHelper: RetrofitHelper = INSTANCE): T {
-      val apiUrl = service.getAnnotation(ApiUrl::class.java)?.value
-      val retrofits = retrofitHelper.retrofits
-      if (apiUrl != null && retrofits[apiUrl] == null) {
-        retrofits[apiUrl] = retrofits.getValue("").createRetrofit(apiUrl)
-      }
-      return retrofits.getValue(apiUrl ?: "").create(service)
-    }
+  @JvmStatic
+  fun <T> create(service: Class<T>): T {
+    return createRetrofitServiceWithApiUrl(service)
   }
 
   class Builder {
     private var debug = false
     private var useNewBaseUrl = true
     private val headers = mutableMapOf<String, String>()
-    private val debugInterceptors = mutableListOf<Interceptor>()
     private val okHttpClientBuilder = OkHttpClient.Builder()
     private var retrofitBuilder = Retrofit.Builder()
-    private val domains by domains()
 
     @JvmOverloads
     fun migrateFrom(retrofit: Retrofit, useNewBaseUrl: Boolean = false) {
@@ -99,9 +65,10 @@ class RetrofitHelper private constructor(
       this.headers.putAll(headers)
     }
 
-    fun addHeaders(block: MutableMap<String, String>.(Request) -> Unit) = apply {
-      okHttpClientBuilder.addHeaders(block)
-    }
+    fun addHeaders(block: (Request) -> Map<String, String>) =
+      addInterceptor(object : HeadersInterceptor() {
+        override fun onCreateHeaders(request: Request) = block(request)
+      })
 
     fun baseUrl(baseUrl: String) = apply {
       retrofitBuilder.baseUrl(baseUrl)
@@ -109,7 +76,7 @@ class RetrofitHelper private constructor(
     }
 
     fun putDomain(name: String, url: String) {
-      domains[name] = url
+      retrofitDomains[name] = url
     }
 
     @JvmOverloads
@@ -156,31 +123,22 @@ class RetrofitHelper private constructor(
 
     fun persistentCookies() = cookieJar(PersistentCookieJar())
 
-    @JvmOverloads
-    fun addInterceptor(interceptor: Interceptor, debug: Boolean = false) = apply {
-      if (interceptor is HttpLoggingInterceptor || debug) {
-        debugInterceptors.add(interceptor)
-      } else {
-        okHttpClientBuilder.addInterceptor(interceptor)
-      }
+    fun multipleDomains() = apply {
+      okHttpClientBuilder.multipleDomains()
+    }
+
+    fun addInterceptor(interceptor: Interceptor) = apply {
+      okHttpClientBuilder.addInterceptor(interceptor)
     }
 
     fun addNetworkInterceptor(interceptor: Interceptor) = apply {
       okHttpClientBuilder.addNetworkInterceptor(interceptor)
     }
 
-    fun addInterceptors(vararg interceptors: Interceptor, debug: Boolean = false) = apply {
+    fun addInterceptors(vararg interceptors: Interceptor) = apply {
       for (interceptor in interceptors) {
-        addInterceptor(interceptor, debug)
+        okHttpClientBuilder.addInterceptor(interceptor)
       }
-    }
-
-    @JvmOverloads
-    fun addHttpLog(
-      level: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BODY,
-      logger: (message: String) -> Unit
-    ) = apply {
-      okHttpClientBuilder.addHttpLog(level, logger)
     }
 
     @JvmOverloads
@@ -219,41 +177,17 @@ class RetrofitHelper private constructor(
       block(retrofitBuilder)
     }
 
-    fun build(): RetrofitHelper {
-      val okHttpClient = okHttpClientBuilder
-        .addHeaders(headers)
-        .putDomains(domains)
-        .addDebugInterceptors()
-        .build()
+    fun init() {
       val retrofit = retrofitBuilder
-        .apply { if (useNewBaseUrl) baseUrl(baseUrlOrDebugUrl) }
-        .client(okHttpClient)
+        .apply { if (useNewBaseUrl) baseUrl(debug) }
+        .client(
+          okHttpClientBuilder
+            .addHeaders(headers)
+            .build()
+        )
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-      return RetrofitHelper(retrofit, domains)
+      initRetrofit(retrofit)
     }
-
-    fun init() {
-      if (defaultRetrofitHelper == null) {
-        defaultRetrofitHelper = build()
-      } else {
-        throw IllegalStateException("Don't allow the default retrofit to reinitialize.")
-      }
-    }
-
-    private fun OkHttpClient.Builder.addDebugInterceptors() = apply {
-      if (debug) {
-        for (interceptor in debugInterceptors) {
-          addInterceptor(interceptor)
-        }
-      }
-    }
-
-    private val baseUrlOrDebugUrl: String
-      get() = if (debug) {
-        debugUrl ?: baseUrl
-      } else {
-        baseUrl
-      } ?: throw NullPointerException("Please sets the base url by @BaseUrl.")
   }
 }
