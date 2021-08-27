@@ -12,7 +12,7 @@ import com.dylanc.retrofit.sample.kotlin.data.api.GankApi
 import com.dylanc.retrofit.sample.kotlin.data.api.RxJavaApi
 import com.dylanc.retrofit.sample.kotlin.data.constant.DOWNLOAD_URL
 import com.dylanc.retrofit.sample.kotlin.databinding.ActivitySampleBinding
-import com.dylanc.retrofit.sample.kotlin.network.LoadingDialog
+import com.dylanc.retrofit.sample.kotlin.widget.LoadingDialogFragment
 
 /**
  * @author Dylan Cai
@@ -24,7 +24,7 @@ class RxJavaActivity : AppCompatActivity() {
   private val rxJavaApi: RxJavaApi by apiServices()
   private val gankApi: GankApi by apiServices()
   private val rxDownloadApi: RxDownloadApi by apiServices()
-  private val loadingDialog by lazy { LoadingDialog() }
+  private val loadingDialog by lazy { LoadingDialogFragment() }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

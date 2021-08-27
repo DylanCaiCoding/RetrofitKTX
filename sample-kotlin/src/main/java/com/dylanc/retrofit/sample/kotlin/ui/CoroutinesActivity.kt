@@ -4,27 +4,19 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.dylanc.retrofit.coroutines.livedata.observe
+import com.dylanc.retrofit.coroutines.requestViewModels
 import com.dylanc.retrofit.sample.kotlin.R
 import com.dylanc.retrofit.sample.kotlin.data.constant.DOWNLOAD_URL
-import com.dylanc.retrofit.sample.kotlin.network.LoadingDialog
 
 @Suppress("UNUSED_PARAMETER")
 class CoroutinesActivity : AppCompatActivity(R.layout.activity_sample) {
 
-  private val viewModel: CoroutinesViewModel by viewModels()
-  private val loadingDialog by lazy { LoadingDialog() }
+  private val viewModel: CoroutinesViewModel by requestViewModels()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    viewModel.isLoading.observe(this, loadingDialog)
-    viewModel.exception.observe(this) {
-      Log.e("exception", it.message.orEmpty())
-      toast(it.message)
-    }
     viewModel.user.observe(this) {
       Log.d("test", "onCreate: $it")
     }
