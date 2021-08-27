@@ -27,7 +27,7 @@ android {
     }
 
     compileOptions {
-        kotlinOptions.freeCompilerArgs += ['-module-name', "retrofit_helper_rxjava"]
+        kotlinOptions.freeCompilerArgs += ['-module-name', "retrofit_rxjava2"]
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()

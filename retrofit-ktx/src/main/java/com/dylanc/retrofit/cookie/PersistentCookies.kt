@@ -5,7 +5,7 @@ package com.dylanc.retrofit.cookie
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.dylanc.retrofit.application
+import com.dylanc.retrofit.app.application
 import com.dylanc.retrofit.cookie.PersistentCookieJar.IdentifiableCookie.Companion.decorateAll
 import okhttp3.Cookie
 import okhttp3.CookieJar

@@ -20,6 +20,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        kotlinOptions.freeCompilerArgs += ['-module-name', "retrofit_coroutines"]
+    }
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
@@ -29,7 +33,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation 'androidx.fragment:fragment-ktx:1.3.3'
+    implementation 'androidx.fragment:fragment-ktx:1.3.6'
 
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"

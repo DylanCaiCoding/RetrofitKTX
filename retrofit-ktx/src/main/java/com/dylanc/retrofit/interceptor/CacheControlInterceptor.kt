@@ -2,7 +2,7 @@
 
 package com.dylanc.retrofit.interceptor
 
-import com.dylanc.retrofit.application
+import com.dylanc.retrofit.app.application
 import com.dylanc.retrofit.methodAnnotationOf
 import okhttp3.*
 import java.io.File

@@ -21,7 +21,7 @@ android {
     }
 
     compileOptions {
-        kotlinOptions.freeCompilerArgs += ['-module-name', "retrofit_helper"]
+        kotlinOptions.freeCompilerArgs += ['-module-name', "retrofit_ktx"]
     }
 }
 

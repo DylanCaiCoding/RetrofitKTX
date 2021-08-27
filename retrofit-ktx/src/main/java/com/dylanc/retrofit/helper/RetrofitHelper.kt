@@ -161,16 +161,8 @@ object RetrofitHelper {
       retrofitBuilder.addCallAdapterFactory(factory)
     }
 
-    fun okHttpClientBuilder(block: OkHttpClient.Builder.() -> Unit) = apply {
-      okHttpClientBuilder.apply(block)
-    }
-
     fun okHttpClientBuilder(block: Callback1<OkHttpClient.Builder>) = apply {
       block(okHttpClientBuilder)
-    }
-
-    fun retrofitBuilder(block: Retrofit.Builder.() -> Unit) = apply {
-      retrofitBuilder.apply(block)
     }
 
     fun retrofitBuilder(block: Callback1<Retrofit.Builder>) = apply {

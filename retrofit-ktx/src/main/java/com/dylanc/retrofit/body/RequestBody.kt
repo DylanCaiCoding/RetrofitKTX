@@ -3,7 +3,7 @@
 package com.dylanc.retrofit.body
 
 import android.net.Uri
-import com.dylanc.retrofit.application
+import com.dylanc.retrofit.app.application
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody

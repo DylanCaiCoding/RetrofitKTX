@@ -15,7 +15,7 @@ import org.reactivestreams.Publisher
 
 fun RetrofitHelper.Builder.observeProgress() =
   okHttpClientBuilder {
-    ProgressManager.getInstance().with(this)
+    ProgressManager.getInstance().with(it)
   }
 
 fun <T> Observable<T>.observeDownload(

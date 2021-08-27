@@ -8,7 +8,7 @@ import android.content.ContentValues
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import com.dylanc.retrofit.application
+import com.dylanc.retrofit.app.application
 import okhttp3.ResponseBody
 import java.io.File
 
