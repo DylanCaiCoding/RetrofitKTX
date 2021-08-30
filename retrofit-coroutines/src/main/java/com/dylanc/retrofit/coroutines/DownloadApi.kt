@@ -33,7 +33,6 @@ interface DownloadApi {
   @GET
   suspend fun download(@Url url: String): ResponseBody
 
-
   @Streaming
   @GET
   suspend fun download(@Url url: String, @Header("Range") range: String): ResponseBody

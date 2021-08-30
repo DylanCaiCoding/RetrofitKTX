@@ -8,4 +8,5 @@ import kotlinx.coroutines.flow.catch
 
 typealias ExceptionLiveData = RequestLiveData<Throwable>
 
-inline fun <T> Flow<T>.catch(exception: ExceptionLiveData) = catch { exception.value = it }
+inline fun <T> Flow<T>.catch(exception: ExceptionLiveData) =
+  catch { exception.value = it }
