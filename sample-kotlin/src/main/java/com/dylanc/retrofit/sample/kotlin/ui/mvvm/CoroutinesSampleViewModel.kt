@@ -1,4 +1,4 @@
-package com.dylanc.retrofit.sample.kotlin.ui
+package com.dylanc.retrofit.sample.kotlin.ui.mvvm
 
 import androidx.lifecycle.asLiveData
 import com.dylanc.retrofit.coroutines.RequestViewModel
@@ -6,9 +6,7 @@ import com.dylanc.retrofit.coroutines.livedata.catch
 import com.dylanc.retrofit.coroutines.livedata.showLoading
 import com.dylanc.retrofit.sample.kotlin.data.repository.DataRepository
 
-class CoroutinesViewModel : RequestViewModel() {
-
-  val user = DataRepository.userLiveData
+class CoroutinesSampleViewModel : RequestViewModel() {
 
   fun geArticleList() =
     DataRepository.geArticleList()

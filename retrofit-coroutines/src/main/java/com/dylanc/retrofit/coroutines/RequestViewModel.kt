@@ -13,18 +13,17 @@ import com.dylanc.retrofit.coroutines.livedata.show
  */
 
 internal var defaultLoadingObserver: RequestLoadingObserver? = null
-  private set
-internal var defaultErrorObserver: RequestErrorObserver = { activity, e ->
+internal var defaultErrorObserver = RequestErrorObserver { activity, e ->
   Toast.makeText(activity, e.message, Toast.LENGTH_SHORT).show()
 }
-typealias RequestDialogFactory = () -> DialogFragment
-typealias RequestErrorObserver = (activity: FragmentActivity, e: Throwable) -> Unit
 
 fun initRequestViewModel(factory: RequestDialogFactory, errorObserver: RequestErrorObserver? = null) {
   val requestLoadingObserver = object : RequestLoadingObserver() {
     private var dialogFragment: DialogFragment? = null
     override fun onCreate(activity: FragmentActivity) {
-      dialogFragment = factory()
+      if (dialogFragment == null) {
+        dialogFragment = factory.create()
+      }
     }
 
     override fun onChanged(activity: FragmentActivity, isLoading: Boolean) {

@@ -1,7 +1,6 @@
-package com.dylanc.retrofit.sample.kotlin.ui
+package com.dylanc.retrofit.sample.kotlin.ui.mvvm
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -9,17 +8,16 @@ import androidx.appcompat.app.AppCompatActivity
 import com.dylanc.retrofit.coroutines.requestViewModels
 import com.dylanc.retrofit.sample.kotlin.R
 import com.dylanc.retrofit.sample.kotlin.data.constant.DOWNLOAD_URL
+import com.dylanc.retrofit.sample.kotlin.databinding.ActivitySampleBinding
 
 @Suppress("UNUSED_PARAMETER")
-class CoroutinesActivity : AppCompatActivity(R.layout.activity_sample) {
+class CoroutinesSampleActivity : AppCompatActivity() {
 
-  private val viewModel: CoroutinesViewModel by requestViewModels()
+  private val viewModel: CoroutinesSampleViewModel by requestViewModels()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    viewModel.user.observe(this) {
-      Log.d("test", "onCreate: $it")
-    }
+    setContentView(ActivitySampleBinding.inflate(layoutInflater).root)
   }
 
   /**

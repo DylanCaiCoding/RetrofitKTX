@@ -17,8 +17,8 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
-    <activity android:name="com.dylanc.retrofit.sample.kotlin.ui.CoroutinesActivity"/>
-    <activity android:name="com.dylanc.retrofit.sample.kotlin.ui.RxJavaActivity"/>
+    <activity android:name="com.dylanc.retrofit.sample.kotlin.ui.mvvm.CoroutinesSampleActivity"/>
+    <activity android:name="com.dylanc.retrofit.sample.kotlin.ui.mvp.RxJavaSampleActivity"/>
   </application>
 
 </manifest>

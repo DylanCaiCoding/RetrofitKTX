@@ -9,7 +9,7 @@ import com.dylanc.retrofit.sample.kotlin.widget.LoadingDialogFragment
  */
 class LoadingDialogFactory : RequestDialogFactory {
 
-  override fun invoke(): DialogFragment {
+  override fun create(): DialogFragment {
     return LoadingDialogFragment()
   }
 }

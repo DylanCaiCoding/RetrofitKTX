@@ -14,8 +14,6 @@ object DataRepository {
   private val gankApi: GankApi by apiServices()
   private val downloadApi: DownloadApi by apiServices()
 
-  val userLiveData = MutableLiveData<String>()
-
   fun geArticleList() = flow {
     emit(coroutinesApi.geArticleList(0))
   }

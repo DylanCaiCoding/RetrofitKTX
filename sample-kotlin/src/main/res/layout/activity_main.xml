@@ -11,7 +11,7 @@
     android:layout_marginStart="16dp"
     android:layout_marginTop="8dp"
     android:layout_marginEnd="16dp"
-    android:text="coroutines" />
+    android:text="Coroutines - MVVM" />
 
   <Button
     android:id="@+id/btn_rxjava"
@@ -19,6 +19,6 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="16dp"
     android:layout_marginEnd="16dp"
-    android:text="rxjava" />
+    android:text="RxJava - MVP" />
 
 </LinearLayout>

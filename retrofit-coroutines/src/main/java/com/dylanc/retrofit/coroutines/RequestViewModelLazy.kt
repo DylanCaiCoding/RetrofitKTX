@@ -50,7 +50,6 @@ class RequestViewModelLazy<VM : RequestViewModel>(
         val lifecycleOwner = lifecycleOwnerProducer()
         ViewModelProvider(store, factory).get(viewModelClass.java).also { vm ->
           (loadingObserver ?: defaultLoadingObserver?.let {
-            it.onCreate(activity)
             lifecycleOwner.lifecycle.addObserver(object : LifecycleObserver {
               @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
               fun onCreate() {
@@ -60,6 +59,7 @@ class RequestViewModelLazy<VM : RequestViewModel>(
               @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
               fun onDestroy() {
                 it.onDestroy()
+                cached = null
               }
             })
             Observer<Boolean> { isShow -> it.onChanged(activity, isShow) }
@@ -68,7 +68,7 @@ class RequestViewModelLazy<VM : RequestViewModel>(
           }
 
           (exceptionObserver ?: Observer<Throwable> { throwable ->
-            defaultErrorObserver(activity, throwable)
+            defaultErrorObserver.onChanged(activity, throwable)
           }).let {
             vm.exception.observe(lifecycleOwner, it)
           }
@@ -80,5 +80,5 @@ class RequestViewModelLazy<VM : RequestViewModel>(
       }
     }
 
-  override fun isInitialized(): Boolean = cached != null
+  override fun isInitialized() = cached != null
 }

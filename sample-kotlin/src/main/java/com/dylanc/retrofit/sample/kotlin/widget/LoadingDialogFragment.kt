@@ -2,6 +2,7 @@ package com.dylanc.retrofit.sample.kotlin.widget
 
 import android.app.Dialog
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 
@@ -14,7 +15,11 @@ class LoadingDialogFragment : DialogFragment() {
     return AlertDialog.Builder(requireContext())
       .setTitle("loading")
       .setMessage("wait a minute...")
-      .setCancelable(false)
       .create()
+  }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    isCancelable = false
   }
 }
