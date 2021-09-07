@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.dylanc.retrofit.coroutines.livedata.show
 import com.dylanc.retrofit.rxjava.RequestLoading
 import com.dylanc.retrofit.sample.kotlin.databinding.ActivitySampleBinding
 import com.dylanc.retrofit.sample.kotlin.widget.LoadingDialogFragment
@@ -31,29 +32,29 @@ class RxJavaSampleActivity : AppCompatActivity(), RxJavaSampleContract.IView {
   /**
    * 测试普通请求
    */
-  fun requestArticleList(view: View) {
-    presenter.onFirstBtnClick()
+  fun onArticleListBtnClick(view: View) {
+    presenter.onArticleListBtnClick()
   }
 
   /**
    * 测试不同 base url 的请求
    */
-  fun requestGankTodayList(view: View) {
-    presenter.onSecondBtnClick()
+  fun onTodayListBtnClick(view: View) {
+    presenter.onTodayListBtnClick()
   }
 
   /**
    * 测试返回本地 json 的模拟请求
    */
-  fun requestLogin(view: View) {
-    presenter.onThirdBtnClick()
+  fun onLoginBtnClick(view: View) {
+    presenter.onLoginBtnClick()
   }
 
   /**
    * 测试下载文件
    */
-  fun download(view: View) {
-    presenter.onFourthBtnClick()
+  fun onDownloadBtnClick(view: View) {
+    presenter.onDownloadBtnClick()
   }
 
   override fun alert(msg: String) {
@@ -70,11 +71,7 @@ class RxJavaSampleActivity : AppCompatActivity(), RxJavaSampleContract.IView {
 
   override val loadingDialog: RequestLoading
     get() = RequestLoading { isLoading ->
-      if (isLoading && !isFinishing) {
-        loadingDialogFragment.show(supportFragmentManager, "loading")
-      } else if (!isLoading && !isFinishing) {
-        loadingDialogFragment.dismiss()
-      }
+      loadingDialogFragment.show(supportFragmentManager, isLoading)
     }
 
   override fun onDestroy() {

@@ -1,6 +1,5 @@
-package com.dylanc.retrofit.sample.kotlin.data.repository
+package com.dylanc.retrofit.sample.kotlin.repository
 
-import androidx.lifecycle.MutableLiveData
 import com.dylanc.retrofit.apiServices
 import com.dylanc.retrofit.body.toFile
 import com.dylanc.retrofit.coroutines.DownloadApi

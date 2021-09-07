@@ -16,7 +16,7 @@ class RxJavaSamplePresenter(
 
   private val model = RxJavaSampleModel()
 
-  override fun onFirstBtnClick() {
+  override fun onArticleListBtnClick() {
     model.requestArticleList()
       .io2mainThread()
       .showLoading(view.loadingDialog)
@@ -28,7 +28,7 @@ class RxJavaSamplePresenter(
       })
   }
 
-  override fun onSecondBtnClick() {
+  override fun onTodayListBtnClick() {
     model.requestGankTodayList()
       .io2mainThread()
       .showLoading(view.loadingDialog)
@@ -40,7 +40,7 @@ class RxJavaSamplePresenter(
       })
   }
 
-  override fun onThirdBtnClick() {
+  override fun onLoginBtnClick() {
     model.requestLogin()
       .io2mainThread()
       .showLoading(view.loadingDialog)
@@ -52,7 +52,7 @@ class RxJavaSamplePresenter(
       })
   }
 
-  override fun onFourthBtnClick() {
+  override fun onDownloadBtnClick() {
     val pathname = view.context.externalCacheDir!!.path + "/test.png"
     model.requestDownload(DOWNLOAD_URL, pathname)
 //      .observeDownload(DOWNLOAD_URL, { progressInfo ->

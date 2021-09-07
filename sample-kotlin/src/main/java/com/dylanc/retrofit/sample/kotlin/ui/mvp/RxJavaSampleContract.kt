@@ -20,10 +20,10 @@ class RxJavaSampleContract {
   }
 
   interface IPresenter {
-    fun onFirstBtnClick()
-    fun onSecondBtnClick()
-    fun onThirdBtnClick()
-    fun onFourthBtnClick()
+    fun onArticleListBtnClick()
+    fun onTodayListBtnClick()
+    fun onLoginBtnClick()
+    fun onDownloadBtnClick()
   }
 
   interface IModel {

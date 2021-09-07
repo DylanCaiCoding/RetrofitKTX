@@ -4,20 +4,23 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
-import com.dylanc.retrofit.coroutines.livedata.ExceptionLiveData
+import com.dylanc.retrofit.coroutines.exception.ExceptionLiveData
+import com.dylanc.retrofit.coroutines.exception.RequestExceptionObserver
 import com.dylanc.retrofit.coroutines.livedata.LoadingLiveData
 import com.dylanc.retrofit.coroutines.livedata.show
+import com.dylanc.retrofit.coroutines.loading.RequestDialogFragmentFactory
+import com.dylanc.retrofit.coroutines.loading.RequestLoadingObserver
 
 /**
  * @author Dylan Cai
  */
 
 internal var defaultLoadingObserver: RequestLoadingObserver? = null
-internal var defaultErrorObserver = RequestErrorObserver { activity, e ->
+internal var defaultErrorObserver = RequestExceptionObserver { activity, e ->
   Toast.makeText(activity, e.message, Toast.LENGTH_SHORT).show()
 }
 
-fun initRequestViewModel(factory: RequestDialogFactory, errorObserver: RequestErrorObserver? = null) {
+fun initRequestViewModel(factory: RequestDialogFragmentFactory, exceptionObserver: RequestExceptionObserver? = null) {
   val requestLoadingObserver = object : RequestLoadingObserver() {
     private var dialogFragment: DialogFragment? = null
     override fun onCreate(activity: FragmentActivity) {
@@ -34,13 +37,13 @@ fun initRequestViewModel(factory: RequestDialogFactory, errorObserver: RequestEr
       dialogFragment = null
     }
   }
-  initRequestViewModel(requestLoadingObserver, errorObserver)
+  initRequestViewModel(requestLoadingObserver, exceptionObserver)
 }
 
-fun initRequestViewModel(loadingObserver: RequestLoadingObserver, errorObserver: RequestErrorObserver? = null) {
+fun initRequestViewModel(loadingObserver: RequestLoadingObserver, exceptionObserver: RequestExceptionObserver? = null) {
   defaultLoadingObserver = loadingObserver
-  if (errorObserver != null) {
-    defaultErrorObserver = errorObserver
+  if (exceptionObserver != null) {
+    defaultErrorObserver = exceptionObserver
   }
 }
 

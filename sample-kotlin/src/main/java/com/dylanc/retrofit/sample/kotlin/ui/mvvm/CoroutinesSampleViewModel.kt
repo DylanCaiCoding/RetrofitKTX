@@ -2,9 +2,9 @@ package com.dylanc.retrofit.sample.kotlin.ui.mvvm
 
 import androidx.lifecycle.asLiveData
 import com.dylanc.retrofit.coroutines.RequestViewModel
-import com.dylanc.retrofit.coroutines.livedata.catch
+import com.dylanc.retrofit.coroutines.exception.catch
 import com.dylanc.retrofit.coroutines.livedata.showLoading
-import com.dylanc.retrofit.sample.kotlin.data.repository.DataRepository
+import com.dylanc.retrofit.sample.kotlin.repository.DataRepository
 
 class CoroutinesSampleViewModel : RequestViewModel() {
 

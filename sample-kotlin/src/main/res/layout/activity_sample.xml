@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
   <Button
-    android:id="@+id/btn_baidu_news"
+    android:id="@+id/btn_article_list"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_marginLeft="16dp"
     android:layout_marginTop="16dp"
     android:layout_marginRight="16dp"
-    android:onClick="requestArticleList"
+    android:onClick="onArticleListBtnClick"
     android:text="article list"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
@@ -22,19 +21,19 @@
     android:id="@+id/btn_gank"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:layout_marginTop="16dp"
-    android:onClick="requestGankTodayList"
+    android:layout_marginTop="8dp"
+    android:onClick="onTodayListBtnClick"
     android:text="gank today list"
-    app:layout_constraintEnd_toEndOf="@+id/btn_baidu_news"
-    app:layout_constraintStart_toStartOf="@+id/btn_baidu_news"
-    app:layout_constraintTop_toBottomOf="@+id/btn_baidu_news" />
+    app:layout_constraintEnd_toEndOf="@+id/btn_article_list"
+    app:layout_constraintStart_toStartOf="@+id/btn_article_list"
+    app:layout_constraintTop_toBottomOf="@+id/btn_article_list" />
 
   <Button
     android:id="@+id/btn_login"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:layout_marginTop="16dp"
-    android:onClick="requestLogin"
+    android:layout_marginTop="8dp"
+    android:onClick="onLoginBtnClick"
     android:text="login"
     app:layout_constraintEnd_toEndOf="@+id/btn_gank"
     app:layout_constraintStart_toStartOf="@+id/btn_gank"
@@ -44,11 +43,33 @@
     android:id="@+id/btn_download"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:layout_marginTop="16dp"
-    android:onClick="download"
+    android:layout_marginTop="8dp"
+    android:onClick="onDownloadBtnClick"
     android:text="Download"
     app:layout_constraintEnd_toEndOf="@+id/btn_login"
     app:layout_constraintStart_toStartOf="@+id/btn_login"
     app:layout_constraintTop_toBottomOf="@+id/btn_login" />
+
+  <ScrollView
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:layout_marginStart="1dp"
+    android:layout_marginTop="24dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/btn_download">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+      <TextView
+        android:id="@+id/tv_request_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    </LinearLayout>
+  </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

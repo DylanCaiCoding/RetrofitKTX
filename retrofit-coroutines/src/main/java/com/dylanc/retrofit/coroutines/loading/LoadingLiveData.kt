@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
+import com.dylanc.retrofit.coroutines.RequestLiveData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
@@ -29,12 +30,14 @@ inline fun LoadingLiveData.observe(fragment: Fragment, dialogFragment: DialogFra
   observe(fragment.viewLifecycleOwner) { dialogFragment.show(fragment.parentFragmentManager, it) }
 
 inline fun LoadingLiveData.observe(lifecycleOwner: LifecycleOwner, dialog: Dialog?) {
-  observe(lifecycleOwner) { isLoading ->
-    if (isLoading && dialog?.isShowing != true) {
-      dialog?.show()
-    } else if (!isLoading && dialog?.isShowing == true) {
-      dialog.dismiss()
-    }
+  observe(lifecycleOwner) { dialog.show(it) }
+}
+
+fun Dialog?.show(isLoading: Boolean) {
+  if (isLoading && this?.isShowing != true) {
+    this?.show()
+  } else if (!isLoading && this?.isShowing == true) {
+    this.dismiss()
   }
 }
 

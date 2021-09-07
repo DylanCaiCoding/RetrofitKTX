@@ -1,4 +1,4 @@
-package com.dylanc.retrofit.coroutines.livedata
+package com.dylanc.retrofit.coroutines
 
 import androidx.annotation.MainThread
 import androidx.collection.arraySetOf

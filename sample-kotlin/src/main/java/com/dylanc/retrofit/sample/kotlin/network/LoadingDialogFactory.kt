@@ -1,15 +1,21 @@
 package com.dylanc.retrofit.sample.kotlin.network
 
-import androidx.fragment.app.DialogFragment
-import com.dylanc.retrofit.coroutines.RequestDialogFactory
-import com.dylanc.retrofit.sample.kotlin.widget.LoadingDialogFragment
+import android.app.Dialog
+import android.content.Context
+import androidx.appcompat.app.AlertDialog
+import com.dylanc.retrofit.coroutines.loading.RequestDialogFactory
 
 /**
  * @author Dylan Cai
  */
-class LoadingDialogFactory : RequestDialogFactory {
+class LoadingDialogFactory : RequestDialogFactory() {
 
-  override fun create(): DialogFragment {
-    return LoadingDialogFragment()
+  override fun create(context: Context): Dialog {
+    return AlertDialog.Builder(context)
+      .setTitle("loading")
+      .setMessage("wait a minute...")
+      .setCancelable(false)
+      .create()
   }
 }
+

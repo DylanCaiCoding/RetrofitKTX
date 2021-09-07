@@ -1,4 +1,4 @@
-package com.dylanc.retrofit.coroutines
+package com.dylanc.retrofit.coroutines.loading
 
 import androidx.fragment.app.FragmentActivity
 
