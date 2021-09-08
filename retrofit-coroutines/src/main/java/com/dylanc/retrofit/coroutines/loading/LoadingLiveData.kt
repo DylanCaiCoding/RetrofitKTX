@@ -1,6 +1,6 @@
 @file:Suppress("unused", "NOTHING_TO_INLINE")
 
-package com.dylanc.retrofit.coroutines.livedata
+package com.dylanc.retrofit.coroutines.loading
 
 import android.app.Dialog
 import androidx.fragment.app.DialogFragment

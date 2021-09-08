@@ -22,7 +22,7 @@ class RxJavaSamplePresenter(
       .showLoading(view.loadingDialog)
       .autoDispose(lifecycleOwner)
       .subscribe({
-        view.alert(it)
+        view.setResultText(it)
       }, {
         view.toast(it.message)
       })
@@ -34,7 +34,7 @@ class RxJavaSamplePresenter(
       .showLoading(view.loadingDialog)
       .autoDispose(lifecycleOwner)
       .subscribe({
-        view.alert(it)
+        view.setResultText(it)
       }, { e ->
         view.toast(e.message)
       })

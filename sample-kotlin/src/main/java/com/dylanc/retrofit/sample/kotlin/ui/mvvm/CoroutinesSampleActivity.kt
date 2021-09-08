@@ -3,13 +3,10 @@ package com.dylanc.retrofit.sample.kotlin.ui.mvvm
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.dylanc.retrofit.coroutines.livedata.show
 import com.dylanc.retrofit.coroutines.requestViewModels
 import com.dylanc.retrofit.sample.kotlin.data.constant.DOWNLOAD_URL
 import com.dylanc.retrofit.sample.kotlin.databinding.ActivitySampleBinding
-import com.dylanc.retrofit.sample.kotlin.widget.LoadingDialogFragment
 
 @Suppress("UNUSED_PARAMETER")
 class CoroutinesSampleActivity : AppCompatActivity() {
@@ -62,14 +59,6 @@ class CoroutinesSampleActivity : AppCompatActivity() {
       .observe(this) {
         toast("已下载 ${it.path}")
       }
-  }
-
-  private fun alert(msg: String) {
-    AlertDialog.Builder(this)
-      .setTitle("Response data")
-      .setMessage(msg)
-      .create()
-      .show()
   }
 
   private fun toast(msg: String?) {

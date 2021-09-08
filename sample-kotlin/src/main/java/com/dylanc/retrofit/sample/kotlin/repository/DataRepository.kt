@@ -28,5 +28,4 @@ object DataRepository {
   fun download(url: String, path: String) = flow {
     emit(downloadApi.download(url).toFile(path))
   }
-
 }

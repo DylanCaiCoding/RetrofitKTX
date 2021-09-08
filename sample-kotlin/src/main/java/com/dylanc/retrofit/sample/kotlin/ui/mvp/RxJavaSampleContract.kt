@@ -13,7 +13,7 @@ import java.io.File
 class RxJavaSampleContract {
 
   interface IView {
-    fun alert(msg: String)
+    fun setResultText(msg: String)
     fun toast(msg: String?)
     val context: Context
     val loadingDialog: RequestLoading

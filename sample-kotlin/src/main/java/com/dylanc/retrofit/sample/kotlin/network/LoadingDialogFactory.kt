@@ -18,4 +18,3 @@ class LoadingDialogFactory : RequestDialogFactory() {
       .create()
   }
 }
-

@@ -6,10 +6,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.dylanc.retrofit.coroutines.livedata.show
 import com.dylanc.retrofit.rxjava.RequestLoading
 import com.dylanc.retrofit.sample.kotlin.databinding.ActivitySampleBinding
-import com.dylanc.retrofit.sample.kotlin.widget.LoadingDialogFragment
 
 /**
  * @author Dylan Cai
@@ -18,14 +16,15 @@ import com.dylanc.retrofit.sample.kotlin.widget.LoadingDialogFragment
 @Suppress("UNUSED_PARAMETER")
 class RxJavaSampleActivity : AppCompatActivity(), RxJavaSampleContract.IView {
 
-  private val loadingDialogFragment by lazy { LoadingDialogFragment() }
+  private lateinit var binding: ActivitySampleBinding
   private var _presenter: RxJavaSamplePresenter? = null
   private val presenter get() = _presenter!!
   override val context: Context get() = this
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(ActivitySampleBinding.inflate(layoutInflater).root)
+    binding = ActivitySampleBinding.inflate(layoutInflater)
+    setContentView(binding.root)
     _presenter = RxJavaSamplePresenter(this, this)
   }
 
@@ -57,22 +56,22 @@ class RxJavaSampleActivity : AppCompatActivity(), RxJavaSampleContract.IView {
     presenter.onDownloadBtnClick()
   }
 
-  override fun alert(msg: String) {
-    AlertDialog.Builder(this)
-      .setTitle("Response data")
-      .setMessage(msg)
-      .create()
-      .show()
+  override fun setResultText(msg: String) {
+    binding.tvRequestResult.text = msg
   }
 
   override fun toast(msg: String?) {
     Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
   }
 
-  override val loadingDialog: RequestLoading
-    get() = RequestLoading { isLoading ->
-      loadingDialogFragment.show(supportFragmentManager, isLoading)
-    }
+  override val loadingDialog by lazy {
+    val dialog = AlertDialog.Builder(this)
+      .setTitle("loading")
+      .setMessage("wait a minute...")
+      .setCancelable(false)
+      .create()
+    RequestLoading.create(dialog)
+  }
 
   override fun onDestroy() {
     super.onDestroy()

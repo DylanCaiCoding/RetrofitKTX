@@ -3,7 +3,6 @@ package com.dylanc.retrofit.coroutines.loading
 import android.app.Dialog
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
-import com.dylanc.retrofit.coroutines.livedata.show
 
 /**
  * @author Dylan Cai
