@@ -6,27 +6,31 @@ import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
+import com.dylanc.retrofit.coroutines.exception.defaultExceptionObserver
+import com.dylanc.retrofit.coroutines.loading.defaultLoadingObserver
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlin.reflect.KClass
 
 
 @MainThread
 inline fun <reified VM : RequestViewModel> FragmentActivity.requestViewModels(
-  loadingObserver: Observer<Boolean>? = null,
-  exceptionObserver: Observer<Throwable>? = null,
+  handleLoading: Boolean = true,
+  handleException: Boolean = true,
   noinline factoryProducer: () -> ViewModelProvider.Factory = { defaultViewModelProviderFactory },
 ): Lazy<VM> =
   RequestViewModelLazy(VM::class, { this }, { this },
-    { viewModelStore }, factoryProducer, loadingObserver, exceptionObserver
+    { viewModelStore }, factoryProducer, handleLoading, handleException
   )
 
 @MainThread
 inline fun <reified VM : RequestViewModel> Fragment.requestViewModels(
-  loadingObserver: Observer<Boolean>? = null,
-  exceptionObserver: Observer<Throwable>? = null,
+  handleLoading: Boolean = true,
+  handleException: Boolean = true,
   noinline factoryProducer: () -> ViewModelProvider.Factory = { defaultViewModelProviderFactory },
 ): Lazy<VM> =
   RequestViewModelLazy(VM::class, { viewLifecycleOwner }, { requireActivity() },
-    { viewModelStore }, factoryProducer, loadingObserver, exceptionObserver
+    { viewModelStore }, factoryProducer, handleLoading, handleException
   )
 
 class RequestViewModelLazy<VM : RequestViewModel>(
@@ -35,8 +39,8 @@ class RequestViewModelLazy<VM : RequestViewModel>(
   private val activityProducer: () -> FragmentActivity,
   private val storeProducer: () -> ViewModelStore,
   private val factoryProducer: () -> ViewModelProvider.Factory,
-  private val loadingObserver: Observer<Boolean>?,
-  private val exceptionObserver: Observer<Throwable>?,
+  private val handleLoading: Boolean = true,
+  private val handleException: Boolean = true,
 ) : Lazy<VM> {
   private var cached: VM? = null
 
@@ -49,30 +53,31 @@ class RequestViewModelLazy<VM : RequestViewModel>(
         val activity = activityProducer()
         val lifecycleOwner = lifecycleOwnerProducer()
         ViewModelProvider(store, factory).get(viewModelClass.java).also { vm ->
-          (loadingObserver ?: defaultLoadingObserver?.let {
-            lifecycleOwner.lifecycle.addObserver(object : LifecycleObserver {
-              @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-              fun onCreate() {
-                it.onCreate(activity)
-              }
+          if (handleLoading) {
+            defaultLoadingObserver?.let { observer ->
+              lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+                override fun onCreate(owner: LifecycleOwner) {
+                  observer.onCreate(activity)
+                }
 
-              @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-              fun onDestroy() {
-                it.onDestroy()
-                cached = null
-              }
-            })
-            Observer<Boolean> { isShow -> it.onChanged(activity, isShow) }
-          })?.let {
-            vm.isLoading.observe(lifecycleOwner, it)
+                override fun onDestroy(owner: LifecycleOwner) {
+                  observer.onDestroy()
+                }
+              })
+              vm.isLoading.flowWithLifecycle(lifecycleOwner.lifecycle)
+                .onEach {
+                  observer.onChanged(activity, it)
+                }
+                .launchIn(lifecycleOwner.lifecycleScope)
+            }
           }
-
-          (exceptionObserver ?: Observer<Throwable> { throwable ->
-            defaultErrorObserver.onChanged(activity, throwable)
-          }).let {
-            vm.exception.observe(lifecycleOwner, it)
+          if (handleException) {
+            vm.exception.flowWithLifecycle(lifecycleOwner.lifecycle)
+              .onEach {
+                defaultExceptionObserver.onChanged(activity, it)
+              }
+              .launchIn(lifecycleOwner.lifecycleScope)
           }
-
           cached = vm
         }
       } else {

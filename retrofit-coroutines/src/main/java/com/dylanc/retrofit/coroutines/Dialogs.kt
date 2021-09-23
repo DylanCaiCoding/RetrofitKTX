@@ -1,6 +1,6 @@
 @file:Suppress("unused", "NOTHING_TO_INLINE")
 
-package com.dylanc.retrofit.coroutines.loading
+package com.dylanc.retrofit.coroutines
 
 import android.app.Dialog
 import androidx.fragment.app.DialogFragment
@@ -8,28 +8,19 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
-import com.dylanc.retrofit.coroutines.RequestLiveData
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
+import androidx.lifecycle.LiveData
 
 /**
  * @author Dylan Cai
  */
 
-typealias LoadingLiveData = RequestLiveData<Boolean>
-
-inline fun <T> Flow<T>.showLoading(isLoading: LoadingLiveData) =
-  onStart { isLoading.value = true }
-    .onCompletion { isLoading.value = false }
-
-inline fun LoadingLiveData.observe(activity: FragmentActivity, dialogFragment: DialogFragment) =
+inline fun LiveData<Boolean>.observe(activity: FragmentActivity, dialogFragment: DialogFragment) =
   observe(activity) { dialogFragment.show(activity.supportFragmentManager, it) }
 
-inline fun LoadingLiveData.observe(fragment: Fragment, dialogFragment: DialogFragment) =
+inline fun LiveData<Boolean>.observe(fragment: Fragment, dialogFragment: DialogFragment) =
   observe(fragment.viewLifecycleOwner) { dialogFragment.show(fragment.parentFragmentManager, it) }
 
-inline fun LoadingLiveData.observe(lifecycleOwner: LifecycleOwner, dialog: Dialog?) {
+inline fun LiveData<Boolean>.observe(lifecycleOwner: LifecycleOwner, dialog: Dialog?) {
   observe(lifecycleOwner) { dialog.show(it) }
 }
 
