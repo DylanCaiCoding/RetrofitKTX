@@ -1,4 +1,4 @@
-@file:Suppress("unused", "NOTHING_TO_INLINE")
+@file:Suppress("unused")
 
 package com.dylanc.retrofit.interceptor
 
@@ -9,10 +9,10 @@ import okhttp3.Request
  * @author Dylan Cai
  */
 
-inline fun OkHttpClient.Builder.addHeaders(vararg pairs: Pair<String, String>): OkHttpClient.Builder =
+fun OkHttpClient.Builder.addHeaders(vararg pairs: Pair<String, String>): OkHttpClient.Builder =
   addHeaders(mutableMapOf(*pairs))
 
-inline fun OkHttpClient.Builder.addHeaders(headers: Map<String, String>): OkHttpClient.Builder = apply {
+fun OkHttpClient.Builder.addHeaders(headers: Map<String, String>): OkHttpClient.Builder = apply {
   if (headers.isNotEmpty()) addInterceptor(GlobalHeadersInterceptor(headers))
 }
 

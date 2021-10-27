@@ -16,14 +16,16 @@ import retrofit2.converter.gson.GsonConverterFactory
 private lateinit var defaultRetrofit: Retrofit
 private val retrofits = mutableMapOf<String, Retrofit>().withDefault { defaultRetrofit }
 
-fun initRetrofit(debug: Boolean = false, block: Retrofit.Builder.() -> Unit) =
+inline fun initRetrofit(debug: Boolean = false, crossinline block: Retrofit.Builder.() -> Unit) =
   initRetrofit(
-    Retrofit.Builder().baseUrl(debug).apply(block)
-      .addConverterFactory(GsonConverterFactory.create())
-      .build()
+    retrofit {
+      annotationBaseUrl(debug)
+      apply(block)
+      addConverterFactory(GsonConverterFactory.create())
+    }
   )
 
-fun initRetrofit(retrofit: Retrofit, block: Retrofit.Builder.() -> Unit) =
+inline fun initRetrofit(retrofit: Retrofit, crossinline block: Retrofit.Builder.() -> Unit) =
   initRetrofit(retrofit.newBuilder().apply(block).build())
 
 fun initRetrofit(retrofit: Retrofit) {
@@ -34,10 +36,10 @@ fun initRetrofit(retrofit: Retrofit) {
 }
 
 inline fun <reified T> apiServices() = lazy {
-  createRetrofitServiceWithApiUrl(T::class.java)
+  createServiceWithApiUrl(T::class.java)
 }
 
-fun <T> createRetrofitServiceWithApiUrl(service: Class<T>): T {
+fun <T> createServiceWithApiUrl(service: Class<T>): T {
   if (!::defaultRetrofit.isInitialized) {
     initRetrofit {}
   }
@@ -48,22 +50,18 @@ fun <T> createRetrofitServiceWithApiUrl(service: Class<T>): T {
   return retrofits.getValue(apiUrl.orEmpty()).create(service)
 }
 
-inline fun retrofit(block: Retrofit.Builder.() -> Unit): Retrofit =
+inline fun retrofit(crossinline block: Retrofit.Builder.() -> Unit): Retrofit =
   Retrofit.Builder().apply(block).build()
 
-inline fun Retrofit.Builder.okHttpClient(block: OkHttpClient.Builder.() -> Unit): Retrofit.Builder =
+inline fun Retrofit.Builder.okHttpClient(crossinline block: OkHttpClient.Builder.() -> Unit): Retrofit.Builder =
   client(OkHttpClient.Builder().apply(block).build())
 
-inline fun Retrofit.createRetrofit(url: String, block: Retrofit.Builder.() -> Unit = {}): Retrofit =
+inline fun Retrofit.createRetrofit(url: String, crossinline block: Retrofit.Builder.() -> Unit = {}): Retrofit =
   newBuilder().baseUrl(url).apply(block).build()
 
-inline fun <reified T : Annotation> Request.methodAnnotationOf() =
+inline fun <reified T : Annotation> Request.getMethodAnnotation() =
   tag(Invocation::class.java)?.method()?.getAnnotation(T::class.java)
 
-internal fun Retrofit.Builder.baseUrl(debug: Boolean) = apply {
-  if (debug) {
-    debugUrl ?: baseUrl
-  } else {
-    baseUrl
-  }?.let { baseUrl(it) }
+fun Retrofit.Builder.annotationBaseUrl(debug: Boolean = false) = apply {
+  (if (debug) debugUrl ?: baseUrl else baseUrl)?.let { baseUrl(it) }
 }

@@ -1,4 +1,4 @@
-@file:Suppress("unused", "NOTHING_TO_INLINE")
+@file:Suppress("unused")
 @file:JvmName("PersistentCookie")
 
 package com.dylanc.retrofit.cookie
@@ -16,7 +16,7 @@ import java.util.*
 
 private lateinit var persistentCookieJar: PersistentCookieJar
 
-inline fun OkHttpClient.Builder.persistentCookies() = cookieJar(PersistentCookieJar())
+fun OkHttpClient.Builder.persistentCookies() = cookieJar(PersistentCookieJar())
 
 @JvmName("create")
 fun PersistentCookieJar(): PersistentCookieJar {
@@ -35,9 +35,8 @@ class PersistentCookieJar(private val sharedPreferences: SharedPreferences) : Co
 
   private val iterator: MutableIterator<IdentifiableCookie> = cookies.iterator()
 
-  constructor(context: Context) : this(
-    context.getSharedPreferences("CookiePersistence", Context.MODE_PRIVATE)
-  )
+  constructor(context: Context) :
+      this(context.getSharedPreferences("CookiePersistence", Context.MODE_PRIVATE))
 
   init {
     cookies.addAll(sharedPreferences.loadAll())

@@ -1,4 +1,4 @@
-@file:Suppress("unused", "NOTHING_TO_INLINE")
+@file:Suppress("unused")
 
 package com.dylanc.retrofit.coroutines
 
@@ -14,13 +14,13 @@ import androidx.lifecycle.LiveData
  * @author Dylan Cai
  */
 
-inline fun LiveData<Boolean>.observe(activity: FragmentActivity, dialogFragment: DialogFragment) =
+fun LiveData<Boolean>.observe(activity: FragmentActivity, dialogFragment: DialogFragment) =
   observe(activity) { dialogFragment.show(activity.supportFragmentManager, it) }
 
-inline fun LiveData<Boolean>.observe(fragment: Fragment, dialogFragment: DialogFragment) =
+fun LiveData<Boolean>.observe(fragment: Fragment, dialogFragment: DialogFragment) =
   observe(fragment.viewLifecycleOwner) { dialogFragment.show(fragment.parentFragmentManager, it) }
 
-inline fun LiveData<Boolean>.observe(lifecycleOwner: LifecycleOwner, dialog: Dialog?) {
+fun LiveData<Boolean>.observe(lifecycleOwner: LifecycleOwner, dialog: Dialog?) {
   observe(lifecycleOwner) { dialog.show(it) }
 }
 
@@ -32,7 +32,7 @@ fun Dialog?.show(isLoading: Boolean) {
   }
 }
 
-inline fun DialogFragment.show(fragmentManager: FragmentManager, isShow: Boolean) {
+fun DialogFragment.show(fragmentManager: FragmentManager, isShow: Boolean) {
   if (isShow && !isShowing) {
     show(fragmentManager, toString())
   } else if (!isShow && isShowing) {

@@ -3,9 +3,9 @@
 package com.dylanc.retrofit.helper
 
 import com.dylanc.callbacks.Callback1
-import com.dylanc.retrofit.baseUrl
+import com.dylanc.retrofit.annotationBaseUrl
 import com.dylanc.retrofit.cookie.PersistentCookieJar
-import com.dylanc.retrofit.createRetrofitServiceWithApiUrl
+import com.dylanc.retrofit.createServiceWithApiUrl
 import com.dylanc.retrofit.initRetrofit
 import com.dylanc.retrofit.interceptor.*
 import okhttp3.*
@@ -33,7 +33,7 @@ object RetrofitHelper {
 
   @JvmStatic
   fun <T> create(service: Class<T>): T {
-    return createRetrofitServiceWithApiUrl(service)
+    return createServiceWithApiUrl(service)
   }
 
   class Builder {
@@ -103,7 +103,7 @@ object RetrofitHelper {
     }
 
     fun cacheControl(
-      maxSize: Long = 10 * 1024 * 1024,
+      maxSize: Long = 10L * 1024 * 1024,
       block: CacheControl.Builder.(Request) -> Unit = {}
     ) = apply {
       okHttpClientBuilder.cacheControl(maxSize, block)
@@ -111,7 +111,7 @@ object RetrofitHelper {
 
     fun cacheControl(
       directory: File,
-      maxSize: Long = 10 * 1024 * 1024,
+      maxSize: Long = 10L * 1024 * 1024,
       block: CacheControl.Builder.(Request) -> Unit = {}
     ) = apply {
       okHttpClientBuilder.cacheControl(directory, maxSize, block)
@@ -171,7 +171,7 @@ object RetrofitHelper {
 
     fun init() {
       val retrofit = retrofitBuilder
-        .apply { if (useNewBaseUrl) baseUrl(debug) }
+        .apply { if (useNewBaseUrl) annotationBaseUrl(debug) }
         .client(
           okHttpClientBuilder
             .addHeaders(headers)

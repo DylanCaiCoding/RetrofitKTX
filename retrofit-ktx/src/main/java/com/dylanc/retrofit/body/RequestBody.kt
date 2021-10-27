@@ -1,4 +1,4 @@
-@file:Suppress("unused", "NOTHING_TO_INLINE")
+@file:Suppress("unused")
 
 package com.dylanc.retrofit.body
 
@@ -16,7 +16,7 @@ import java.io.File
 
 @JvmOverloads
 @JvmName("create")
-inline fun File.asRequestBody(contentType: String = "multipart/form-data"): RequestBody =
+fun File.asRequestBody(contentType: String = "multipart/form-data"): RequestBody =
   asRequestBody(contentType.toMediaTypeOrNull())
 
 @JvmOverloads
@@ -33,4 +33,4 @@ fun Uri.asRequestBody(
 
 typealias RequestMap = @JvmSuppressWildcards Map<String, Any?>
 
-inline fun requestMapOf(vararg pairs: Pair<String, Any?>) = mutableMapOf(*pairs)
+fun requestMapOf(vararg pairs: Pair<String, Any?>) = mutableMapOf(*pairs)

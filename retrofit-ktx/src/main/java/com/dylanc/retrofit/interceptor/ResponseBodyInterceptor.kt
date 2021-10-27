@@ -1,4 +1,4 @@
-@file:Suppress("unused", "NOTHING_TO_INLINE")
+@file:Suppress("unused")
 
 package com.dylanc.retrofit.interceptor
 
@@ -14,11 +14,9 @@ import java.nio.charset.StandardCharsets
  * @author Dylan Cai
  */
 
-inline fun OkHttpClient.Builder.doOnResponse(noinline block: (Response, String, String) -> Response) =
+inline fun OkHttpClient.Builder.doOnResponse(crossinline block: (Response, String, String) -> Response) =
   addInterceptor(object : ResponseBodyInterceptor() {
-    override fun intercept(response: Response, url: String, body: String): Response {
-      return block(response, url, body)
-    }
+    override fun intercept(response: Response, url: String, body: String) = block(response, url, body)
   })
 
 abstract class ResponseBodyInterceptor : Interceptor {

@@ -1,4 +1,4 @@
-@file:Suppress("unused", "ObjectPropertyName")
+@file:Suppress("unused")
 
 package com.dylanc.retrofit.app
 

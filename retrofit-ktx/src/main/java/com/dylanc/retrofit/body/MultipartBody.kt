@@ -1,5 +1,5 @@
-@file:Suppress("unused", "NOTHING_TO_INLINE")
 @file:JvmName("PartFactory")
+@file:Suppress("unused")
 
 package com.dylanc.retrofit.body
 
@@ -14,12 +14,12 @@ import java.io.File
 
 @JvmOverloads
 @JvmName("create")
-inline fun File.toPart(name: String, contentType: String = "multipart/form-data"): MultipartBody.Part =
+fun File.toPart(name: String, contentType: String = "multipart/form-data"): MultipartBody.Part =
   asRequestBody(contentType).toPart(name, this.name)
 
 @JvmOverloads
 @JvmName("create")
-inline fun Uri.toPart(
+fun Uri.toPart(
   name: String,
   filename: String? = null,
   contentType: String = "multipart/form-data",
@@ -30,11 +30,11 @@ inline fun Uri.toPart(
 
 @JvmOverloads
 @JvmName("create")
-inline fun RequestBody.toPart(name: String, filename: String? = null): MultipartBody.Part =
+fun RequestBody.toPart(name: String, filename: String? = null): MultipartBody.Part =
   MultipartBody.Part.createFormData(name, filename, this)
 
 @JvmOverloads
 @JvmName("create")
-inline fun List<Uri>.toPartList(name: String, contentType: String = "multipart/form-data") = map {
+fun List<Uri>.toPartList(name: String, contentType: String = "multipart/form-data") = map {
   it.toPart(name, contentType)
 }

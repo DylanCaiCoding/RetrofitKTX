@@ -9,7 +9,7 @@ internal val baseUrl: String? get() = urlConfigOf("baseUrl")
 internal val debugUrl: String? get() = urlConfigOf("debugUrl")
 
 internal fun domains() = lazy {
-  urlConfigOf<HashMap<String, String>>("domains") ?: mutableMapOf()
+  urlConfigOf<HashMap<String, String>>("domains") ?: hashMapOf()
 }
 
 @Suppress("UNCHECKED_CAST")

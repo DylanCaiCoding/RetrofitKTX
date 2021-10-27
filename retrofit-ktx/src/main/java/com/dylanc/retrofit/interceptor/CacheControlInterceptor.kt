@@ -1,27 +1,27 @@
-@file:Suppress("unused", "NOTHING_TO_INLINE", "FunctionName")
+@file:Suppress("unused")
 
 package com.dylanc.retrofit.interceptor
 
 import com.dylanc.retrofit.app.application
-import com.dylanc.retrofit.methodAnnotationOf
+import com.dylanc.retrofit.getMethodAnnotation
 import okhttp3.*
 import java.io.File
 import java.util.concurrent.TimeUnit
 
 
-inline fun cacheControl(noinline block: okhttp3.CacheControl.Builder.() -> Unit): okhttp3.CacheControl =
+inline fun cacheControl(crossinline block: okhttp3.CacheControl.Builder.() -> Unit): okhttp3.CacheControl =
   okhttp3.CacheControl.Builder().apply(block).build()
 
 fun OkHttpClient.Builder.cacheControl(
-  maxSize: Long = 10 * 1024 * 1024,
+  maxSize: Long = 10L * 1024 * 1024,
   block: okhttp3.CacheControl.Builder.(Request) -> Unit = {}
 ) =
   cacheControl(File(application.externalCacheDir, "responses.cache"), maxSize, block)
 
 inline fun OkHttpClient.Builder.cacheControl(
   directory: File,
-  maxSize: Long = 10 * 1024 * 1024,
-  noinline block: okhttp3.CacheControl.Builder.(Request) -> Unit = {}
+  maxSize: Long = 10L * 1024 * 1024,
+  crossinline block: okhttp3.CacheControl.Builder.(Request) -> Unit = {}
 ) =
   apply {
     cache(Cache(directory, maxSize))
@@ -50,7 +50,7 @@ class CacheControlInterceptor @JvmOverloads constructor(
 
   override fun intercept(chain: Interceptor.Chain): Response {
     val request = chain.request()
-    val cacheControl = request.methodAnnotationOf<CacheControl>()?.let {
+    val cacheControl = request.getMethodAnnotation<CacheControl>()?.let {
       cacheControl {
         if (it.noCache) noCache()
         if (it.noStore) noStore()

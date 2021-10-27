@@ -1,9 +1,9 @@
-@file:Suppress("unused", "NOTHING_TO_INLINE")
+@file:Suppress("unused")
 
 package com.dylanc.retrofit.interceptor
 
 import com.dylanc.retrofit.domains
-import com.dylanc.retrofit.methodAnnotationOf
+import com.dylanc.retrofit.getMethodAnnotation
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -15,9 +15,9 @@ import okhttp3.Response
 
 val retrofitDomains: MutableMap<String, String> by domains()
 
-inline fun OkHttpClient.Builder.multipleDomains() = putDomains(retrofitDomains)
+fun OkHttpClient.Builder.multipleDomains() = putDomains(retrofitDomains)
 
-inline fun OkHttpClient.Builder.putDomains(domains: MutableMap<String, String>) =
+fun OkHttpClient.Builder.putDomains(domains: MutableMap<String, String>) =
   addInterceptor(DomainsInterceptor(domains))
 
 @Retention(AnnotationRetention.RUNTIME)
@@ -32,7 +32,7 @@ class DomainsInterceptor(
     val request = chain.request()
     val baseUrl = request.url
     val builder = request.newBuilder()
-    val domainName = request.methodAnnotationOf<DomainName>()?.value
+    val domainName = request.getMethodAnnotation<DomainName>()?.value
     return if (domainName.isNullOrBlank()) {
       chain.proceed(request)
     } else {
