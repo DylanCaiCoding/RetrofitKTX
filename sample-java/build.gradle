@@ -36,10 +36,11 @@ dependencies {
     implementation project(':retrofit-ktx')
     kapt project(':retrofit-compiler')
     implementation project(':retrofit-rxjava2')
-    implementation project(':retrofit-autodispose')
     implementation 'me.jessyan:progressmanager:1.5.0'
     implementation 'top.zibin:Luban:1.1.8'
     implementation "com.squareup.retrofit2:converter-scalars:$retrofit_version"
+    implementation "com.uber.autodispose:autodispose:$autodispose_version"
+    implementation "com.uber.autodispose:autodispose-android-archcomponents:$autodispose_version"
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
     testImplementation 'junit:junit:4.13.2'

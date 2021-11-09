@@ -8,13 +8,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dylanc.retrofit.helper.RetrofitHelper;
-import com.dylanc.retrofit.autodispose.AutoDisposable;
 import com.dylanc.retrofit.rxjava.RxDownloadApi;
 import com.dylanc.retrofit.rxjava.Transformers;
 import com.dylanc.retrofit.sample.java.R;
 import com.dylanc.retrofit.sample.java.data.api.GankApi;
 import com.dylanc.retrofit.sample.java.data.api.RxJavaApi;
 import com.dylanc.retrofit.sample.java.data.constant.Constants;
+import com.dylanc.retrofit.sample.java.network.AutoDisposable;
 import com.dylanc.retrofit.sample.java.network.LoadingDialog;
 
 import java.util.Objects;

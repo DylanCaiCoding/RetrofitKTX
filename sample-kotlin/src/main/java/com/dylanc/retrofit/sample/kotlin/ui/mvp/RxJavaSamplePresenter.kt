@@ -1,10 +1,10 @@
 package com.dylanc.retrofit.sample.kotlin.ui.mvp
 
 import androidx.lifecycle.LifecycleOwner
-import com.dylanc.retrofit.autodispose.autoDispose
 import com.dylanc.retrofit.rxjava.io2mainThread
 import com.dylanc.retrofit.rxjava.showLoading
 import com.dylanc.retrofit.sample.kotlin.data.constant.DOWNLOAD_URL
+import com.dylanc.retrofit.sample.kotlin.network.autoDispose
 
 /**
  * @author Dylan Cai

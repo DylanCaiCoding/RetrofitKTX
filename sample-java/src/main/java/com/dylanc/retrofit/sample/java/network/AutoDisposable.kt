@@ -1,6 +1,6 @@
 @file:Suppress("unused", "NOTHING_TO_INLINE")
 
-package com.dylanc.retrofit.autodispose
+package com.dylanc.retrofit.sample.java.network
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
