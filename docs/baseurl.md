@@ -1,6 +1,6 @@
 # 管理 base URL
 
-## 默认域名
+### 默认域名
 
 用注解 `@BaseUrl` 配置默认域名，例如：
 
@@ -9,9 +9,9 @@
 const val BASE_URL = "https://www.wanandroid.com/"
 ```
 
-## 测试域名
+### 测试域名
 
-用注解 `@DebugUrl` 配置测试域名，并在初始化时配置了 debug 才会生效，不然会使用默认地址。例如：
+用注解 `@DebugUrl` 配置测试域名，并在初始化时配置了 debug 才会生效，否则使用默认域名。例如：
 
 ```kotlin
 @DebugUrl
@@ -19,13 +19,12 @@ const val DEBUG_URL = "http://192.168.1.3"
 ```
 
 ```kotlin
-initRetrofit {
-  debug(BuildConfig.DEBUG)
-  ...
+initRetrofit(BuildConfig.DEBUG) {
+  // ...
 }
 ```
 
-## 静态多域名
+### 静态多域名
 
 在接口类增加 `@ApiUrl` 注解来修改该类所有请求方法的 baseUrl，例如：
 
@@ -37,7 +36,9 @@ interface GankApi{
 }
 ```
 
-## 动态域名
+> 使用 `@ApiUrl` 注解会增加 Retrofit 实例，如果对此十分介意可选择动态域名的用法。
+
+### 动态域名
 
 在请求的方法增加 `DomainName`注解，为该请求标注一个域名代号，例如：
 
