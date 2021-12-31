@@ -7,7 +7,7 @@ import okhttp3.logging.HttpLoggingInterceptor
  * @author Dylan Cai
  */
 
-fun OkHttpClient.Builder.addHttpLog(
+fun OkHttpClient.Builder.printHttpLog(
   level: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BODY,
   logger: HttpLoggingInterceptor.Logger
 ) =

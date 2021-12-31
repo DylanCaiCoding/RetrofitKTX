@@ -15,22 +15,22 @@ import kotlin.reflect.KClass
 
 @MainThread
 inline fun <reified VM : RequestViewModel> FragmentActivity.requestViewModels(
-  handleLoading: Boolean = true,
-  handleException: Boolean = true,
+  observeLoading: Boolean = true,
+  observeException: Boolean = true,
   noinline factoryProducer: () -> ViewModelProvider.Factory = { defaultViewModelProviderFactory },
 ): Lazy<VM> =
   RequestViewModelLazy(VM::class, { this }, { this },
-    { viewModelStore }, factoryProducer, handleLoading, handleException
+    { viewModelStore }, factoryProducer, observeLoading, observeException
   )
 
 @MainThread
 inline fun <reified VM : RequestViewModel> Fragment.requestViewModels(
-  handleLoading: Boolean = true,
-  handleException: Boolean = true,
+  observeLoading: Boolean = true,
+  observeException: Boolean = true,
   noinline factoryProducer: () -> ViewModelProvider.Factory = { defaultViewModelProviderFactory },
 ): Lazy<VM> =
   RequestViewModelLazy(VM::class, { viewLifecycleOwner }, { requireActivity() },
-    { viewModelStore }, factoryProducer, handleLoading, handleException
+    { viewModelStore }, factoryProducer, observeLoading, observeException
   )
 
 class RequestViewModelLazy<VM : RequestViewModel>(
@@ -39,8 +39,8 @@ class RequestViewModelLazy<VM : RequestViewModel>(
   private val activityProducer: () -> FragmentActivity,
   private val storeProducer: () -> ViewModelStore,
   private val factoryProducer: () -> ViewModelProvider.Factory,
-  private val handleLoading: Boolean = true,
-  private val handleException: Boolean = true,
+  private val observeLoading: Boolean = true,
+  private val observeException: Boolean = true,
 ) : Lazy<VM> {
   private var cached: VM? = null
 
@@ -53,7 +53,7 @@ class RequestViewModelLazy<VM : RequestViewModel>(
         val activity = activityProducer()
         val lifecycleOwner = lifecycleOwnerProducer()
         ViewModelProvider(store, factory).get(viewModelClass.java).also { vm ->
-          if (handleLoading) {
+          if (observeLoading) {
             defaultLoadingObserver?.let { observer ->
               lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
                 override fun onCreate(owner: LifecycleOwner) {
@@ -65,17 +65,13 @@ class RequestViewModelLazy<VM : RequestViewModel>(
                 }
               })
               vm.isLoading.flowWithLifecycle(lifecycleOwner.lifecycle)
-                .onEach {
-                  observer.onChanged(activity, it)
-                }
+                .onEach { observer.onChanged(activity, it) }
                 .launchIn(lifecycleOwner.lifecycleScope)
             }
           }
-          if (handleException) {
+          if (observeException) {
             vm.exception.flowWithLifecycle(lifecycleOwner.lifecycle)
-              .onEach {
-                defaultExceptionObserver.onChanged(activity, it)
-              }
+              .onEach { defaultExceptionObserver.onChanged(activity, it) }
               .launchIn(lifecycleOwner.lifecycleScope)
           }
           cached = vm

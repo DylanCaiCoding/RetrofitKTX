@@ -2,10 +2,10 @@
 
 package com.dylanc.retrofit.helper
 
-import com.dylanc.callbacks.Callback1
-import com.dylanc.retrofit.annotationBaseUrl
+import com.dylanc.retrofit.annotatedBaseUrl
 import com.dylanc.retrofit.cookie.PersistentCookieJar
 import com.dylanc.retrofit.createServiceWithApiUrl
+import com.dylanc.retrofit.defaultRetrofit
 import com.dylanc.retrofit.initRetrofit
 import com.dylanc.retrofit.interceptor.*
 import okhttp3.*
@@ -27,13 +27,12 @@ object RetrofitHelper {
   fun getDefault() = Builder()
 
   @JvmStatic
-  fun putDomain(name: String, url: String) {
-    retrofitDomains[name] = url
-  }
+  fun <T> create(service: Class<T>): T =
+    defaultRetrofit.createServiceWithApiUrl(service)
 
   @JvmStatic
-  fun <T> create(service: Class<T>): T {
-    return createServiceWithApiUrl(service)
+  fun putDomain(name: String, url: String) {
+    retrofitDomains[name] = url
   }
 
   class Builder {
@@ -146,7 +145,7 @@ object RetrofitHelper {
       level: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BODY,
       logger: HttpLoggingInterceptor.Logger
     ) = apply {
-      okHttpClientBuilder.addHttpLog(level, logger)
+      okHttpClientBuilder.printHttpLog(level, logger)
     }
 
     fun doOnResponse(block: (Response, String, String) -> Response) = apply {
@@ -161,25 +160,25 @@ object RetrofitHelper {
       retrofitBuilder.addCallAdapterFactory(factory)
     }
 
-    fun okHttpClientBuilder(block: Callback1<OkHttpClient.Builder>) = apply {
+    fun okHttpClientBuilder(block: Callback<OkHttpClient.Builder>) = apply {
       block(okHttpClientBuilder)
     }
 
-    fun retrofitBuilder(block: Callback1<Retrofit.Builder>) = apply {
+    fun retrofitBuilder(block: Callback<Retrofit.Builder>) = apply {
       block(retrofitBuilder)
     }
 
     fun init() {
       val retrofit = retrofitBuilder
-        .apply { if (useNewBaseUrl) annotationBaseUrl(debug) }
-        .client(
-          okHttpClientBuilder
-            .addHeaders(headers)
-            .build()
-        )
+        .apply { if (useNewBaseUrl) annotatedBaseUrl(debug) }
+        .client(okHttpClientBuilder.addHeaders(headers).build())
         .addConverterFactory(GsonConverterFactory.create())
         .build()
       initRetrofit(retrofit)
     }
+  }
+
+  fun interface Callback<in P1> {
+    operator fun invoke(p1: P1)
   }
 }

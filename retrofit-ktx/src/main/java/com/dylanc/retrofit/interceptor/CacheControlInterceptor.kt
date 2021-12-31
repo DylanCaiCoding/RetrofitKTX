@@ -44,8 +44,8 @@ annotation class CacheControl(
   val timeUnit: TimeUnit = TimeUnit.SECONDS
 )
 
-class CacheControlInterceptor @JvmOverloads constructor(
-  private val onCreateCacheControl: (Request) -> okhttp3.CacheControl? = { null }
+class CacheControlInterceptor constructor(
+  private val onCreateCacheControl: (Request) -> okhttp3.CacheControl?
 ) : Interceptor {
 
   override fun intercept(chain: Interceptor.Chain): Response {
@@ -64,7 +64,7 @@ class CacheControlInterceptor @JvmOverloads constructor(
     } ?: onCreateCacheControl(request)
     return chain.proceed(request).newBuilder()
       .apply {
-        if (cacheControl != null) {
+        if (cacheControl != null && cacheControl.toString().isNotEmpty()) {
           removeHeader("Pragma")
           removeHeader("Cache-Control")
           header("Cache-Control", cacheControl.toString())

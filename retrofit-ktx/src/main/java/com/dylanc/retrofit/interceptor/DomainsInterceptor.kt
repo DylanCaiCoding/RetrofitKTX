@@ -15,27 +15,21 @@ import okhttp3.Response
 
 val retrofitDomains: MutableMap<String, String> by domains()
 
-fun OkHttpClient.Builder.multipleDomains() = putDomains(retrofitDomains)
-
-fun OkHttpClient.Builder.putDomains(domains: MutableMap<String, String>) =
+fun OkHttpClient.Builder.multipleDomains(domains: MutableMap<String, String> = retrofitDomains) =
   addInterceptor(DomainsInterceptor(domains))
 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)
 annotation class DomainName(val value: String)
 
-class DomainsInterceptor(
-  private val domains: MutableMap<String, String>
-) : Interceptor {
+class DomainsInterceptor(private val domains: MutableMap<String, String>) : Interceptor {
 
   override fun intercept(chain: Interceptor.Chain): Response {
     val request = chain.request()
-    val baseUrl = request.url
-    val builder = request.newBuilder()
     val domainName = request.getMethodAnnotation<DomainName>()?.value
-    return if (domainName.isNullOrBlank()) {
-      chain.proceed(request)
-    } else {
+    return if (!domainName.isNullOrBlank()) {
+      val baseUrl = request.url
+      val builder = request.newBuilder()
       val url = domains[domainName]?.toHttpUrlOrNull() ?: baseUrl
       val newFullUrl = request.url.newBuilder()
         .apply {
@@ -53,6 +47,8 @@ class DomainsInterceptor(
         .port(url.port)
         .build()
       chain.proceed(builder.url(newFullUrl).build())
+    } else {
+      chain.proceed(request)
     }
   }
 }
