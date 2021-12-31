@@ -49,7 +49,7 @@ dependencies {
     implementation "com.uber.autodispose:autodispose-android-archcomponents:$autodispose_version"
 
     implementation project(':retrofit-ktx')
-    kapt project(':retrofit-compiler')
+//    kapt project(':retrofit-compiler')
     implementation project(':retrofit-coroutines')
     implementation project(':retrofit-rxjava2')
 

@@ -34,7 +34,6 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
     implementation 'androidx.activity:activity-ktx:1.3.1'
     implementation project(':retrofit-ktx')
-    kapt project(':retrofit-compiler')
     implementation project(':retrofit-rxjava2')
     implementation 'me.jessyan:progressmanager:1.5.0'
     implementation 'top.zibin:Luban:1.1.8'

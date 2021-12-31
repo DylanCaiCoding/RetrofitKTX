@@ -1,5 +1,4 @@
 @file:Suppress("unused")
-@file:JvmName("PersistentCookies")
 
 package com.dylanc.retrofit.cookie
 
@@ -16,21 +15,9 @@ import okhttp3.internal.and
 import java.io.*
 import java.util.*
 
+fun OkHttpClient.Builder.persistentCookieJar() = cookieJar(PersistentCookieJar.instance)
 
-private lateinit var persistentCookieJar: PersistentCookieJar
-
-fun OkHttpClient.Builder.persistentCookies() = cookieJar(PersistentCookieJar())
-
-@JvmName("create")
-fun PersistentCookieJar(): PersistentCookieJar {
-  persistentCookieJar = PersistentCookieJar(application)
-  return persistentCookieJar
-}
-
-@JvmName("clear")
-fun clearPersistentCookies() {
-  persistentCookieJar.clear()
-}
+fun clearPersistentCookieJar() = PersistentCookieJar.instance.clear()
 
 class PersistentCookieJar(private val sharedPreferences: SharedPreferences) : CookieJar {
 
@@ -81,7 +68,6 @@ class PersistentCookieJar(private val sharedPreferences: SharedPreferences) : Co
     sharedPreferences.clear()
   }
 
-
   private fun MutableSet<IdentifiableCookie>.addAll(cookies: Collection<Cookie>) {
     for (cookie in decorateAll(cookies)) {
       remove(cookie)
@@ -122,6 +108,9 @@ class PersistentCookieJar(private val sharedPreferences: SharedPreferences) : Co
   }
 
   companion object {
+    @JvmStatic
+    val instance by lazy { PersistentCookieJar(application) }
+
     private fun filterPersistentCookies(cookies: List<Cookie>): List<Cookie> {
       val persistentCookies: MutableList<Cookie> = ArrayList()
       for (cookie in cookies) {
@@ -142,10 +131,9 @@ class PersistentCookieJar(private val sharedPreferences: SharedPreferences) : Co
   }
 
   private class IdentifiableCookie(val cookie: Cookie) {
-    override fun equals(other: Any?): Boolean {
-      if (other !is IdentifiableCookie) return false
-      return other.cookie.name == cookie.name && other.cookie.domain == cookie.domain && other.cookie.path == cookie.path && other.cookie.secure == cookie.secure && other.cookie.hostOnly == cookie.hostOnly
-    }
+    override fun equals(other: Any?): Boolean =
+      other is IdentifiableCookie && other.cookie.name == cookie.name && other.cookie.domain == cookie.domain &&
+          other.cookie.path == cookie.path && other.cookie.secure == cookie.secure && other.cookie.hostOnly == cookie.hostOnly
 
     override fun hashCode(): Int {
       var hash = 17
@@ -159,13 +147,8 @@ class PersistentCookieJar(private val sharedPreferences: SharedPreferences) : Co
 
     companion object {
       @JvmStatic
-      fun decorateAll(cookies: Collection<Cookie>): List<IdentifiableCookie> {
-        val identifiableCookies: MutableList<IdentifiableCookie> = ArrayList(cookies.size)
-        for (cookie in cookies) {
-          identifiableCookies.add(IdentifiableCookie(cookie))
-        }
-        return identifiableCookies
-      }
+      fun decorateAll(cookies: Collection<Cookie>): List<IdentifiableCookie> =
+        cookies.map { IdentifiableCookie(it) }
     }
   }
 }

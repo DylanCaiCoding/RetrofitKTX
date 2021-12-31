@@ -2,7 +2,6 @@
 
 package com.dylanc.retrofit.helper
 
-import com.dylanc.retrofit.annotatedBaseUrl
 import com.dylanc.retrofit.cookie.PersistentCookieJar
 import com.dylanc.retrofit.createServiceWithApiUrl
 import com.dylanc.retrofit.defaultRetrofit
@@ -36,20 +35,12 @@ object RetrofitHelper {
   }
 
   class Builder {
-    private var debug = false
-    private var useNewBaseUrl = true
     private val headers = mutableMapOf<String, String>()
     private val okHttpClientBuilder = OkHttpClient.Builder()
     private var retrofitBuilder = Retrofit.Builder()
 
-    @JvmOverloads
-    fun migrateFrom(retrofit: Retrofit, useNewBaseUrl: Boolean = false) {
+    fun migrateFrom(retrofit: Retrofit) {
       retrofitBuilder = retrofit.newBuilder()
-      this.useNewBaseUrl = useNewBaseUrl
-    }
-
-    fun debug(debug: Boolean) = apply {
-      this.debug = debug
     }
 
     fun addHeader(name: String, value: String) = apply {
@@ -71,7 +62,6 @@ object RetrofitHelper {
 
     fun baseUrl(baseUrl: String) = apply {
       retrofitBuilder.baseUrl(baseUrl)
-      useNewBaseUrl = false
     }
 
     fun putDomain(name: String, url: String) {
@@ -170,7 +160,6 @@ object RetrofitHelper {
 
     fun init() {
       val retrofit = retrofitBuilder
-        .apply { if (useNewBaseUrl) annotatedBaseUrl(debug) }
         .client(okHttpClientBuilder.addHeaders(headers).build())
         .addConverterFactory(GsonConverterFactory.create())
         .build()
@@ -178,7 +167,7 @@ object RetrofitHelper {
     }
   }
 
-  fun interface Callback<in P1> {
-    operator fun invoke(p1: P1)
+  fun interface Callback<in P> {
+    operator fun invoke(p: P)
   }
 }

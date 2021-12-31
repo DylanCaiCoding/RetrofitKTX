@@ -29,7 +29,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "androidx.startup:startup-runtime:1.1.0"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    api project(':retrofit-annotations')
+//    api project(':retrofit-annotations')
     api "com.squareup.okhttp3:okhttp:$okhttp_version"
     api "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
     api "com.squareup.retrofit2:retrofit:$retrofit_version"

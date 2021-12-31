@@ -3,9 +3,9 @@ package com.dylanc.retrofit.sample.java;
 import android.app.Application;
 import android.util.Log;
 
+import com.dylanc.retrofit.cookie.PersistentCookieJar;
 import com.dylanc.retrofit.helper.RetrofitHelper;
-import com.dylanc.retrofit.cookie.PersistentCookie;
-import com.dylanc.retrofit.sample.java.BuildConfig;
+import com.dylanc.retrofit.sample.java.data.constant.Constants;
 import com.dylanc.retrofit.sample.java.network.GlobalErrorHandler;
 
 import me.jessyan.progressmanager.ProgressManager;
@@ -18,13 +18,13 @@ public class App extends Application {
   public void onCreate() {
     super.onCreate();
     RetrofitHelper.getDefault()
-        .debug(BuildConfig.DEBUG)
+        .baseUrl(Constants.BASE_URL)
         .retryOnConnectionFailure(false)
 //        .cache(new File(getCacheDir(), "response"), 10 * 1024 * 1024,
 //            (url) -> new CacheControl.Builder().maxAge(1, TimeUnit.DAYS).build())
         .addHttpLog(message -> Log.i("http", message))
         .doOnResponse(GlobalErrorHandler::handleResponse)
-        .cookieJar(PersistentCookie.create())
+        .cookieJar(PersistentCookieJar.getInstance())
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .addConverterFactory(ScalarsConverterFactory.create())
         .okHttpClientBuilder(builder -> {
