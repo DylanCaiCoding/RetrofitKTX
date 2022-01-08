@@ -2,7 +2,7 @@ package com.dylanc.retrofit.sample.java.data.api
 
 import com.dylanc.retrofit.sample.java.data.bean.ApiResponse
 import com.dylanc.retrofit.sample.java.data.bean.UserBean
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
 

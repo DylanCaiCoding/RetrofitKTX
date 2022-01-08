@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package com.dylanc.retrofit.rxjava
+package com.dylanc.retrofit.rxjava2
 
 import io.reactivex.Single
 import okhttp3.ResponseBody

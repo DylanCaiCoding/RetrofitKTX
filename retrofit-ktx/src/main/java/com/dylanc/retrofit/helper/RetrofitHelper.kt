@@ -110,7 +110,7 @@ object RetrofitHelper {
       okHttpClientBuilder.cookieJar(cookieJar)
     }
 
-    fun persistentCookies() = cookieJar(PersistentCookieJar())
+    fun persistentCookies() = cookieJar(PersistentCookieJar.instance)
 
     fun multipleDomains() = apply {
       okHttpClientBuilder.multipleDomains()

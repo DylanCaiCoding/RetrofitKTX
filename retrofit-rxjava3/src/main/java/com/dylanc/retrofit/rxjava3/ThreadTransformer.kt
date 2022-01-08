@@ -1,12 +1,12 @@
-package com.dylanc.retrofit.rxjava
+package com.dylanc.retrofit.rxjava3
 
-import io.reactivex.*
+import io.reactivex.rxjava3.core.*
 import org.reactivestreams.Publisher
 
 /**
  * @author Dylan Cai
  */
-class ThreadTransformer<T>(
+class ThreadTransformer<T : Any>(
   private val subscribeScheduler: Scheduler,
   private val observeScheduler: Scheduler
 ) : ObservableTransformer<T, T>, FlowableTransformer<T, T>,

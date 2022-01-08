@@ -9,7 +9,7 @@ import com.dylanc.retrofit.sample.java.data.constant.Constants;
 import com.dylanc.retrofit.sample.java.network.GlobalErrorHandler;
 
 import me.jessyan.progressmanager.ProgressManager;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class App extends Application {
@@ -25,7 +25,7 @@ public class App extends Application {
         .addHttpLog(message -> Log.i("http", message))
         .doOnResponse(GlobalErrorHandler::handleResponse)
         .cookieJar(PersistentCookieJar.getInstance())
-        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+        .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
         .addConverterFactory(ScalarsConverterFactory.create())
         .okHttpClientBuilder(builder -> {
           ProgressManager.getInstance().with(builder);

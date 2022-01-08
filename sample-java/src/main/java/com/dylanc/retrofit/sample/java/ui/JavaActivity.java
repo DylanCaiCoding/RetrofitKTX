@@ -8,13 +8,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dylanc.retrofit.helper.RetrofitHelper;
-import com.dylanc.retrofit.rxjava.RxDownloadApi;
-import com.dylanc.retrofit.rxjava.Transformers;
+import com.dylanc.retrofit.rxjava3.RxDownloadApi;
+import com.dylanc.retrofit.rxjava3.Transformers;
 import com.dylanc.retrofit.sample.java.R;
 import com.dylanc.retrofit.sample.java.data.api.GankApi;
 import com.dylanc.retrofit.sample.java.data.api.RxJavaApi;
 import com.dylanc.retrofit.sample.java.data.constant.Constants;
-import com.dylanc.retrofit.sample.java.network.AutoDisposable;
 import com.dylanc.retrofit.sample.java.network.LoadingDialog;
 
 import java.util.Objects;
@@ -34,7 +33,7 @@ public class JavaActivity extends AppCompatActivity {
         .geArticleList(0)
         .compose(Transformers.io2mainThread())
         .compose(Transformers.showLoading(getSupportFragmentManager(), loadingDialog))
-        .as(AutoDisposable.bind(this))
+//        .to(AutoDisposable.bind(this))
         .subscribe(
             this::alert,
             e -> toast(e.getMessage())
@@ -46,7 +45,7 @@ public class JavaActivity extends AppCompatActivity {
         .getGankTodayListByRxJava()
         .compose(Transformers.io2mainThread())
         .compose(Transformers.showLoading(getSupportFragmentManager(), loadingDialog))
-        .as(AutoDisposable.bind(this))
+//        .as(AutoDisposable.bind(this))
         .subscribe(
             this::alert,
             e -> toast(e.getMessage())
@@ -58,7 +57,7 @@ public class JavaActivity extends AppCompatActivity {
         .login()
         .compose(Transformers.io2mainThread())
         .compose(Transformers.showLoading(getSupportFragmentManager(), loadingDialog))
-        .as(AutoDisposable.bind(this))
+//        .as(AutoDisposable.bind(this))
         .subscribe(
             response -> toast("登录成功"),
             e -> toast(e.getMessage())
@@ -72,7 +71,7 @@ public class JavaActivity extends AppCompatActivity {
         .compose(Transformers.toFile(pathname))
         .compose(Transformers.io2mainThread())
         .compose(Transformers.showLoading(getSupportFragmentManager(), loadingDialog))
-        .as(AutoDisposable.bind(this))
+//        .as(AutoDisposable.bind(this))
         .subscribe(
             file -> toast("已下载到" + file.getPath()),
             e -> toast(e.getMessage())

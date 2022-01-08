@@ -1,8 +1,7 @@
 rootProject.name = "RetrofitKTX"
 include ':retrofit-ktx'
-include ':retrofit-annotations'
-include ':retrofit-compiler'
 include ':retrofit-rxjava2'
 include ':retrofit-coroutines'
 include ':sample-kotlin'
 include ':sample-java'
+include ':retrofit-rxjava3'

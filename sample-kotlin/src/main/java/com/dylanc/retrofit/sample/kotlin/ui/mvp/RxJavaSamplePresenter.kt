@@ -1,8 +1,8 @@
 package com.dylanc.retrofit.sample.kotlin.ui.mvp
 
 import androidx.lifecycle.LifecycleOwner
-import com.dylanc.retrofit.rxjava.io2mainThread
-import com.dylanc.retrofit.rxjava.showLoading
+import com.dylanc.retrofit.rxjava2.io2mainThread
+import com.dylanc.retrofit.rxjava2.showLoading
 import com.dylanc.retrofit.sample.kotlin.data.constant.DOWNLOAD_URL
 import com.dylanc.retrofit.sample.kotlin.network.autoDispose
 

@@ -1,6 +1,6 @@
 @file:Suppress("unused", "NOTHING_TO_INLINE")
 
-package com.dylanc.retrofit.rxjava
+package com.dylanc.retrofit.rxjava2
 
 import android.app.Dialog
 import androidx.fragment.app.DialogFragment

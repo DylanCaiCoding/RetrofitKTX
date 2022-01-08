@@ -1,12 +1,12 @@
-package com.dylanc.retrofit.rxjava
+package com.dylanc.retrofit.rxjava3
 
-import io.reactivex.*
+import io.reactivex.rxjava3.core.*
 import org.reactivestreams.Publisher
 
 /**
  * @author Dylan Cai
  */
-class LoadingTransformer<T>(
+class LoadingTransformer<T : Any>(
   private val requestLoading: RequestLoading
 ) : ObservableTransformer<T, T>, FlowableTransformer<T, T>,
   SingleTransformer<T, T>, MaybeTransformer<T, T>, CompletableTransformer {
