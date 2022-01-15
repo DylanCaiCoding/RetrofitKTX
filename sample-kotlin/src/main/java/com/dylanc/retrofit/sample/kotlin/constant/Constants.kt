@@ -1,6 +1,6 @@
 @file:JvmName("Constants")
 
-package com.dylanc.retrofit.sample.kotlin.data.constant
+package com.dylanc.retrofit.sample.kotlin.constant
 
 const val BASE_URL = "https://www.wanandroid.com"
 

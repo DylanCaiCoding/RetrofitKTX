@@ -10,6 +10,9 @@ import okhttp3.Response
 
 val retrofitDomains = mutableMapOf<String, String>()
 
+fun OkHttpClient.Builder.multipleDomains(vararg pairs: Pair<String, String>) =
+  addInterceptor(DomainsInterceptor(retrofitDomains.apply { putAll(pairs) }))
+
 fun OkHttpClient.Builder.multipleDomains(domains: MutableMap<String, String> = retrofitDomains) =
   addInterceptor(DomainsInterceptor(domains))
 

@@ -64,13 +64,13 @@ class RequestViewModelLazy<VM : RequestViewModel>(
                   observer.onDestroy()
                 }
               })
-              vm.isLoading.flowWithLifecycle(lifecycleOwner.lifecycle)
+              vm.loadingFlow.flowWithLifecycle(lifecycleOwner.lifecycle)
                 .onEach { observer.onChanged(activity, it) }
                 .launchIn(lifecycleOwner.lifecycleScope)
             }
           }
           if (observeException) {
-            vm.exception.flowWithLifecycle(lifecycleOwner.lifecycle)
+            vm.exceptionFlow.flowWithLifecycle(lifecycleOwner.lifecycle)
               .onEach { defaultExceptionObserver.onChanged(activity, it) }
               .launchIn(lifecycleOwner.lifecycleScope)
           }

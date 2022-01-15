@@ -1,8 +1,8 @@
-package com.dylanc.retrofit.sample.java.data.api
+package com.dylanc.retrofit.sample.java.api
 
-import com.dylanc.retrofit.sample.java.data.bean.ApiResponse
-import com.dylanc.retrofit.sample.java.data.bean.UserBean
-import io.reactivex.rxjava3.core.Single
+import com.dylanc.retrofit.sample.java.bean.ApiResponse
+import com.dylanc.retrofit.sample.java.bean.UserBean
+import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
 

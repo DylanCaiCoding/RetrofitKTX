@@ -7,10 +7,12 @@ import com.dylanc.retrofit.coroutines.initRequestViewModel
 import com.dylanc.retrofit.initRetrofit
 import com.dylanc.retrofit.interceptor.multipleDomains
 import com.dylanc.retrofit.interceptor.printHttpLog
+import com.dylanc.retrofit.interceptor.retrofitDomains
 import com.dylanc.retrofit.okHttpClient
-import com.dylanc.retrofit.sample.kotlin.data.constant.BASE_URL
+import com.dylanc.retrofit.sample.kotlin.constant.BASE_URL
+import com.dylanc.retrofit.sample.kotlin.constant.URL_GANK
 import com.dylanc.retrofit.sample.kotlin.network.LoadingDialogFactory
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 
@@ -25,13 +27,13 @@ class App : Application() {
     initRetrofit {
       baseUrl(BASE_URL)
       okHttpClient {
-        multipleDomains()
+        multipleDomains("gank" to URL_GANK)
         printHttpLog { Log.i("http", it) }
         persistentCookieJar()
         connectTimeout(15, TimeUnit.SECONDS)
       }
       addConverterFactory(ScalarsConverterFactory.create())
-      addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+      addCallAdapterFactory(RxJava3CallAdapterFactory.create())
     }
 
     initRequestViewModel(LoadingDialogFactory())

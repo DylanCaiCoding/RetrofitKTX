@@ -1,10 +1,10 @@
 package com.dylanc.retrofit.sample.kotlin.ui.mvp
 
 import android.content.Context
-import com.dylanc.retrofit.rxjava2.RequestLoading
-import com.dylanc.retrofit.sample.kotlin.data.bean.ApiResponse
-import com.dylanc.retrofit.sample.kotlin.data.bean.UserBean
-import io.reactivex.Single
+import com.dylanc.retrofit.rxjava3.RequestLoading
+import com.dylanc.retrofit.sample.kotlin.bean.ApiResponse
+import com.dylanc.retrofit.sample.kotlin.bean.UserBean
+import io.reactivex.rxjava3.core.Single
 import java.io.File
 
 /**

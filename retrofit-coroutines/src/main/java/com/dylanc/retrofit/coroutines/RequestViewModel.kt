@@ -3,7 +3,6 @@
 package com.dylanc.retrofit.coroutines
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import com.dylanc.retrofit.coroutines.exception.RequestExceptionObserver
 import com.dylanc.retrofit.coroutines.exception.defaultExceptionObserver
 import com.dylanc.retrofit.coroutines.loading.RequestLoadingObserver
@@ -24,9 +23,9 @@ fun initRequestViewModel(
 }
 
 abstract class RequestViewModel : ViewModel() {
-  protected val loadingFlow = MutableSharedFlow<Boolean>()
-  val isLoading: SharedFlow<Boolean> get() = loadingFlow
+  protected val _loadingFlow = MutableSharedFlow<Boolean>()
+  val loadingFlow: SharedFlow<Boolean> get() = _loadingFlow
 
-  protected val exceptionFlow = MutableSharedFlow<Throwable>()
-  val exception: SharedFlow<Throwable> get() = exceptionFlow
+  protected val _exceptionFlow = MutableSharedFlow<Throwable>()
+  val exceptionFlow: SharedFlow<Throwable> get() = _exceptionFlow
 }

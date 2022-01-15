@@ -1,7 +1,7 @@
-package com.dylanc.retrofit.sample.kotlin.data.api
+package com.dylanc.retrofit.sample.kotlin.api
 
-import com.dylanc.retrofit.sample.kotlin.data.bean.ApiResponse
-import com.dylanc.retrofit.sample.kotlin.data.bean.UserBean
+import com.dylanc.retrofit.sample.kotlin.bean.ApiResponse
+import com.dylanc.retrofit.sample.kotlin.bean.UserBean
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Path

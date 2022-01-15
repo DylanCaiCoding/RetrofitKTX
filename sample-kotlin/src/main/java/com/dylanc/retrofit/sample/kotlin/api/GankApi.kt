@@ -1,12 +1,15 @@
-package com.dylanc.retrofit.sample.kotlin.data.api
+package com.dylanc.retrofit.sample.kotlin.api
 
+import com.dylanc.retrofit.ApiUrl
 import com.dylanc.retrofit.interceptor.DomainName
-import io.reactivex.Single
+import com.dylanc.retrofit.sample.kotlin.constant.URL_GANK
+import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET
 
 /**
  * @author Dylan Cai
  */
+//@ApiUrl(URL_GANK)
 interface GankApi {
 
   @DomainName("gank")

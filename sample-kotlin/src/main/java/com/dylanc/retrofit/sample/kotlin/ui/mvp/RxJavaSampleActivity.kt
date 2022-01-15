@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.dylanc.retrofit.rxjava2.RequestLoading
+import com.dylanc.retrofit.rxjava3.RequestLoading
 import com.dylanc.retrofit.sample.kotlin.databinding.ActivitySampleBinding
 
 /**

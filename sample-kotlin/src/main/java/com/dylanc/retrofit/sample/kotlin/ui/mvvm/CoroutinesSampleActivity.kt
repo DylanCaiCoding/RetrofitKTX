@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dylanc.retrofit.coroutines.requestViewModels
-import com.dylanc.retrofit.sample.kotlin.data.constant.DOWNLOAD_URL
+import com.dylanc.retrofit.sample.kotlin.constant.DOWNLOAD_URL
 import com.dylanc.retrofit.sample.kotlin.databinding.ActivitySampleBinding
 
 @Suppress("UNUSED_PARAMETER")

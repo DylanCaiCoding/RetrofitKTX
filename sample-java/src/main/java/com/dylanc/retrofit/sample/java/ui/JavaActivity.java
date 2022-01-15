@@ -8,13 +8,15 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dylanc.retrofit.helper.RetrofitHelper;
-import com.dylanc.retrofit.rxjava3.RxDownloadApi;
-import com.dylanc.retrofit.rxjava3.Transformers;
+import com.dylanc.retrofit.rxjava2.RxDownloadApi;
+import com.dylanc.retrofit.rxjava2.Transformers;
 import com.dylanc.retrofit.sample.java.R;
-import com.dylanc.retrofit.sample.java.data.api.GankApi;
-import com.dylanc.retrofit.sample.java.data.api.RxJavaApi;
-import com.dylanc.retrofit.sample.java.data.constant.Constants;
+import com.dylanc.retrofit.sample.java.api.GankApi;
+import com.dylanc.retrofit.sample.java.api.RxJavaApi;
+import com.dylanc.retrofit.sample.java.constant.Constants;
 import com.dylanc.retrofit.sample.java.network.LoadingDialog;
+import com.uber.autodispose.AutoDispose;
+import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
 
 import java.util.Objects;
 
@@ -33,7 +35,7 @@ public class JavaActivity extends AppCompatActivity {
         .geArticleList(0)
         .compose(Transformers.io2mainThread())
         .compose(Transformers.showLoading(getSupportFragmentManager(), loadingDialog))
-//        .to(AutoDisposable.bind(this))
+        .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
         .subscribe(
             this::alert,
             e -> toast(e.getMessage())
@@ -45,7 +47,7 @@ public class JavaActivity extends AppCompatActivity {
         .getGankTodayListByRxJava()
         .compose(Transformers.io2mainThread())
         .compose(Transformers.showLoading(getSupportFragmentManager(), loadingDialog))
-//        .as(AutoDisposable.bind(this))
+        .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
         .subscribe(
             this::alert,
             e -> toast(e.getMessage())
@@ -57,7 +59,7 @@ public class JavaActivity extends AppCompatActivity {
         .login()
         .compose(Transformers.io2mainThread())
         .compose(Transformers.showLoading(getSupportFragmentManager(), loadingDialog))
-//        .as(AutoDisposable.bind(this))
+        .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
         .subscribe(
             response -> toast("登录成功"),
             e -> toast(e.getMessage())
@@ -71,7 +73,7 @@ public class JavaActivity extends AppCompatActivity {
         .compose(Transformers.toFile(pathname))
         .compose(Transformers.io2mainThread())
         .compose(Transformers.showLoading(getSupportFragmentManager(), loadingDialog))
-//        .as(AutoDisposable.bind(this))
+        .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
         .subscribe(
             file -> toast("已下载到" + file.getPath()),
             e -> toast(e.getMessage())

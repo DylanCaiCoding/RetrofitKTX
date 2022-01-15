@@ -1,4 +1,4 @@
-package com.dylanc.retrofit.sample.kotlin.data.bean
+package com.dylanc.retrofit.sample.java.bean
 
 /**
  * @author Dylan Cai

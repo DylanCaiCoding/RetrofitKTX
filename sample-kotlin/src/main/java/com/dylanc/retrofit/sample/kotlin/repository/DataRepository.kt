@@ -3,8 +3,8 @@ package com.dylanc.retrofit.sample.kotlin.repository
 import com.dylanc.retrofit.apiServices
 import com.dylanc.retrofit.body.toFile
 import com.dylanc.retrofit.coroutines.DownloadApi
-import com.dylanc.retrofit.sample.kotlin.data.api.CoroutinesApi
-import com.dylanc.retrofit.sample.kotlin.data.api.GankApi
+import com.dylanc.retrofit.sample.kotlin.api.CoroutinesApi
+import com.dylanc.retrofit.sample.kotlin.api.GankApi
 import kotlinx.coroutines.flow.flow
 import java.io.File
 

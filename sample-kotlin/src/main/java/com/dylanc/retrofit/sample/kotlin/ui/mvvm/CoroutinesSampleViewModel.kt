@@ -10,25 +10,25 @@ class CoroutinesSampleViewModel : RequestViewModel() {
 
   fun geArticleList() =
     DataRepository.geArticleList()
-      .showLoadingWith(loadingFlow)
-      .catchWith(exceptionFlow)
+      .showLoadingWith(_loadingFlow)
+      .catchWith(_exceptionFlow)
       .asLiveData()
 
   fun getGankTodayList() =
     DataRepository.getGankTodayList()
-      .showLoadingWith(loadingFlow)
-      .catchWith(exceptionFlow)
+      .showLoadingWith(_loadingFlow)
+      .catchWith(_exceptionFlow)
       .asLiveData()
 
   fun login() =
     DataRepository.login()
-      .showLoadingWith(loadingFlow)
-      .catchWith(exceptionFlow)
+      .showLoadingWith(_loadingFlow)
+      .catchWith(_exceptionFlow)
       .asLiveData()
 
   fun download(url: String, path: String) =
     DataRepository.download(url, path)
-      .showLoadingWith(loadingFlow)
-      .catchWith(exceptionFlow)
+      .showLoadingWith(_loadingFlow)
+      .catchWith(_exceptionFlow)
       .asLiveData()
 }

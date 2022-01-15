@@ -1,4 +1,4 @@
-@file:Suppress("unused", "NOTHING_TO_INLINE")
+@file:Suppress("unused")
 
 package com.dylanc.retrofit.helper
 
@@ -64,7 +64,7 @@ object RetrofitHelper {
       retrofitBuilder.baseUrl(baseUrl)
     }
 
-    fun putDomain(name: String, url: String) {
+    fun putDomain(name: String, url: String) = apply {
       retrofitDomains[name] = url
     }
 
