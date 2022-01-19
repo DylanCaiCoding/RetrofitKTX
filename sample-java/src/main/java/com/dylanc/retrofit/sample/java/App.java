@@ -3,7 +3,7 @@ package com.dylanc.retrofit.sample.java;
 import android.app.Application;
 import android.util.Log;
 
-import com.dylanc.retrofit.cookie.PersistentCookieJar;
+import com.dylanc.retrofit.cookiejar.PersistentCookieJarFactory;
 import com.dylanc.retrofit.helper.RetrofitHelper;
 import com.dylanc.retrofit.sample.java.constant.Constants;
 import com.dylanc.retrofit.sample.java.network.GlobalErrorHandler;
@@ -22,11 +22,10 @@ public class App extends Application {
         .retryOnConnectionFailure(false)
         .putDomain("gank", Constants.URL_GANK)
         .multipleDomains()
-//        .cache(new File(getCacheDir(), "response"), 10 * 1024 * 1024,
-//            (url) -> new CacheControl.Builder().maxAge(1, TimeUnit.DAYS).build())
-        .addHttpLog(message -> Log.i("http", message))
+        .printHttpLog(message -> Log.i("http", message))
         .doOnResponse(GlobalErrorHandler::handleResponse)
-        .cookieJar(PersistentCookieJar.getInstance())
+        .persistentCookiesJar(this)
+        .cookieJar(PersistentCookieJarFactory.create(this))
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .addConverterFactory(ScalarsConverterFactory.create())
         .okHttpClientBuilder(builder -> {

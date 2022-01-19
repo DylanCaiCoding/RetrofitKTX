@@ -10,10 +10,6 @@ import com.dylanc.retrofit.coroutines.loading.defaultLoadingObserver
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 
-/**
- * @author Dylan Cai
- */
-
 fun initRequestViewModel(
   loadingObserver: RequestLoadingObserver,
   exceptionObserver: RequestExceptionObserver? = null

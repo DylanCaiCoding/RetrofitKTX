@@ -14,6 +14,8 @@ fun interface RequestLoading {
   fun onRequestLoading(isLoading: Boolean)
 
   companion object {
+    const val TAG_LOADING = "request_loading"
+
     fun create(dialog: Dialog) = RequestLoading {
       if (it && !dialog.isShowing) {
         dialog.show()
@@ -22,13 +24,14 @@ fun interface RequestLoading {
       }
     }
 
-    fun create(fragmentManager: FragmentManager, dialogFragment: DialogFragment) = RequestLoading {
-      if (it && !dialogFragment.isShowing) {
-        dialogFragment.show(fragmentManager, toString())
-      } else if (!it && dialogFragment.isShowing) {
-        dialogFragment.dismiss()
+    fun create(fragmentManager: FragmentManager, dialogFragment: DialogFragment, tag: String = TAG_LOADING) =
+      RequestLoading {
+        if (it && !dialogFragment.isShowing) {
+          dialogFragment.show(fragmentManager, tag)
+        } else if (!it && dialogFragment.isShowing) {
+          dialogFragment.dismiss()
+        }
       }
-    }
 
     private val DialogFragment.isShowing: Boolean
       get() = dialog?.isShowing == true && !isRemoving

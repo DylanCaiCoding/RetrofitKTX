@@ -10,10 +10,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 
-/**
- * @author Dylan Cai
- */
-
 fun LiveData<Boolean>.observe(activity: FragmentActivity, dialogFragment: DialogFragment) =
   observe(activity) { dialogFragment.show(activity.supportFragmentManager, it) }
 

@@ -9,10 +9,6 @@ import retrofit2.http.Header
 import retrofit2.http.Streaming
 import retrofit2.http.Url
 
-/**
- * @author Dylan Cai
- */
-
 fun RxDownloadApi.download(url: String, startByte: Int) =
   download(url, "bytes=$startByte-")
 

@@ -3,14 +3,10 @@
 
 package com.dylanc.retrofit.body
 
+import android.content.Context
 import android.net.Uri
-import com.dylanc.retrofit.app.application
 import okhttp3.ResponseBody
 import java.io.File
-
-/**
- * @author Dylan Cai
- */
 
 fun ResponseBody.toFile(block: () -> File): File =
   use {
@@ -19,9 +15,11 @@ fun ResponseBody.toFile(block: () -> File): File =
     }
   }
 
-fun ResponseBody.toUri(block: () -> Uri): Uri =
+fun ResponseBody.toUri(context: Context, block: () -> Uri): Uri =
   use {
     block().apply {
-      use { byteStream().copyTo(application.contentResolver.openOutputStream(this)!!) }
+      val outputStream = context.contentResolver.openOutputStream(this)
+      checkNotNull(outputStream) { "The uri cannot create output stream." }
+      use { byteStream().copyTo(outputStream) }
     }
   }

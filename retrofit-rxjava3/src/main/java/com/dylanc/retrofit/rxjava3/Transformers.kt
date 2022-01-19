@@ -5,6 +5,7 @@ package com.dylanc.retrofit.rxjava3
 import android.app.Dialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import com.dylanc.retrofit.rxjava3.RequestLoading.Companion.TAG_LOADING
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
@@ -12,10 +13,6 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.ResponseBody
 import java.io.File
-
-/**
- * @author Dylan Cai
- */
 
 fun <T : Any> Observable<T>.io2mainThread(): Observable<T> =
   compose(Transformers.io2mainThread())
@@ -73,8 +70,6 @@ fun Single<ResponseBody>.toFile(pathname: String): Single<File> =
 
 object Transformers {
 
-  private const val TAG_LOADING = "loading"
-
   @JvmStatic
   fun <T : Any> io2mainThread() =
     ThreadTransformer<T>(Schedulers.io(), AndroidSchedulers.mainThread())
@@ -84,34 +79,15 @@ object Transformers {
     LoadingTransformer<T>(requestLoading)
 
   @JvmStatic
-  fun <T : Any> showLoading(onLoading: (Boolean) -> Unit) =
-    LoadingTransformer<T> { isLoading -> onLoading(isLoading) }
-
-  @JvmStatic
   @JvmOverloads
   fun <T : Any> showLoading(fragmentManager: FragmentManager, dialogFragment: DialogFragment, tag: String = TAG_LOADING) =
-    showLoading<T> { isLoading ->
-      if (isLoading && !dialogFragment.isShowing) {
-        dialogFragment.show(fragmentManager, tag)
-      } else if (!isLoading && dialogFragment.isShowing) {
-        dialogFragment.dismiss()
-      }
-    }
+    showLoading<T>(RequestLoading.create(fragmentManager, dialogFragment, tag))
 
   @JvmStatic
   fun <T : Any> showLoading(dialog: Dialog) =
-    showLoading<T> { isLoading ->
-      if (isLoading && !dialog.isShowing) {
-        dialog.show()
-      } else if (!isLoading && dialog.isShowing) {
-        dialog.dismiss()
-      }
-    }
+    showLoading<T>(RequestLoading.create(dialog))
 
   @JvmStatic
   fun toFile(pathname: String): FileTransformer =
     FileTransformer(pathname)
-
-  private inline val DialogFragment.isShowing: Boolean
-    get() = dialog?.isShowing == true && !isRemoving
 }

@@ -1,5 +1,5 @@
--dontwarn com.dylanc.retrofit.cookie.**
--keep class com.dylanc.retrofit.cookie.**
+-dontwarn com.dylanc.retrofit.cookiejar.**
+-keep class com.dylanc.retrofit.cookiejar.**
 
 -keepclassmembers class * implements java.io.Serializable {
     static final long serialVersionUID;

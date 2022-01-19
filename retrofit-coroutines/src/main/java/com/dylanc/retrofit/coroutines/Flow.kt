@@ -4,10 +4,6 @@ package com.dylanc.retrofit.coroutines
 
 import kotlinx.coroutines.flow.*
 
-/**
- * @author Dylan Cai
- */
-
 fun <T> Flow<T>.showLoadingWith(flow: MutableSharedFlow<Boolean>) =
   onStart { flow.emit(true) }
     .onCompletion { flow.emit(false) }

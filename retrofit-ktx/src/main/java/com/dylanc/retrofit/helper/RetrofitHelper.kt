@@ -2,7 +2,9 @@
 
 package com.dylanc.retrofit.helper
 
-import com.dylanc.retrofit.cookie.PersistentCookieJar
+import android.content.Context
+import com.dylanc.retrofit.cookiejar.PersistentCookieJarFactory
+import com.dylanc.retrofit.cookiejar.persistentCookieJar
 import com.dylanc.retrofit.createServiceWithApiUrl
 import com.dylanc.retrofit.defaultRetrofit
 import com.dylanc.retrofit.initRetrofit
@@ -34,6 +36,10 @@ object RetrofitHelper {
     retrofitDomains[name] = url
   }
 
+  @JvmStatic
+  fun clearPersistentCookieJar() =
+    PersistentCookieJarFactory.clear()
+
   class Builder {
     private val headers = mutableMapOf<String, String>()
     private val okHttpClientBuilder = OkHttpClient.Builder()
@@ -43,12 +49,20 @@ object RetrofitHelper {
       retrofitBuilder = retrofit.newBuilder()
     }
 
-    fun addHeader(name: String, value: String) = apply {
-      headers[name] = value
+    fun baseUrl(baseUrl: String) = apply {
+      retrofitBuilder.baseUrl(baseUrl)
     }
 
-    fun addHeaders(vararg pairs: Pair<String, String>) = apply {
-      headers.putAll(pairs)
+    fun putDomain(name: String, url: String) = apply {
+      retrofitDomains[name] = url
+    }
+
+    fun multipleDomains() = apply {
+      okHttpClientBuilder.multipleDomains()
+    }
+
+    fun addHeader(name: String, value: String) = apply {
+      headers[name] = value
     }
 
     fun addHeaders(headers: Map<String, String>) = apply {
@@ -60,26 +74,15 @@ object RetrofitHelper {
         override fun onCreateHeaders(request: Request) = block(request)
       })
 
-    fun baseUrl(baseUrl: String) = apply {
-      retrofitBuilder.baseUrl(baseUrl)
-    }
-
-    fun putDomain(name: String, url: String) = apply {
-      retrofitDomains[name] = url
-    }
-
-    @JvmOverloads
-    fun connectTimeout(connectTimeout: Long, unit: TimeUnit = TimeUnit.SECONDS) = apply {
+    fun connectTimeout(connectTimeout: Long, unit: TimeUnit) = apply {
       okHttpClientBuilder.connectTimeout(connectTimeout, unit)
     }
 
-    @JvmOverloads
-    fun writeTimeout(writeTimeout: Long, unit: TimeUnit = TimeUnit.SECONDS) = apply {
+    fun writeTimeout(writeTimeout: Long, unit: TimeUnit) = apply {
       okHttpClientBuilder.connectTimeout(writeTimeout, unit)
     }
 
-    @JvmOverloads
-    fun readTimeout(readTimeout: Long, unit: TimeUnit = TimeUnit.SECONDS) = apply {
+    fun readTimeout(readTimeout: Long, unit: TimeUnit) = apply {
       okHttpClientBuilder.connectTimeout(readTimeout, unit)
     }
 
@@ -92,10 +95,11 @@ object RetrofitHelper {
     }
 
     fun cacheControl(
+      context: Context,
       maxSize: Long = 10L * 1024 * 1024,
       block: CacheControl.Builder.(Request) -> Unit = {}
     ) = apply {
-      okHttpClientBuilder.cacheControl(maxSize, block)
+      okHttpClientBuilder.cacheControl(context, maxSize, block)
     }
 
     fun cacheControl(
@@ -110,10 +114,8 @@ object RetrofitHelper {
       okHttpClientBuilder.cookieJar(cookieJar)
     }
 
-    fun persistentCookies() = cookieJar(PersistentCookieJar.instance)
-
-    fun multipleDomains() = apply {
-      okHttpClientBuilder.multipleDomains()
+    fun persistentCookiesJar(context: Context) = apply {
+      okHttpClientBuilder.persistentCookieJar(context)
     }
 
     fun addInterceptor(interceptor: Interceptor) = apply {
@@ -124,14 +126,8 @@ object RetrofitHelper {
       okHttpClientBuilder.addNetworkInterceptor(interceptor)
     }
 
-    fun addInterceptors(vararg interceptors: Interceptor) = apply {
-      for (interceptor in interceptors) {
-        okHttpClientBuilder.addInterceptor(interceptor)
-      }
-    }
-
     @JvmOverloads
-    fun addHttpLog(
+    fun printHttpLog(
       level: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BODY,
       logger: HttpLoggingInterceptor.Logger
     ) = apply {
@@ -158,13 +154,13 @@ object RetrofitHelper {
       block(retrofitBuilder)
     }
 
-    fun init() {
-      val retrofit = retrofitBuilder
-        .client(okHttpClientBuilder.addHeaders(headers).build())
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-      initRetrofit(retrofit)
-    }
+    fun init() =
+      initRetrofit(
+        retrofitBuilder
+          .client(okHttpClientBuilder.addHeaders(headers).build())
+          .addConverterFactory(GsonConverterFactory.create())
+          .build()
+      )
   }
 
   fun interface Callback<in P> {

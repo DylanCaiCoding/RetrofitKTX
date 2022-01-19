@@ -12,25 +12,26 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlin.reflect.KClass
 
-
 @MainThread
 inline fun <reified VM : RequestViewModel> FragmentActivity.requestViewModels(
   observeLoading: Boolean = true,
   observeException: Boolean = true,
+  noinline storeProducer: () -> ViewModelStore = { viewModelStore },
   noinline factoryProducer: () -> ViewModelProvider.Factory = { defaultViewModelProviderFactory },
 ): Lazy<VM> =
   RequestViewModelLazy(VM::class, { this }, { this },
-    { viewModelStore }, factoryProducer, observeLoading, observeException
+    storeProducer, factoryProducer, observeLoading, observeException
   )
 
 @MainThread
 inline fun <reified VM : RequestViewModel> Fragment.requestViewModels(
   observeLoading: Boolean = true,
   observeException: Boolean = true,
+  noinline storeProducer: () -> ViewModelStore = { viewModelStore },
   noinline factoryProducer: () -> ViewModelProvider.Factory = { defaultViewModelProviderFactory },
 ): Lazy<VM> =
   RequestViewModelLazy(VM::class, { viewLifecycleOwner }, { requireActivity() },
-    { viewModelStore }, factoryProducer, observeLoading, observeException
+    storeProducer, factoryProducer, observeLoading, observeException
   )
 
 class RequestViewModelLazy<VM : RequestViewModel>(

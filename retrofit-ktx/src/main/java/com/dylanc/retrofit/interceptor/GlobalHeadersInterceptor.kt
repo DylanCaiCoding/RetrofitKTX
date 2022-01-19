@@ -5,10 +5,6 @@ package com.dylanc.retrofit.interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
-/**
- * @author Dylan Cai
- */
-
 fun OkHttpClient.Builder.addHeaders(vararg pairs: Pair<String, String>): OkHttpClient.Builder =
   addHeaders(mutableMapOf(*pairs))
 

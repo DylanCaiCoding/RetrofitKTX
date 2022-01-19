@@ -13,7 +13,7 @@ inline fun retrofit(crossinline block: Retrofit.Builder.() -> Unit): Retrofit =
 inline fun Retrofit.Builder.okHttpClient(crossinline block: OkHttpClient.Builder.() -> Unit): Retrofit.Builder =
   client(OkHttpClient.Builder().apply(block).build())
 
-inline fun Retrofit.copy(crossinline block: Retrofit.Builder.() -> Unit = {}): Retrofit =
+inline fun Retrofit.copy(crossinline block: Retrofit.Builder.() -> Unit): Retrofit =
   newBuilder().apply(block).build()
 
 inline fun <reified T : Annotation> Request.getMethodAnnotation(): T? =

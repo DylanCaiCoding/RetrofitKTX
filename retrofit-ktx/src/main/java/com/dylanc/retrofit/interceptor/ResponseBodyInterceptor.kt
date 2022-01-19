@@ -10,10 +10,6 @@ import okio.GzipSource
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 
-/**
- * @author Dylan Cai
- */
-
 inline fun OkHttpClient.Builder.doOnResponse(crossinline block: (Response, String, String) -> Response) =
   addInterceptor(object : ResponseBodyInterceptor() {
     override fun intercept(response: Response, url: String, body: String) = block(response, url, body)

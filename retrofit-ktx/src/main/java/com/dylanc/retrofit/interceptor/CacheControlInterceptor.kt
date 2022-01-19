@@ -2,21 +2,21 @@
 
 package com.dylanc.retrofit.interceptor
 
-import com.dylanc.retrofit.app.application
+import android.content.Context
 import com.dylanc.retrofit.getMethodAnnotation
 import okhttp3.*
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-
 inline fun cacheControl(crossinline block: okhttp3.CacheControl.Builder.() -> Unit): okhttp3.CacheControl =
   okhttp3.CacheControl.Builder().apply(block).build()
 
-fun OkHttpClient.Builder.cacheControl(
+inline fun OkHttpClient.Builder.cacheControl(
+  context: Context,
   maxSize: Long = 10L * 1024 * 1024,
-  block: okhttp3.CacheControl.Builder.(Request) -> Unit = {}
+  crossinline block: okhttp3.CacheControl.Builder.(Request) -> Unit = {}
 ) =
-  cacheControl(File(application.externalCacheDir, "responses.cache"), maxSize, block)
+  cacheControl(File(context.externalCacheDir, "responses.cache"), maxSize, block)
 
 inline fun OkHttpClient.Builder.cacheControl(
   directory: File,
@@ -26,7 +26,7 @@ inline fun OkHttpClient.Builder.cacheControl(
   apply {
     cache(Cache(directory, maxSize))
     addNetworkInterceptor(CacheControlInterceptor {
-      com.dylanc.retrofit.interceptor.cacheControl { block(it) }
+      cacheControl { block(it) }
     })
   }
 

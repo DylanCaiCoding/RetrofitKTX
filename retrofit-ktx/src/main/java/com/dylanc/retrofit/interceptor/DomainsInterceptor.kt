@@ -31,7 +31,7 @@ class DomainsInterceptor(private val domains: MutableMap<String, String>) : Inte
       val url = domains[domainName]?.toHttpUrlOrNull() ?: baseUrl
       val newFullUrl = request.url.newBuilder()
         .apply {
-          domains[domainName]?.let {
+          if (domains[domainName] != null) {
             for (i in 0 until baseUrl.pathSize) {
               removePathSegment(0)
             }

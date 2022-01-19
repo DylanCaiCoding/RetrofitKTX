@@ -7,9 +7,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 
-/**
- * @author Dylan Cai
- */
 inline fun OkHttpClient.Builder.addHeaders(
   crossinline block: MutableMap<String, String>.(Request) -> Unit
 ) =

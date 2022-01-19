@@ -1,57 +1,29 @@
-@file:JvmName("PartFactory")
+@file:JvmName("PartUtils")
 @file:Suppress("unused")
 
 package com.dylanc.retrofit.body
 
+import android.content.Context
 import android.net.Uri
-import com.dylanc.retrofit.app.application
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
-/**
- * @author Dylan Cai
- */
-
 @JvmOverloads
 @JvmName("create")
-fun File.toPart(name: String, contentType: String = "multipart/form-data"): MultipartBody.Part =
-  asRequestBody(contentType).toPart(name, this.name)
-
-@JvmOverloads
-@JvmName("create")
-fun Uri.toPart(
-  name: String,
-  filename: String? = null,
-  contentType: String = "multipart/form-data",
-  offset: Int = 0,
-  byteCount: Int? = null
-): MultipartBody.Part =
-  asRequestBody(contentType, offset, byteCount).toPart(name, filename)
-
-@JvmOverloads
-@JvmName("create")
-fun RequestBody.toPart(name: String, filename: String? = null): MultipartBody.Part =
-  MultipartBody.Part.createFormData(name, filename, this)
-
-@JvmOverloads
-@JvmName("create")
-fun List<Uri>.toPartList(name: String, contentType: String = "multipart/form-data") = map {
-  it.toPart(name, contentType)
+fun File.asPart(name: String, contentType: String = "multipart/form-data"): MultipartBody.Part {
+  val requestBody = asRequestBody(contentType.toMediaTypeOrNull())
+  return MultipartBody.Part.createFormData(name, this.name, requestBody)
 }
 
-private fun File.asRequestBody(contentType: String = "multipart/form-data"): RequestBody =
-  asRequestBody(contentType.toMediaTypeOrNull())
-
-private fun Uri.asRequestBody(
+@JvmOverloads
+@JvmName("create")
+fun Uri.asPart(
+  context: Context, name: String, filename: String? = null,
   contentType: String = "multipart/form-data",
-  offset: Int = 0,
-  byteCount: Int? = null
-): RequestBody {
-  val inputStream = checkNotNull(application.contentResolver.openInputStream(this)) { "Unable to create stream" }
-  val content = inputStream.readBytes()
-  return content.toRequestBody(contentType.toMediaTypeOrNull(), offset, byteCount ?: content.size)
+  offset: Int = 0, byteCount: Int? = null
+): MultipartBody.Part {
+  val requestBody = asRequestBody(context, contentType, offset, byteCount)
+  return MultipartBody.Part.createFormData(name, filename, requestBody)
 }

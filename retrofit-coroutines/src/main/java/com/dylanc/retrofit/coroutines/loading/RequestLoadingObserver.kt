@@ -2,11 +2,6 @@ package com.dylanc.retrofit.coroutines.loading
 
 import androidx.fragment.app.FragmentActivity
 
-/**
- * @author Dylan Cai
- */
-
-
 internal var defaultLoadingObserver: RequestLoadingObserver? = null
 
 abstract class RequestLoadingObserver {

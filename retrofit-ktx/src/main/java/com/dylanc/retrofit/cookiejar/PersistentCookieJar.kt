@@ -1,12 +1,11 @@
 @file:Suppress("unused")
 
-package com.dylanc.retrofit.cookie
+package com.dylanc.retrofit.cookiejar
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
-import com.dylanc.retrofit.app.application
-import com.dylanc.retrofit.cookie.PersistentCookieJar.IdentifiableCookie.Companion.decorateAll
+import com.dylanc.retrofit.cookiejar.PersistentCookieJar.IdentifiableCookie.Companion.decorateAll
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
@@ -15,9 +14,20 @@ import okhttp3.internal.and
 import java.io.*
 import java.util.*
 
-fun OkHttpClient.Builder.persistentCookieJar() = cookieJar(PersistentCookieJar.instance)
+fun OkHttpClient.Builder.persistentCookieJar(context: Context) =
+  cookieJar(PersistentCookieJarFactory.create(context))
 
-fun clearPersistentCookieJar() = PersistentCookieJar.instance.clear()
+fun clearPersistentCookieJar() = PersistentCookieJarFactory.clear()
+
+object PersistentCookieJarFactory {
+  private lateinit var persistentCookieJar: PersistentCookieJar
+
+  @JvmStatic
+  fun create(context: Context) = PersistentCookieJar(context).also { persistentCookieJar = it }
+
+  @JvmStatic
+  fun clear() = persistentCookieJar.clear()
+}
 
 class PersistentCookieJar(private val sharedPreferences: SharedPreferences) : CookieJar {
 
@@ -107,27 +117,22 @@ class PersistentCookieJar(private val sharedPreferences: SharedPreferences) : Co
     edit().clear().apply()
   }
 
-  companion object {
-    @JvmStatic
-    val instance by lazy { PersistentCookieJar(application) }
-
-    private fun filterPersistentCookies(cookies: List<Cookie>): List<Cookie> {
-      val persistentCookies: MutableList<Cookie> = ArrayList()
-      for (cookie in cookies) {
-        if (cookie.persistent) {
-          persistentCookies.add(cookie)
-        }
+  private fun filterPersistentCookies(cookies: List<Cookie>): List<Cookie> {
+    val persistentCookies: MutableList<Cookie> = ArrayList()
+    for (cookie in cookies) {
+      if (cookie.persistent) {
+        persistentCookies.add(cookie)
       }
-      return persistentCookies
     }
+    return persistentCookies
+  }
 
-    private fun isCookieExpired(cookie: Cookie): Boolean {
-      return cookie.expiresAt < System.currentTimeMillis()
-    }
+  private fun isCookieExpired(cookie: Cookie): Boolean {
+    return cookie.expiresAt < System.currentTimeMillis()
+  }
 
-    private fun createCookieKey(cookie: Cookie): String {
-      return (if (cookie.secure) "https" else "http") + "://" + cookie.domain + cookie.path + "|" + cookie.name
-    }
+  private fun createCookieKey(cookie: Cookie): String {
+    return (if (cookie.secure) "https" else "http") + "://" + cookie.domain + cookie.path + "|" + cookie.name
   }
 
   private class IdentifiableCookie(val cookie: Cookie) {
