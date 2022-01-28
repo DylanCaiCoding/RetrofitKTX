@@ -5,10 +5,11 @@ package com.dylanc.retrofit.helper
 import android.content.Context
 import com.dylanc.retrofit.cookiejar.PersistentCookieJarFactory
 import com.dylanc.retrofit.cookiejar.persistentCookieJar
-import com.dylanc.retrofit.createServiceWithApiUrl
+import com.dylanc.retrofit.create
 import com.dylanc.retrofit.defaultRetrofit
 import com.dylanc.retrofit.initRetrofit
 import com.dylanc.retrofit.interceptor.*
+import com.hjq.gson.factory.GsonFactory
 import okhttp3.*
 import okhttp3.CacheControl
 import okhttp3.logging.HttpLoggingInterceptor
@@ -28,8 +29,9 @@ object RetrofitHelper {
   fun getDefault() = Builder()
 
   @JvmStatic
-  fun <T> create(service: Class<T>): T =
-    defaultRetrofit.createServiceWithApiUrl(service)
+  @JvmOverloads
+  fun <T> create(service: Class<T>, useApiUrl: Boolean = true): T =
+    defaultRetrofit.create(service, useApiUrl)
 
   @JvmStatic
   fun putDomain(name: String, url: String) {
@@ -158,7 +160,7 @@ object RetrofitHelper {
       initRetrofit(
         retrofitBuilder
           .client(okHttpClientBuilder.addHeaders(headers).build())
-          .addConverterFactory(GsonConverterFactory.create())
+          .addConverterFactory(GsonConverterFactory.create(GsonFactory.getSingletonGson()))
           .build()
       )
   }

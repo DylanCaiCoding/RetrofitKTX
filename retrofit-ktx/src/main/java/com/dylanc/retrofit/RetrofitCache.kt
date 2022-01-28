@@ -2,15 +2,16 @@
 
 package com.dylanc.retrofit
 
+import com.hjq.gson.factory.GsonFactory
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 internal lateinit var defaultRetrofit: Retrofit
-private val retrofitsCache = mutableMapOf<Class<*>, Retrofit>().withDefault { defaultRetrofit }
+private val retrofitsCache = mutableMapOf<Class<*>, Retrofit>()
 
 inline fun initRetrofit(crossinline block: Retrofit.Builder.() -> Unit) =
   initRetrofit(retrofit {
-    apply(block).addConverterFactory(GsonConverterFactory.create())
+    apply(block).addConverterFactory(GsonConverterFactory.create(GsonFactory.getSingletonGson()))
   })
 
 inline fun initRetrofit(retrofit: Retrofit, crossinline block: Retrofit.Builder.() -> Unit) =
@@ -29,16 +30,23 @@ fun <T> apiServices(service: Class<T>) = lazy {
   if (!::defaultRetrofit.isInitialized) {
     throw IllegalStateException("Please initialize default retrofit.")
   }
-  defaultRetrofit.createServiceWithApiUrl(service)
+  defaultRetrofit.create(service, useApiUrl = true)
 }
 
-fun <T> Retrofit.createServiceWithApiUrl(service: Class<T>): T {
-  val apiUrl = service.getAnnotation(ApiUrl::class.java)
-  if (apiUrl != null && apiUrl.value.isNotEmpty() && retrofitsCache[service] == null) {
-    retrofitsCache[service] = this.copy { baseUrl(apiUrl.value) }
-  }
-  return retrofitsCache.getValue(service).create(service)
-}
+inline fun <reified T> Retrofit.create(useApiUrl: Boolean): T =
+  create(T::class.java, useApiUrl)
+
+fun <T> Retrofit.create(service: Class<T>, useApiUrl: Boolean): T =
+  if (useApiUrl) {
+    val apiUrl = service.getAnnotation(ApiUrl::class.java)
+    if (apiUrl != null && apiUrl.value.isNotEmpty()) {
+      retrofitsCache.getOrPut(Retrofit::class.java) { this.copy { baseUrl(apiUrl.value) } }
+    } else {
+      this
+    }
+  } else {
+    this
+  }.create(service)
 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.CLASS)

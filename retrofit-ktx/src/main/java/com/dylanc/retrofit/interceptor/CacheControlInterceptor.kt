@@ -24,10 +24,10 @@ inline fun OkHttpClient.Builder.cacheControl(
   crossinline block: okhttp3.CacheControl.Builder.(Request) -> Unit = {}
 ) =
   apply {
+    val cacheControlInterceptor = CacheControlInterceptor { cacheControl { block(it) } }
     cache(Cache(directory, maxSize))
-    addNetworkInterceptor(CacheControlInterceptor {
-      cacheControl { block(it) }
-    })
+    addNetworkInterceptor(cacheControlInterceptor)
+    addInterceptor(cacheControlInterceptor)
   }
 
 @Retention(AnnotationRetention.RUNTIME)
