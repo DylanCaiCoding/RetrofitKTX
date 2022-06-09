@@ -22,7 +22,7 @@ public class App extends Application {
         .retryOnConnectionFailure(false)
         .putDomain("gank", Constants.URL_GANK)
         .multipleDomains()
-        .printHttpLog(message -> Log.i("http", message))
+        .printHttpLog(BuildConfig.DEBUG)
         .doOnResponse(GlobalErrorHandler::handleResponse)
         .persistentCookiesJar(this)
         .cookieJar(PersistentCookieJarFactory.create(this))

@@ -3,6 +3,7 @@
 package com.dylanc.retrofit.helper
 
 import android.content.Context
+import android.util.Log
 import com.dylanc.retrofit.cookiejar.PersistentCookieJarFactory
 import com.dylanc.retrofit.cookiejar.persistentCookieJar
 import com.dylanc.retrofit.create
@@ -130,10 +131,11 @@ object RetrofitHelper {
 
     @JvmOverloads
     fun printHttpLog(
+      debug: Boolean = true,
+      logger: HttpLoggingInterceptor.Logger = HttpLoggingInterceptor.Logger { Log.d("Http", it) },
       level: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BODY,
-      logger: HttpLoggingInterceptor.Logger
     ) = apply {
-      okHttpClientBuilder.printHttpLog(level, logger)
+      okHttpClientBuilder.printHttpLog(debug, level, logger)
     }
 
     fun doOnResponse(block: (Response, String, String) -> Response) = apply {
